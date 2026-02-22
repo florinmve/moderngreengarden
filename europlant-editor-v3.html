@@ -110,6 +110,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
     <div class="save-dot"></div><span class="save-label">Auto-salvat</span>
     <button class="btn btn-ghost" onclick="resetAll()">↺ Reset</button>
     <button class="btn btn-export" onclick="showExportMenu()" id="export-btn">⬇ Exportă fișiere</button>
+    <button class="btn btn-export" style="background:#58a6ff;color:#0d1117" onclick="publishToFolder()">📂 Publică în folder</button>
     <div id="export-menu" style="display:none;position:absolute;top:54px;right:1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.5rem;z-index:999;min-width:260px;box-shadow:0 8px 32px rgba(0,0,0,.5)">
       <div style="font-size:.67rem;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;padding:.35rem .6rem .5rem">Descarcă fișierele individual</div>
       <button class="export-item" onclick="exportFile('index')">🏠 index.html</button>
@@ -117,7 +118,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
       <button class="export-item" onclick="exportFile('servicii')">🌿 servicii.html</button>
       <button class="export-item" onclick="exportFile('contact')">📞 contact.html</button>
       <div style="height:1px;background:var(--border);margin:.35rem 0"></div>
-      <div style="font-size:.67rem;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;padding:.35rem .6rem .25rem">Pagini servicii (în folderul /service/)</div>
+      <div style="font-size:.67rem;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;padding:.35rem .6rem .25rem">Pagini servicii</div>
       <div id="sv-export-btns"></div>
       <div style="height:1px;background:var(--border);margin:.35rem 0"></div>
       <button class="export-item" onclick="exportFile('confidentialitate')">📄 politica-de-confidentialitate.html</button>
@@ -319,7 +320,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
 // ── DATA ──────────────────────────────────────────────────────
 let services = [
   {icon:'💧',title:'Sisteme de irigații automatizate',desc:'Instalăm sisteme de irigații complet automatizate, echipate cu senzori de umiditate, pentru o udare uniformă și eficientă a grădinii tale.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/sisteme-irigatii-gradini-bucuresti-370x210.jpg',file:'sisteme-irigatii',fullDesc:'Sistemele de irigații automatizate reprezintă soluția ideală pentru menținerea sănătății și frumuseții grădinii tale, indiferent de sezon. Echipa noastră instalează sisteme complete, programabile, echipate cu senzori de umiditate care detectează când solul are nevoie de apă și opresc automat irigarea după ploaie.\n\nFiecare sistem este proiectat personalizat, în funcție de suprafața și tipul de vegetație al grădinii tale. Folosim materiale de calitate premium, cu garanție de 3 ani, de la producători recunoscuți internațional.'},
-  {icon:'🌿',title:'Gazon rulou și plantare gazon',desc:'Realizăm suprafețe gazonate prin însămânțare cu materiale profesionale sau prin montaj de gazon rulou natural, gata în aceeași zi.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2016/06/b1-370x210.jpg',file:'gazon-rulou',fullDesc:'Gazonul rulou este cea mai rapidă soluție pentru o peluzăperfectă. Spre deosebire de însămânțare, gazonul rulou este gata de utilizare imediat după montaj, oferindu-ți rezultate instant.\n\nFolosim gazon cultivat profesional, pe suport de material biodegradabil, care asigură prinderea rapidă și uniformă. Montajul se realizează în maxim o zi, indiferent de suprafață, iar echipa noastră pregătește terenul corespunzător înainte de montaj (nivelare, fertilizare de bază).'},
+  {icon:'🌿',title:'Gazon rulou și plantare gazon',desc:'Realizăm suprafețe gazonate prin însămânțare cu materiale profesionale sau prin montaj de gazon rulou natural, gata în aceeași zi.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2016/06/b1-370x210.jpg',file:'gazon-rulou',fullDesc:'Gazonul rulou este cea mai rapidă soluție pentru o peluză perfectă. Spre deosebire de însămânțare, gazonul rulou este gata de utilizare imediat după montaj, oferindu-ți rezultate instant.\n\nFolosim gazon cultivat profesional, pe suport de material biodegradabil, care asigură prinderea rapidă și uniformă. Montajul se realizează în maxim o zi, indiferent de suprafață, iar echipa noastră pregătește terenul corespunzător înainte de montaj (nivelare, fertilizare de bază).'},
   {icon:'🌳',title:'Amenajări grădini și spații verzi',desc:'Amenajăm grădini și curți cu plante ornamentale, iazuri, cascade decorative și grădini japoneze. Prestări servicii peisagistice complete.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service6-370x210.jpg',file:'amenajari-gradini',fullDesc:'Transformăm orice spațiu exterior într-o grădină de vis, personalizată după gustul și nevoile tale. De la grădini clasice cu flori și arbuști ornamentali, la grădini moderne minimaliste, grădini japoneze zen sau spații cu iazuri și cascade decorative.\n\nFiecare proiect începe cu o consultanță gratuită la fața locului, urmată de un plan 2D/3D detaliat. Folosim exclusiv plante de calitate superioară, adaptate climei din București.'},
   {icon:'✂️',title:'Întreținere grădini și spații verzi',desc:'Menținem sănătatea și aspectul estetic al grădinii tale — tundere gazon, fertilizare, aerare, erbicidare și îngrijire plante ornamentale.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service4-370x210.jpg',file:'intretinere-gradini',fullDesc:'O grădină frumoasă necesită îngrijire constantă și specializată. Oferim contracte de întreținere lunare, trimestriale sau anuale, adaptate la nevoile grădinii tale.\n\nServiciile de întreținere includ: tunderea și fertilizarea gazonului, aerarea periodică, combaterea buruienilor și dăunătorilor, îngrijirea plantelor ornamentale, tăierea și formarea arbuștilor, curățarea sezonieră și orice alte lucrări necesare pentru menținerea aspectului perfect al grădinii tale.'},
   {icon:'📐',title:'Consultanță și proiectare',desc:'Realizăm planuri 2D și 3D personalizate ale grădinii tale, adaptate nevoilor plantelor, gazonului și preferințelor estetice.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/proiectare-3d-amenajare-gradina-bucuresti-370x210.jpg',file:'consultanta-proiectare',fullDesc:'Înainte de a realiza orice lucrare, concepem un plan detaliat al grădinii tale. Consultanța inițială este gratuită și include vizita unui specialist la fața locului, analiza terenului, tipului de sol și condițiilor de lumină.\n\nPlanul 2D sau 3D al grădinii este realizat cu software profesional de design peisagistic și include: amplasarea plantelor, sistemul de irigații, iluminatul, aleile și orice alte elemente decorative. Vizualizarea 3D îți permite să vezi cum va arăta grădina ta înainte de a începe lucrările.'},
@@ -361,9 +362,10 @@ function setPage(name, btn) {
   btn.classList.add('active');
   currentPage = name;
   const urls = {index:'index.html','despre-noi':'despre-noi.html',servicii:'servicii.html',contact:'contact.html'};
-  const svUrls = ['service/sisteme-irigatii.html','service/gazon-rulou.html','service/amenajari-gradini.html'];
-  if(name.startsWith('sv')) document.getElementById('prev-url').textContent = svUrls[parseInt(name.replace('sv',''))];
-  else document.getElementById('prev-url').textContent = urls[name]||name+'.html';
+  if(name.startsWith('sv')) {
+    const idx=parseInt(name.replace('sv',''));
+    document.getElementById('prev-url').textContent = (services[idx]?services[idx].file:'serviciu')+'.html';
+  } else document.getElementById('prev-url').textContent = urls[name]||name+'.html';
   renderPreview();
 }
 
@@ -530,51 +532,63 @@ textarea{resize:none;height:90px}
 }
 
 // ── SHARED PARTIALS ──────────────────────────────────────────
-function getHead(title, path) {
+function getHead(title, pageName, metaDesc, ogExtra) {
   const d=g('col-deep'),m=g('col-mid'),l=g('col-light'),go=g('col-gold'),w=g('col-white'),e=g('col-earth');
+  const baseUrl='https://florinmve.github.io/moderngreengarden/europlant/';
+  const pageUrl=baseUrl+pageName;
+  const desc=metaDesc||g('g-slogan')+' în București. '+g('g-phone');
+  const fullTitle=title+' – '+g('g-name');
   return `<!DOCTYPE html>
 <html lang="ro">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>${title} – ${g('g-name')}</title>
-<meta name="description" content="${g('g-slogan')} în București. ${g('g-phone')}"/>
-<link rel="canonical" href="${g('g-url')}${path}"/>
+<title>${fullTitle}</title>
+<meta name="description" content="${desc}"/>
+<link rel="canonical" href="${pageUrl}"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>${getCSS(d,m,l,go,w,e)}</style>
+<link rel="icon" href="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/favicon.ico" type="image/x-icon"/>
+<meta property="og:title" content="${fullTitle}"/>
+<meta property="og:description" content="${desc}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="${pageUrl}"/>
+<meta property="og:locale" content="ro_RO"/>
+<meta name="twitter:card" content="summary"/>
+${ogExtra||''}
 </head><body>`;
 }
 
-function getTopbar(prefix='') {
+function getTopbar() {
   return `<div class="topbar"><div class="topbar-inner"><div><span>📍 ${g('g-address')}</span>&nbsp;&nbsp;<span>🕐 ${g('g-hours')}</span></div><div class="topbar-right"><a href="tel:${g('g-phone-link')}">📞 ${g('g-phone')}</a><a href="mailto:${g('g-email')}">✉ ${g('g-email')}</a></div></div></div>`;
 }
 
-function getNav(activePage, prefix='') {
+function getNav(activePage) {
   const links = [
-    {href:`${prefix}index.html`,label:'Acasă',id:'home'},
-    {href:`${prefix}despre-noi.html`,label:'Despre noi',id:'despre'},
-    {href:`${prefix}servicii.html`,label:'Servicii',id:'servicii'},
-    {href:`${prefix}contact.html`,label:'Contact',id:'contact'},
+    {href:'index.html',label:'Acasă',id:'home'},
+    {href:'despre-noi.html',label:'Despre noi',id:'despre'},
+    {href:'servicii.html',label:'Servicii',id:'servicii'},
+    {href:'contact.html',label:'Contact',id:'contact'},
   ];
   const linksHtml = links.map(l=>`<li><a href="${l.href}"${activePage===l.id?' class="active-link"':''}>${l.label}</a></li>`).join('');
-  return `<header><nav><a href="${prefix}index.html" class="logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><ul class="nav-links">${linksHtml}<li><a href="${prefix}contact.html" class="nav-cta">${g('g-nav-cta')}</a></li></ul></nav></header>`;
+  return `<header><nav><a href="index.html" class="logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><ul class="nav-links">${linksHtml}<li><a href="contact.html" class="nav-cta">${g('g-nav-cta')}</a></li></ul></nav></header>`;
 }
 
-function getFooter(prefix='') {
-  const svLinks = services.map(s=>`<li><a href="${prefix}service/${s.file}.html">${s.title}</a></li>`).join('');
+function getFooter() {
+  const svLinks = services.map(s=>`<li><a href="${s.file}.html">${s.title}</a></li>`).join('');
   return `<footer><div class="container"><div class="footer-grid">
-    <div class="footer-brand"><a href="${prefix}index.html" class="footer-logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><p>${g('g-name')} — servicii profesionale de grădinărit și peisagistică în București. Peste ${g('ab-exp')} ani de experiență.</p></div>
+    <div class="footer-brand"><a href="index.html" class="footer-logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><p>${g('g-name')} — servicii profesionale de grădinărit și peisagistică în București. Peste ${g('ab-exp')} ani de experiență.</p></div>
     <div class="footer-col"><h4>Servicii</h4><ul>${svLinks}</ul></div>
     <div class="footer-col"><h4>Utile</h4><ul>
-      <li><a href="${prefix}despre-noi.html">Despre noi</a></li>
-      <li><a href="${prefix}contact.html">Contact</a></li>
-      <li><a href="${prefix}servicii.html">Toate serviciile</a></li>
+      <li><a href="despre-noi.html">Despre noi</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="servicii.html">Toate serviciile</a></li>
       <li><a href="http://www.anpc.gov.ro/" target="_blank">ANPC</a></li>
     </ul></div>
   </div>
   <div class="footer-bottom">
     <span>© 2025 ${g('g-name')} – ${g('g-slogan')} București.</span>
-    <div class="footer-legal"><a href="${prefix}politica-de-confidentialitate.html">Confidențialitate</a><a href="${prefix}politica-de-cookies.html">Cookies</a></div>
+    <div class="footer-legal"><a href="politica-de-confidentialitate.html">Confidențialitate</a><a href="politica-de-cookies.html">Cookies</a></div>
   </div></div></footer></body></html>`;
 }
 
@@ -583,11 +597,11 @@ function getTestiSection() {
   return `<section style="background:var(--gd)"><div class="container"><div class="sh"><div class="sl" style="color:var(--gold)">Recenzii clienți</div><h2 class="st" style="color:#fff">Ce spun clienții noștri</h2></div><div class="testi-grid">${cards}</div></div></section>`;
 }
 
-function getContactForm(prefix='') {
+function getContactForm() {
   return `<div style="background:var(--w);border-radius:24px;padding:2.5rem;box-shadow:0 4px 40px rgba(28,58,40,.08)">
     <h3 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:.4rem">${g('ct-form-title')}</h3>
     <p style="font-size:.875rem;color:var(--tm);margin-bottom:1.5rem">${g('ct-form-sub')}</p>
-    <form action="${prefix}contact.html" method="post">
+    <form action="contact.html" method="post">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem">
         <div><label>Nume</label><input type="text" placeholder="Numele tău" required/></div>
         <div><label>Telefon</label><input type="tel" placeholder="+40 7XX XXX XXX" required/></div>
@@ -607,14 +621,23 @@ function genIndex() {
     <div class="service-card">
       <div class="sv-img"><img src="${s.img}" alt="${s.title}" loading="lazy"/></div>
       <div class="sv-body"><div class="sv-icon">${s.icon}</div><h3>${s.title}</h3><p>${s.desc}</p>
-      <a href="service/${s.file}.html" class="sv-link">Află mai multe →</a></div>
+      <a href="${s.file}.html" class="sv-link">Află mai multe →</a></div>
     </div>`).join('');
 
   const testiCards = testis.map(t=>`<div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„${t.text}"</p><div class="testi-author"><div class="testi-av">${t.name.charAt(0)}</div><div><div class="testi-name">${t.name}</div><div class="testi-city">${t.city}</div></div></div></div>`).join('');
 
   const featsHtml = features.map(f=>`<div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>${f}</div>`).join('');
 
-  return getHead(g('g-slogan'),'') + getTopbar() + getNav('home') + `
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"LocalBusiness","name":g('g-name'),
+    "description":"Amenajări profesionale de grădini, sisteme de irigații automatizate, gazon rulou și întreținere spații verzi în București.",
+    "url":"https://florinmve.github.io/moderngreengarden/europlant/",
+    "telephone":g('g-phone'),"email":g('g-email'),
+    "address":{"@type":"PostalAddress","streetAddress":g('g-address'),"addressLocality":"București","addressCountry":"RO"},
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":"5","reviewCount":"${testis.length}","bestRating":"5"}
+  })}<\/script>`;
+
+  return getHead(g('g-slogan'),'index.html','Amenajări profesionale de grădini, sisteme de irigații automatizate, gazon rulou și întreținere spații verzi în București. Solicită ofertă gratuită!',jsonLd) + getTopbar() + getNav('home') + `
 <section style="min-height:92vh;background:var(--gd);position:relative;overflow:hidden;display:flex;align-items:center">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 70% 50%,rgba(74,140,92,.18) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 20% 80%,rgba(201,166,84,.08) 0%,transparent 50%)"></div>
   <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative;z-index:2;padding-top:3rem;padding-bottom:3rem">
@@ -696,17 +719,17 @@ function genIndex() {
           <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🕐</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Program</strong><span style="font-size:.9rem">${g('g-hours')}</span></div></div>
         </div>
       </div>
-      ${getContactForm('')}
+      ${getContactForm()}
     </div>
   </div>
 </section>
-` + getFooter('');
+` + getFooter();
 }
 
 function genAbout() {
   const featsHtml = features.map(f=>`<div style="display:flex;align-items:center;gap:.75rem;background:var(--w);border:1px solid rgba(28,58,40,.07);border-radius:12px;padding:.85rem 1rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:8px;height:8px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>${f}</div>`).join('');
 
-  return getHead('Despre noi','despre-noi.html') + getTopbar() + getNav('despre') + `
+  return getHead('Despre noi','despre-noi.html','Echipă profesionistă cu peste 10 ani de experiență în amenajarea grădinilor și spațiilor verzi din București.') + getTopbar() + getNav('despre') + `
 <section class="page-hero">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Despre noi</span></div>
@@ -755,7 +778,7 @@ ${getTestiSection()}
     <a href="tel:${g('g-phone-link')}" class="btn-outline-dark">📞 ${g('g-phone')}</a>
   </div>
 </section>
-` + getFooter('');
+` + getFooter();
 }
 
 function genServices() {
@@ -763,10 +786,16 @@ function genServices() {
     <div class="service-card">
       <div class="sv-img"><img src="${s.img}" alt="${s.title}" loading="lazy"/></div>
       <div class="sv-body"><div class="sv-icon">${s.icon}</div><h3>${s.title}</h3><p>${s.desc}</p>
-      <a href="service/${s.file}.html" class="sv-link">Detalii complete →</a></div>
+      <a href="${s.file}.html" class="sv-link">Detalii complete →</a></div>
     </div>`).join('');
 
-  return getHead(g('sv-title'),'servicii.html') + getTopbar() + getNav('servicii') + `
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"Service","serviceType":"Amenajări grădini și peisagistică",
+    "provider":{"@type":"LocalBusiness","name":g('g-name'),"telephone":g('g-phone')},
+    "areaServed":{"@type":"City","name":"București"}
+  })}<\/script>`;
+
+  return getHead(g('sv-title'),'servicii.html','Servicii complete de grădinărit: sisteme irigații, gazon rulou, amenajări grădini, întreținere, consultanță și lucrări de sezon în București.',jsonLd) + getTopbar() + getNav('servicii') + `
 <section class="page-hero">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Servicii</span></div>
@@ -792,13 +821,20 @@ ${getTestiSection()}
     <a href="contact.html" class="btn-primary">Contactează-ne</a>
   </div>
 </section>
-` + getFooter('');
+` + getFooter();
 }
 
 function genContact() {
   const mapSrc = g('ct-map') || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.0!2d26.1!3d44.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1';
 
-  return getHead(g('ct-title'),'contact.html') + getTopbar() + getNav('contact') + `
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"ContactPage","name":"Contact "+g('g-name'),
+    "url":"https://florinmve.github.io/moderngreengarden/europlant/contact.html",
+    "mainEntity":{"@type":"LocalBusiness","name":g('g-name'),"telephone":g('g-phone'),"email":g('g-email'),
+      "address":{"@type":"PostalAddress","streetAddress":g('g-address'),"addressLocality":"București","addressCountry":"RO"}}
+  })}<\/script>`;
+
+  return getHead(g('ct-title'),'contact.html','Contactează EuroPlant pentru o ofertă gratuită de amenajare grădină. Telefon: '+g('g-phone')+'.',jsonLd) + getTopbar() + getNav('contact') + `
 <section class="page-hero">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Contact</span></div>
@@ -824,28 +860,44 @@ function genContact() {
           <iframe src="${mapSrc}" width="100%" height="280" style="border:0" allowfullscreen loading="lazy"></iframe>
         </div>
       </div>
-      ${getContactForm('')}
+      ${getContactForm()}
     </div>
   </div>
 </section>
-` + getFooter('');
+` + getFooter();
 }
 
-function genServicePage(s, prefix='../') {
+function genServicePage(s) {
   const others = services.filter(o=>o.file!==s.file).slice(0,3).map(o=>`
     <div class="service-card" style="flex:1;min-width:220px">
-      <div class="sv-img" style="height:150px"><img src="${prefix}${o.img.startsWith('http')?'':prefix}${o.img}" alt="${o.title}" loading="lazy"/></div>
+      <div class="sv-img" style="height:150px"><img src="${o.img}" alt="${o.title}" loading="lazy"/></div>
       <div class="sv-body"><div class="sv-icon">${o.icon}</div><h3>${o.title}</h3><p>${o.desc.substring(0,80)}...</p>
       <a href="${o.file}.html" class="sv-link">Detalii →</a></div>
     </div>`).join('');
 
   const imgSrc = s.img;
   const fullDesc = (s.fullDesc||s.desc).replace(/\n\n/g,'</p><p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">');
+  const baseUrl='https://florinmve.github.io/moderngreengarden/europlant/';
+  const metaDesc = s.desc;
 
-  return getHead(s.title,'service/'+s.file+'.html') + getTopbar('../') + getNav('servicii','../') + `
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"Service","name":s.title,
+    "description":s.desc,"provider":{"@type":"LocalBusiness","name":g('g-name'),"telephone":g('g-phone')},
+    "areaServed":{"@type":"City","name":"București"}
+  })}<\/script>
+<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"BreadcrumbList",
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Acasă","item":baseUrl+"index.html"},
+      {"@type":"ListItem","position":2,"name":"Servicii","item":baseUrl+"servicii.html"},
+      {"@type":"ListItem","position":3,"name":s.title,"item":baseUrl+s.file+".html"}
+    ]
+  })}<\/script>`;
+
+  return getHead(s.title,s.file+'.html',metaDesc,jsonLd) + getTopbar() + getNav('servicii') + `
 <section class="page-hero">
   <div class="container">
-    <div class="breadcrumb"><a href="../index.html">Acasă</a><span>/</span><a href="../servicii.html">Servicii</a><span>/</span><span>${s.title}</span></div>
+    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><a href="servicii.html">Servicii</a><span>/</span><span>${s.title}</span></div>
     <div class="page-hero-badge">${s.icon} Serviciu premium</div>
     <h1>${s.title}</h1>
     <p>${s.desc}</p>
@@ -860,7 +912,7 @@ function genServicePage(s, prefix='../') {
         <div style="background:var(--el);border-radius:16px;padding:1.75rem;border:1px solid rgba(28,58,40,.07)">
           <h3 style="font-family:var(--serif);font-size:1.4rem;color:var(--gd);margin-bottom:1rem">Solicită o ofertă pentru acest serviciu</h3>
           <p style="color:var(--tm);font-size:.9rem;margin-bottom:1.25rem">Completează formularul sau sună-ne direct. Răspundem în maxim 24 de ore.</p>
-          <a href="../contact.html" class="btn-primary" style="margin-right:.75rem">Solicită ofertă</a>
+          <a href="contact.html" class="btn-primary" style="margin-right:.75rem">Solicită ofertă</a>
           <a href="tel:${g('g-phone-link')}" class="btn-outline-dark">📞 Sună acum</a>
         </div>
       </div>
@@ -883,10 +935,10 @@ function genServicePage(s, prefix='../') {
   <div class="container">
     <div class="sh"><div class="sl">Mai multe servicii</div><h2 class="st">Explorează și celelalte servicii</h2></div>
     <div style="display:flex;gap:1.5rem;flex-wrap:wrap">${others}</div>
-    <div style="text-align:center;margin-top:2.5rem"><a href="../servicii.html" class="btn-green">Toate serviciile →</a></div>
+    <div style="text-align:center;margin-top:2.5rem"><a href="servicii.html" class="btn-green">Toate serviciile →</a></div>
   </div>
 </section>
-` + getFooter('../');
+` + getFooter();
 }
 
 // ── RENDER PREVIEW ───────────────────────────────────────────
@@ -954,24 +1006,24 @@ function downloadHTML(filename, content) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-function placeholderPage(title) {
-  return getHead(title,'') + getTopbar() + getNav('','') +
+function placeholderPage(title, pageName, metaDesc) {
+  return getHead(title, pageName, metaDesc||title+' – '+g('g-name')) + getTopbar() + getNav('') +
     `<section class="page-hero"><div class="container"><h1>${title}</h1><p>Conținut în curs de redactare.</p></div></section>` +
-    getFooter('');
+    getFooter();
 }
 
 function exportFile(type) {
   document.getElementById('export-menu').style.display = 'none';
-  if(type === 'index')            { downloadHTML('index.html', genIndex()); showToast('✓ index.html descărcat → pune-l în folderul rădăcină'); }
+  if(type === 'index')            { downloadHTML('index.html', genIndex()); showToast('✓ index.html descărcat'); }
   else if(type === 'despre-noi') { downloadHTML('despre-noi.html', genAbout()); showToast('✓ despre-noi.html descărcat'); }
   else if(type === 'servicii')   { downloadHTML('servicii.html', genServices()); showToast('✓ servicii.html descărcat'); }
   else if(type === 'contact')    { downloadHTML('contact.html', genContact()); showToast('✓ contact.html descărcat'); }
-  else if(type === 'confidentialitate') { downloadHTML('politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate')); showToast('✓ descărcat'); }
-  else if(type === 'cookies')    { downloadHTML('politica-de-cookies.html', placeholderPage('Politica de Cookies')); showToast('✓ descărcat'); }
+  else if(type === 'confidentialitate') { downloadHTML('politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a EuroPlant – protejăm datele tale personale.')); showToast('✓ descărcat'); }
+  else if(type === 'cookies')    { downloadHTML('politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a EuroPlant – informații despre utilizarea cookie-urilor pe site.')); showToast('✓ descărcat'); }
   else if(type.startsWith('sv')) {
     const idx = parseInt(type.replace('sv',''));
     const s = services[idx];
-    if(s) { downloadHTML(s.file+'.html', genServicePage(s,'../')); showToast(`✓ ${s.file}.html descărcat → pune-l în folderul /service/`); }
+    if(s) { downloadHTML(s.file+'.html', genServicePage(s)); showToast(`✓ ${s.file}.html descărcat`); }
   }
 }
 
@@ -983,9 +1035,9 @@ async function exportAllSequential() {
     ['despre-noi.html', genAbout()],
     ['servicii.html', genServices()],
     ['contact.html', genContact()],
-    ['politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate')],
-    ['politica-de-cookies.html', placeholderPage('Politica de Cookies')],
-    ...services.map(s => [s.file+'.html', genServicePage(s,'../')]),
+    ['politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a EuroPlant – protejăm datele tale personale.')],
+    ['politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a EuroPlant – informații despre utilizarea cookie-urilor pe site.')],
+    ...services.map(s => [s.file+'.html', genServicePage(s)]),
   ];
   for(let i=0; i<files.length; i++) {
     await new Promise(res => setTimeout(res, 600));
@@ -998,6 +1050,55 @@ async function exportAllSequential() {
 function showToast(msg,dur=4000) {
   const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+// ── PUBLISH TO FOLDER (File System Access API) ──────────────
+function getRobotsTxt() {
+  return `User-agent: *\nAllow: /\nSitemap: https://florinmve.github.io/moderngreengarden/europlant/sitemap.xml\n`;
+}
+
+function getSitemapXml() {
+  const base = 'https://florinmve.github.io/moderngreengarden/europlant/';
+  const pages = [
+    'index.html','despre-noi.html','servicii.html','contact.html',
+    'politica-de-confidentialitate.html','politica-de-cookies.html',
+    ...services.map(s=>s.file+'.html')
+  ];
+  const today = new Date().toISOString().split('T')[0];
+  const urls = pages.map(p=>`  <url><loc>${base}${p}</loc><lastmod>${today}</lastmod></url>`).join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
+}
+
+function getAllFiles() {
+  return [
+    ['index.html', genIndex()],
+    ['despre-noi.html', genAbout()],
+    ['servicii.html', genServices()],
+    ['contact.html', genContact()],
+    ['politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a EuroPlant – protejăm datele tale personale.')],
+    ['politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a EuroPlant – informații despre utilizarea cookie-urilor pe site.')],
+    ...services.map(s => [s.file+'.html', genServicePage(s)]),
+    ['robots.txt', getRobotsTxt()],
+    ['sitemap.xml', getSitemapXml()],
+  ];
+}
+
+async function publishToFolder() {
+  try {
+    const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    const files = getAllFiles();
+    let count = 0;
+    for (const [name, content] of files) {
+      const fh = await dirHandle.getFileHandle(name, { create: true });
+      const writable = await fh.createWritable();
+      await writable.write(new Blob([content], {type: name.endsWith('.xml') ? 'application/xml' : name.endsWith('.txt') ? 'text/plain' : 'text/html'}));
+      await writable.close();
+      count++;
+    }
+    showToast(`✓ ${count} fișiere publicate în folder!`, 5000);
+  } catch(e) {
+    if(e.name !== 'AbortError') showToast('✗ Eroare: ' + e.message, 5000);
+  }
 }
 
 // ── INIT ─────────────────────────────────────────────────────
