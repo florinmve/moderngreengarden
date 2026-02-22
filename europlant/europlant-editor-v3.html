@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EuroPlant – Editor Complet</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--surface3:#30363d;
+  --border:rgba(255,255,255,0.08);--accent:#3fb950;--accent2:#2ea043;
+  --text:#e6edf3;--muted:#7d8590;--danger:#f85149;--gold:#d29922;
+  --blue:#58a6ff;--sans:'Outfit',sans-serif;--sidebar:380px;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;flex-shrink:0;gap:1rem}
+.tl{display:flex;align-items:center;gap:.75rem}
+.logo-ed{font-size:.95rem;font-weight:700;color:var(--text)}
+.logo-ed span{color:var(--accent)}
+.badge-ed{background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.25);color:var(--accent);font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.08em}
+.tr{display:flex;align-items:center;gap:.5rem}
+.btn{font-family:var(--sans);font-size:.78rem;font-weight:600;padding:.4rem .9rem;border-radius:7px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.35rem}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text)}
+.btn-export{background:var(--accent);color:#0d1f0e;font-size:.8rem;padding:.45rem 1.1rem}
+.btn-export:hover{background:var(--accent2);box-shadow:0 4px 14px rgba(63,185,80,.3)}
+.btn-preview-page{background:var(--surface2);color:var(--muted);border:1px solid var(--border);font-size:.75rem;padding:.35rem .75rem;border-radius:6px;cursor:pointer;transition:all .15s}
+.btn-preview-page.active,.btn-preview-page:hover{border-color:var(--accent);color:var(--accent)}
+
+/* MAIN */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--border);padding:0 .5rem;scrollbar-width:none;flex-shrink:0}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:.65rem .7rem;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;flex-shrink:0}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.fields{flex:1;overflow-y:auto;padding:.85rem;scrollbar-width:thin;scrollbar-color:var(--surface2) transparent}
+.fields::-webkit-scrollbar{width:4px}
+.fields::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:4px}
+.section-panel{display:none}
+.section-panel.active{display:block}
+.field-group{margin-bottom:.55rem}
+.field-label{font-size:.67rem;font-weight:700;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;margin-bottom:.28rem;display:flex;align-items:center;gap:.35rem}
+input[type=text],input[type=tel],input[type=email],input[type=url],textarea,select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:.8rem;padding:.45rem .7rem;border-radius:7px;outline:none;transition:border-color .15s;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{min-height:62px}
+select{cursor:pointer}
+select option{background:var(--surface2)}
+.divider{height:1px;background:var(--border);margin:.85rem 0}
+.group-title{font-size:.72rem;font-weight:700;color:var(--text);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.group-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.image-field{display:flex;flex-direction:column;gap:.35rem}
+.image-preview-wrap{width:100%;height:85px;border-radius:7px;overflow:hidden;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+.image-preview-wrap img{width:100%;height:100%;object-fit:cover}
+.image-actions{display:flex;gap:.35rem}
+.btn-img{flex:1;font-family:var(--sans);font-size:.68rem;font-weight:600;padding:.35rem .4rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;text-align:center}
+.btn-img:hover{background:var(--surface3);color:var(--text);border-color:var(--accent)}
+input[type=file]{display:none}
+.color-field{display:flex;align-items:center;gap:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:.3rem .7rem}
+input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:pointer;background:none;padding:0;flex-shrink:0}
+.color-hex{font-size:.78rem;color:var(--text);flex:1;background:transparent;border:none;outline:none;font-family:monospace}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+.card-box{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.75rem;margin-bottom:.65rem}
+.card-box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem}
+.card-box-title{font-size:.72rem;font-weight:700;color:var(--text)}
+.btn-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:.75rem;opacity:.7}
+.btn-del:hover{opacity:1}
+.btn-add{width:100%;font-family:var(--sans);font-size:.75rem;font-weight:600;padding:.4rem;border-radius:7px;border:1px dashed var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;margin-top:.35rem}
+.btn-add:hover{border-color:var(--accent);color:var(--accent)}
+.save-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+.export-item{display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text);font-family:var(--sans);font-size:.8rem;padding:.5rem .7rem;border-radius:7px;cursor:pointer;transition:background .15s;margin-bottom:1px}
+.export-item:hover{background:var(--surface2)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.save-label{font-size:.7rem;color:var(--muted)}
+.page-selector{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;padding:0 .25rem}
+.page-selector::-webkit-scrollbar{display:none}
+
+/* PREVIEW */
+.preview-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;background:#0a0a0f}
+.preview-toolbar{height:40px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 .85rem;gap:.5rem;flex-shrink:0;overflow-x:auto}
+.preview-toolbar::-webkit-scrollbar{display:none}
+.preview-dots{display:flex;gap:4px;flex-shrink:0}
+.preview-dots span{width:9px;height:9px;border-radius:50%}
+.dot-r{background:#f85149}.dot-y{background:#d29922}.dot-g{background:#3fb950}
+.preview-url{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:.18rem .55rem;font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:80px}
+.device-btns{display:flex;gap:.25rem;margin-left:auto;flex-shrink:0}
+.device-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:.68rem;padding:.18rem .45rem;border-radius:4px;cursor:pointer;transition:all .15s}
+.device-btn.active,.device-btn:hover{border-color:var(--accent);color:var(--accent)}
+.preview-frame-wrap{flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:1.25rem;background:#0a0a0f}
+.preview-frame-wrap iframe{border:none;border-radius:10px;box-shadow:0 20px 80px rgba(0,0,0,.7);transition:width .3s;background:#fff;min-height:900px}
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:var(--surface);border:1px solid var(--accent);color:var(--accent);padding:.6rem 1rem;border-radius:9px;font-size:.8rem;font-weight:600;transform:translateY(60px);opacity:0;transition:all .3s;z-index:9999;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tl">
+    <div class="logo-ed">Euro<span>Plant</span> <span style="color:var(--muted);font-weight:300">Editor Pro</span></div>
+    <div class="badge-ed">MULTI-PAGE</div>
+  </div>
+  <div class="tr">
+    <div class="save-dot"></div><span class="save-label">Auto-salvat</span>
+    <button class="btn btn-ghost" onclick="resetAll()">↺ Reset</button>
+    <button class="btn btn-export" onclick="showExportMenu()" id="export-btn">⬇ Exportă fișiere</button>
+    <div id="export-menu" style="display:none;position:absolute;top:54px;right:1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.5rem;z-index:999;min-width:260px;box-shadow:0 8px 32px rgba(0,0,0,.5)">
+      <div style="font-size:.67rem;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;padding:.35rem .6rem .5rem">Descarcă fișierele individual</div>
+      <button class="export-item" onclick="exportFile('index')">🏠 index.html</button>
+      <button class="export-item" onclick="exportFile('despre-noi')">👥 despre-noi.html</button>
+      <button class="export-item" onclick="exportFile('servicii')">🌿 servicii.html</button>
+      <button class="export-item" onclick="exportFile('contact')">📞 contact.html</button>
+      <div style="height:1px;background:var(--border);margin:.35rem 0"></div>
+      <div style="font-size:.67rem;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;padding:.35rem .6rem .25rem">Pagini servicii (în folderul /service/)</div>
+      <div id="sv-export-btns"></div>
+      <div style="height:1px;background:var(--border);margin:.35rem 0"></div>
+      <button class="export-item" onclick="exportFile('confidentialitate')">📄 politica-de-confidentialitate.html</button>
+      <button class="export-item" onclick="exportFile('cookies')">📄 politica-de-cookies.html</button>
+      <div style="height:1px;background:var(--border);margin:.35rem 0"></div>
+      <button class="export-item" style="color:var(--accent);font-weight:700" onclick="exportAllSequential()">⬇ Descarcă TOATE (pe rând automat)</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+<div class="sidebar">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('global')">🌐 Global</div>
+    <div class="tab" onclick="switchTab('home')">🏠 Home</div>
+    <div class="tab" onclick="switchTab('about')">👥 Despre</div>
+    <div class="tab" onclick="switchTab('services')">🌿 Servicii</div>
+    <div class="tab" onclick="switchTab('testi')">⭐ Recenzii</div>
+    <div class="tab" onclick="switchTab('contact')">📞 Contact</div>
+    <div class="tab" onclick="switchTab('colors')">🎨 Culori</div>
+  </div>
+  <div class="fields">
+
+    <!-- GLOBAL -->
+    <div class="section-panel active" id="panel-global">
+      <div class="group-title">🏢 Companie</div>
+      <div class="field-group"><div class="field-label">Denumire companie</div><input type="text" id="g-name" value="EuroPlant" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Logo – partea 1</div><input type="text" id="g-logo1" value="Euro" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Logo – partea 2 (accent)</div><input type="text" id="g-logo2" value="Plant" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Slogan scurt</div><input type="text" id="g-slogan" value="Amenajări Grădini & Sisteme Irigații" oninput="update()"/></div>
+      <div class="divider"></div>
+      <div class="group-title">📞 Contact (apare peste tot)</div>
+      <div class="field-group"><div class="field-label">Adresă</div><input type="text" id="g-address" value="Str. Cap. P. Ispirescu, nr. 24, București" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Telefon (afisat)</div><input type="text" id="g-phone" value="+40 773 885 119" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Telefon (link tel:)</div><input type="text" id="g-phone-link" value="+40773885119" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Email</div><input type="email" id="g-email" value="vveuroplant@gmail.com" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Program</div><input type="text" id="g-hours" value="Luni–Vineri: 08:00–17:00" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">URL site</div><input type="url" id="g-url" value="https://www.europlant-amenajari-gradini.ro/" oninput="update()"/></div>
+      <div class="divider"></div>
+      <div class="group-title">🔗 Navigație</div>
+      <div class="field-group"><div class="field-label">Text buton CTA nav</div><input type="text" id="g-nav-cta" value="Solicită ofertă" oninput="update()"/></div>
+    </div>
+
+    <!-- HOME -->
+    <div class="section-panel" id="panel-home">
+      <div class="group-title">🦸 Hero</div>
+      <div class="field-group"><div class="field-label">Badge hero</div><input type="text" id="h-badge" value="⭐ Peste 10 ani de experiență în București" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Titlu linia 1</div><input type="text" id="h-t1" value="Fă din grădina ta" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Titlu linia 2 (italic auriu)</div><input type="text" id="h-t2" value="oaza ta de relaxare" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Descriere hero</div><textarea id="h-desc" oninput="update()">Amenajare profesională a grădinilor și spațiilor verzi, sisteme de irigații automatizate, gazon rulou și întreținere continuă — totul sub un singur acoperiș.</textarea></div>
+      <div class="stat-row">
+        <div class="field-group"><div class="field-label">Buton 1</div><input type="text" id="h-btn1" value="Solicită ofertă gratuită" oninput="update()"/></div>
+        <div class="field-group"><div class="field-label">Buton 2</div><input type="text" id="h-btn2" value="Vezi serviciile" oninput="update()"/></div>
+      </div>
+      <div class="divider"></div>
+      <div class="group-title">📊 Statistici</div>
+      <div class="stat-row">
+        <div class="field-group"><div class="field-label">Nr. 1</div><input type="text" id="s-n1" value="10+" oninput="update()"/></div>
+        <div class="field-group"><div class="field-label">Label 1</div><input type="text" id="s-l1" value="ani experiență" oninput="update()"/></div>
+      </div>
+      <div class="stat-row">
+        <div class="field-group"><div class="field-label">Nr. 2</div><input type="text" id="s-n2" value="500+" oninput="update()"/></div>
+        <div class="field-group"><div class="field-label">Label 2</div><input type="text" id="s-l2" value="proiecte finalizate" oninput="update()"/></div>
+      </div>
+      <div class="stat-row">
+        <div class="field-group"><div class="field-label">Nr. 3</div><input type="text" id="s-n3" value="100%" oninput="update()"/></div>
+        <div class="field-group"><div class="field-label">Label 3</div><input type="text" id="s-l3" value="clienți mulțumiți" oninput="update()"/></div>
+      </div>
+      <div class="divider"></div>
+      <div class="group-title">🖼 Imagine Hero (card dreapta)</div>
+      <div class="image-field">
+        <div class="image-preview-wrap"><img id="prev-hero" src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/irigatii-automate-bucuresti-europlant.jpg" alt=""/></div>
+        <div class="image-actions">
+          <label class="btn-img" for="up-hero">📁 Încarcă</label>
+          <input type="file" id="up-hero" accept="image/*" onchange="handleUpload(this,'hero-img','prev-hero')"/>
+          <div class="btn-img" onclick="promptUrl('hero-img','prev-hero')">🔗 URL</div>
+        </div>
+        <input type="hidden" id="hero-img" value="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/irigatii-automate-bucuresti-europlant.jpg"/>
+      </div>
+      <div class="field-group" style="margin-top:.5rem"><div class="field-label">Text card hero</div><input type="text" id="h-card" value="Sisteme de irigații automatizate cu senzor de umiditate" oninput="update()"/></div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="section-panel" id="panel-about">
+      <div class="group-title">👥 Pagina Despre Noi</div>
+      <div class="field-group"><div class="field-label">Titlu principal</div><input type="text" id="ab-title" value="O echipă de profesioniști dedicați grădinii tale" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Paragraful 1</div><textarea id="ab-p1" oninput="update()">EuroPlant este formată dintr-o echipă profesionistă, dinamică și deschisă la idei noi, temeinic pregătită în domeniul amenajării grădinilor și spațiilor verzi exterioare.</textarea></div>
+      <div class="field-group"><div class="field-label">Paragraful 2</div><textarea id="ab-p2" oninput="update()">Comercializăm, livrăm și plantăm la prețuri avantajoase o gamă foarte largă de arbuști, arbori și conifere. Suntem la dispoziția ta în orice moment pentru a-ți satisface cele mai diverse dorințe și nevoi legate de grădina ta.</textarea></div>
+      <div class="field-group"><div class="field-label">Paragraful 3</div><textarea id="ab-p3" oninput="update()">Fiecare proiect este tratat cu maximă atenție la detalii, de la consultanța inițială și proiectarea 2D/3D, până la execuție și întreținere continuă. Calitatea și satisfacția clientului sunt prioritatea noastră.</textarea></div>
+      <div class="field-group"><div class="field-label">Ani experiență (badge)</div><input type="text" id="ab-exp" value="10+" oninput="update()"/></div>
+      <div class="divider"></div>
+      <div class="group-title">✅ Avantaje</div>
+      <div id="features-list"></div>
+      <button class="btn-add" onclick="addFeature()">+ Adaugă avantaj</button>
+      <div class="divider"></div>
+      <div class="group-title">🖼 Imaginea principală</div>
+      <div class="image-field">
+        <div class="image-preview-wrap"><img id="prev-ab1" src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about1.jpg" alt=""/></div>
+        <div class="image-actions">
+          <label class="btn-img" for="up-ab1">📁 Încarcă</label>
+          <input type="file" id="up-ab1" accept="image/*" onchange="handleUpload(this,'ab1-img','prev-ab1')"/>
+          <div class="btn-img" onclick="promptUrl('ab1-img','prev-ab1')">🔗 URL</div>
+        </div>
+        <input type="hidden" id="ab1-img" value="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about1.jpg"/>
+      </div>
+      <div class="group-title" style="margin-top:.75rem">🖼 Imaginea secundară</div>
+      <div class="image-field">
+        <div class="image-preview-wrap"><img id="prev-ab2" src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about2.jpg" alt=""/></div>
+        <div class="image-actions">
+          <label class="btn-img" for="up-ab2">📁 Încarcă</label>
+          <input type="file" id="up-ab2" accept="image/*" onchange="handleUpload(this,'ab2-img','prev-ab2')"/>
+          <div class="btn-img" onclick="promptUrl('ab2-img','prev-ab2')">🔗 URL</div>
+        </div>
+        <input type="hidden" id="ab2-img" value="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about2.jpg"/>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="section-panel" id="panel-services">
+      <div class="group-title">🌿 Titlu secțiune servicii</div>
+      <div class="field-group"><div class="field-label">Titlu pagină servicii</div><input type="text" id="sv-title" value="Servicii profesionale de grădinărit" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Subtitlu</div><textarea id="sv-sub" oninput="update()">De la proiectare și amenajare, până la întreținere continuă — EuroPlant este partenerul tău de încredere pentru orice nevoie a grădinii tale.</textarea></div>
+      <div class="divider"></div>
+      <div class="group-title">📋 Carduri servicii</div>
+      <div id="services-list"></div>
+      <button class="btn-add" onclick="addService()">+ Adaugă serviciu</button>
+    </div>
+
+    <!-- TESTI -->
+    <div class="section-panel" id="panel-testi">
+      <div class="group-title">⭐ Recenzii clienți</div>
+      <div id="testi-list"></div>
+      <button class="btn-add" onclick="addTesti()">+ Adaugă recenzie</button>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="section-panel" id="panel-contact">
+      <div class="group-title">📞 Pagina Contact</div>
+      <div class="field-group"><div class="field-label">Titlu pagină contact</div><input type="text" id="ct-title" value="Contactează-ne" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Subtitlu</div><textarea id="ct-sub" oninput="update()">Suntem aici pentru tine! Lasă-ne un mesaj sau sună-ne direct și îți vom răspunde în cel mai scurt timp cu o ofertă personalizată.</textarea></div>
+      <div class="field-group"><div class="field-label">Text formular</div><input type="text" id="ct-form-title" value="Solicită ofertă gratuită" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Subtitlu formular</div><input type="text" id="ct-form-sub" value="Completează formularul și te contactăm în 24 de ore." oninput="update()"/></div>
+      <div class="divider"></div>
+      <div class="group-title">🗺 Google Maps Embed</div>
+      <div class="field-group"><div class="field-label">URL embed hartă (iframe src)</div><textarea id="ct-map" oninput="update()" style="min-height:50px">https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.0!2d26.1!3d44.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDI0JzAwLjAiTiAyNsKwMDYnMDAuMCJF!5e0!3m2!1sro!2sro!4v1620000000000!5m2!1sro!2sro</textarea></div>
+      <p style="font-size:.68rem;color:var(--muted);margin-top:.25rem;line-height:1.5">Mergi la <strong style="color:var(--blue)">maps.google.com</strong> → caută adresa → Share → Embed a map → copiază doar link-ul din src="..."</p>
+    </div>
+
+    <!-- COLORS -->
+    <div class="section-panel" id="panel-colors">
+      <div class="group-title">🎨 Paleta de culori</div>
+      <p style="font-size:.72rem;color:var(--muted);margin-bottom:.85rem;line-height:1.5">Schimbarea acestor culori actualizează întreg site-ul instant.</p>
+      <div class="field-group"><div class="field-label">Verde principal</div>
+        <div class="color-field"><input type="color" id="col-deep" value="#1c3a28" oninput="syncColor(this,'cdh');update()"/><input class="color-hex" type="text" id="cdh" value="#1c3a28" oninput="syncHex(this,'col-deep');update()" maxlength="7"/></div></div>
+      <div class="field-group"><div class="field-label">Verde mediu</div>
+        <div class="color-field"><input type="color" id="col-mid" value="#2e5c3e" oninput="syncColor(this,'cmh');update()"/><input class="color-hex" type="text" id="cmh" value="#2e5c3e" oninput="syncHex(this,'col-mid');update()" maxlength="7"/></div></div>
+      <div class="field-group"><div class="field-label">Verde deschis</div>
+        <div class="color-field"><input type="color" id="col-light" value="#4a8c5c" oninput="syncColor(this,'clh');update()"/><input class="color-hex" type="text" id="clh" value="#4a8c5c" oninput="syncHex(this,'col-light');update()" maxlength="7"/></div></div>
+      <div class="field-group"><div class="field-label">Auriu (accent)</div>
+        <div class="color-field"><input type="color" id="col-gold" value="#c9a654" oninput="syncColor(this,'cgh');update()"/><input class="color-hex" type="text" id="cgh" value="#c9a654" oninput="syncHex(this,'col-gold');update()" maxlength="7"/></div></div>
+      <div class="field-group"><div class="field-label">Fundal pagină</div>
+        <div class="color-field"><input type="color" id="col-white" value="#faf8f4" oninput="syncColor(this,'cwh');update()"/><input class="color-hex" type="text" id="cwh" value="#faf8f4" oninput="syncHex(this,'col-white');update()" maxlength="7"/></div></div>
+      <div class="field-group"><div class="field-label">Fundal secțiuni</div>
+        <div class="color-field"><input type="color" id="col-earth" value="#f5ede0" oninput="syncColor(this,'ceh');update()"/><input class="color-hex" type="text" id="ceh" value="#f5ede0" oninput="syncHex(this,'col-earth');update()" maxlength="7"/></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PREVIEW -->
+<div class="preview-wrap">
+  <div class="preview-toolbar">
+    <div class="preview-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+    <div class="page-selector">
+      <button class="btn-preview-page active" onclick="setPage('index',this)">🏠 Home</button>
+      <button class="btn-preview-page" onclick="setPage('despre-noi',this)">👥 Despre</button>
+      <button class="btn-preview-page" onclick="setPage('servicii',this)">🌿 Servicii</button>
+      <button class="btn-preview-page" onclick="setPage('contact',this)">📞 Contact</button>
+      <button class="btn-preview-page" onclick="setPage('sv0',this)">💧 Irigații</button>
+      <button class="btn-preview-page" onclick="setPage('sv1',this)">🌿 Gazon</button>
+      <button class="btn-preview-page" onclick="setPage('sv2',this)">🌳 Amenajări</button>
+    </div>
+    <div class="preview-url" id="prev-url">index.html</div>
+    <div class="device-btns">
+      <button class="device-btn active" onclick="setDevice('desktop',this)">🖥</button>
+      <button class="device-btn" onclick="setDevice('tablet',this)">📱</button>
+      <button class="device-btn" onclick="setDevice('mobile',this)">📲</button>
+    </div>
+  </div>
+  <div class="preview-frame-wrap">
+    <iframe id="preview" width="1100" height="900"></iframe>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+let services = [
+  {icon:'💧',title:'Sisteme de irigații automatizate',desc:'Instalăm sisteme de irigații complet automatizate, echipate cu senzori de umiditate, pentru o udare uniformă și eficientă a grădinii tale.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/sisteme-irigatii-gradini-bucuresti-370x210.jpg',file:'sisteme-irigatii',fullDesc:'Sistemele de irigații automatizate reprezintă soluția ideală pentru menținerea sănătății și frumuseții grădinii tale, indiferent de sezon. Echipa noastră instalează sisteme complete, programabile, echipate cu senzori de umiditate care detectează când solul are nevoie de apă și opresc automat irigarea după ploaie.\n\nFiecare sistem este proiectat personalizat, în funcție de suprafața și tipul de vegetație al grădinii tale. Folosim materiale de calitate premium, cu garanție de 3 ani, de la producători recunoscuți internațional.'},
+  {icon:'🌿',title:'Gazon rulou și plantare gazon',desc:'Realizăm suprafețe gazonate prin însămânțare cu materiale profesionale sau prin montaj de gazon rulou natural, gata în aceeași zi.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2016/06/b1-370x210.jpg',file:'gazon-rulou',fullDesc:'Gazonul rulou este cea mai rapidă soluție pentru o peluzăperfectă. Spre deosebire de însămânțare, gazonul rulou este gata de utilizare imediat după montaj, oferindu-ți rezultate instant.\n\nFolosim gazon cultivat profesional, pe suport de material biodegradabil, care asigură prinderea rapidă și uniformă. Montajul se realizează în maxim o zi, indiferent de suprafață, iar echipa noastră pregătește terenul corespunzător înainte de montaj (nivelare, fertilizare de bază).'},
+  {icon:'🌳',title:'Amenajări grădini și spații verzi',desc:'Amenajăm grădini și curți cu plante ornamentale, iazuri, cascade decorative și grădini japoneze. Prestări servicii peisagistice complete.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service6-370x210.jpg',file:'amenajari-gradini',fullDesc:'Transformăm orice spațiu exterior într-o grădină de vis, personalizată după gustul și nevoile tale. De la grădini clasice cu flori și arbuști ornamentali, la grădini moderne minimaliste, grădini japoneze zen sau spații cu iazuri și cascade decorative.\n\nFiecare proiect începe cu o consultanță gratuită la fața locului, urmată de un plan 2D/3D detaliat. Folosim exclusiv plante de calitate superioară, adaptate climei din București.'},
+  {icon:'✂️',title:'Întreținere grădini și spații verzi',desc:'Menținem sănătatea și aspectul estetic al grădinii tale — tundere gazon, fertilizare, aerare, erbicidare și îngrijire plante ornamentale.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service4-370x210.jpg',file:'intretinere-gradini',fullDesc:'O grădină frumoasă necesită îngrijire constantă și specializată. Oferim contracte de întreținere lunare, trimestriale sau anuale, adaptate la nevoile grădinii tale.\n\nServiciile de întreținere includ: tunderea și fertilizarea gazonului, aerarea periodică, combaterea buruienilor și dăunătorilor, îngrijirea plantelor ornamentale, tăierea și formarea arbuștilor, curățarea sezonieră și orice alte lucrări necesare pentru menținerea aspectului perfect al grădinii tale.'},
+  {icon:'📐',title:'Consultanță și proiectare',desc:'Realizăm planuri 2D și 3D personalizate ale grădinii tale, adaptate nevoilor plantelor, gazonului și preferințelor estetice.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/proiectare-3d-amenajare-gradina-bucuresti-370x210.jpg',file:'consultanta-proiectare',fullDesc:'Înainte de a realiza orice lucrare, concepem un plan detaliat al grădinii tale. Consultanța inițială este gratuită și include vizita unui specialist la fața locului, analiza terenului, tipului de sol și condițiilor de lumină.\n\nPlanul 2D sau 3D al grădinii este realizat cu software profesional de design peisagistic și include: amplasarea plantelor, sistemul de irigații, iluminatul, aleile și orice alte elemente decorative. Vizualizarea 3D îți permite să vezi cum va arăta grădina ta înainte de a începe lucrările.'},
+  {icon:'🍂',title:'Lucrări de sezon',desc:'Scarificarea gazonului, acoperirea plantelor sensibile la îngheț, tăierea pomilor, plantări de primăvară și toamnă și multe altele.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/lucrari-sezoniere-intretinere-gradini-bucuresti-370x210.jpg',file:'lucrari-sezon',fullDesc:'Fiecare anotimp aduce nevoi specifice pentru grădina ta. Echipa EuroPlant intervine la momentul potrivit cu lucrările specifice fiecărui sezon.\n\nPrimăvara: curățarea generală, scarificarea gazonului, plantări, fertilizare de start. Vara: udare, tundere, combatere dăunători. Toamna: pregătire pentru iarnă, plantări de bulbi, tăieri de formare. Iarna: protejarea plantelor sensibile, tăieri de corecție la pomi fructiferi, planificare pentru sezonul următor.'},
+];
+
+let testis = [
+  {name:'Ioana Ignat',city:'București',text:'Am apelat la alte 3 firme înainte să dau de băieții de la EuroPlant. Toți mi-au spus că suprafața e prea mică pentru montaj gazon rulou (aprox. 70 mp). Am sunat la EuroPlant și în 1 zi aveam grădina gata. Bravo pentru rapiditate și profesionalism!'},
+  {name:'Costel Dumitru',city:'București',text:'Foarte mulțumit de echipa EuroPlant — prețuri super și au realizat o grădină extraordinară. Recomand 100%!'},
+  {name:'Cristi Voicu',city:'Otopeni',text:'Vrei o grădină frumoasă amenajată după criterii științifice și estetice? Ai găsit soluția! Apreciez profesionalismul și dedicația echipei EuroPlant.'},
+  {name:'Florin Împușcatu',city:'București',text:'Recomand EuroPlant cu toată încrederea! Servicii de calitate, punctualitate și rezultate care depășesc așteptările.'},
+];
+
+let features = [
+  'Echipă certificată și calificată',
+  'Materiale de calitate profesională',
+  'Sisteme irigații cu senzori de umiditate',
+  'Gazon rulou montat în aceeași zi',
+  'Proiecte 2D și 3D personalizate',
+  'Garanție pentru lucrările efectuate',
+];
+
+let currentPage = 'index';
+
+// ── HELPERS ──────────────────────────────────────────────────
+const g = id => document.getElementById(id)?.value || '';
+const syncColor = (inp, hexId) => document.getElementById(hexId).value = inp.value;
+const syncHex = (inp, colorId) => { if(/^#[0-9A-Fa-f]{6}$/.test(inp.value)) document.getElementById(colorId).value = inp.value; };
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.section-panel').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+function setPage(name, btn) {
+  document.querySelectorAll('.btn-preview-page').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPage = name;
+  const urls = {index:'index.html','despre-noi':'despre-noi.html',servicii:'servicii.html',contact:'contact.html'};
+  const svUrls = ['service/sisteme-irigatii.html','service/gazon-rulou.html','service/amenajari-gradini.html'];
+  if(name.startsWith('sv')) document.getElementById('prev-url').textContent = svUrls[parseInt(name.replace('sv',''))];
+  else document.getElementById('prev-url').textContent = urls[name]||name+'.html';
+  renderPreview();
+}
+
+function setDevice(type, btn) {
+  document.querySelectorAll('.device-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const iframe = document.getElementById('preview');
+  const w = {desktop:'1100px',tablet:'768px',mobile:'390px'};
+  iframe.style.width = w[type];
+}
+
+function handleUpload(input, hiddenId, previewId) {
+  const file = input.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = e => { document.getElementById(hiddenId).value=e.target.result; document.getElementById(previewId).src=e.target.result; update(); };
+  r.readAsDataURL(file);
+}
+function promptUrl(hiddenId, previewId) {
+  const url = prompt('Introdu URL-ul imaginii:');
+  if(url) { document.getElementById(hiddenId).value=url; document.getElementById(previewId).src=url; update(); }
+}
+
+// ── FEATURES ─────────────────────────────────────────────────
+function renderFeaturesList() {
+  const el = document.getElementById('features-list');
+  el.innerHTML = features.map((f,i)=>`
+    <div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem">
+      <input type="text" value="${f}" oninput="features[${i}]=this.value;update()" style="flex:1"/>
+      <button class="btn-del" onclick="features.splice(${i},1);renderFeaturesList();update()">✕</button>
+    </div>`).join('');
+}
+function addFeature() { features.push('Avantaj nou'); renderFeaturesList(); update(); }
+
+// ── SERVICES ─────────────────────────────────────────────────
+function renderServicesList() {
+  const el = document.getElementById('services-list');
+  el.innerHTML = services.map((s,i)=>`
+    <div class="card-box">
+      <div class="card-box-header"><div class="card-box-title">Serviciu ${i+1}</div><button class="btn-del" onclick="services.splice(${i},1);renderServicesList();update()">✕ Șterge</button></div>
+      <div class="field-group"><div class="field-label">Titlu</div><input type="text" value="${esc(s.title)}" oninput="services[${i}].title=this.value;update()"/></div>
+      <div class="field-group"><div class="field-label">Descriere scurtă (card)</div><textarea oninput="services[${i}].desc=this.value;update()">${esc(s.desc)}</textarea></div>
+      <div class="field-group"><div class="field-label">Descriere completă (pagina serviciului)</div><textarea style="min-height:80px" oninput="services[${i}].fullDesc=this.value;update()">${esc(s.fullDesc||'')}</textarea></div>
+      <div class="stat-row">
+        <div class="field-group"><div class="field-label">Emoji</div><input type="text" value="${s.icon}" oninput="services[${i}].icon=this.value;update()" style="text-align:center"/></div>
+        <div class="field-group"><div class="field-label">Slug URL</div><input type="text" value="${s.file}" oninput="services[${i}].file=this.value;update()"/></div>
+      </div>
+      <div class="field-group"><div class="field-label">Imagine</div>
+        <div class="image-field">
+          <div class="image-preview-wrap" style="height:65px"><img id="prev-sv-${i}" src="${s.img}" alt=""/></div>
+          <div class="image-actions">
+            <label class="btn-img" for="up-sv-${i}">📁 Încarcă</label>
+            <input type="file" id="up-sv-${i}" accept="image/*" onchange="handleSvUp(this,${i})"/>
+            <div class="btn-img" onclick="promptSvUrl(${i})">🔗 URL</div>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function handleSvUp(input,i) {
+  const r=new FileReader(); r.onload=e=>{services[i].img=e.target.result;document.getElementById('prev-sv-'+i).src=e.target.result;update();}; r.readAsDataURL(input.files[0]);
+}
+function promptSvUrl(i) { const u=prompt('URL imagine:'); if(u){services[i].img=u;document.getElementById('prev-sv-'+i).src=u;update();} }
+function addService() { services.push({icon:'🌱',title:'Serviciu nou',desc:'Descriere scurtă.',fullDesc:'Descriere completă.',img:'',file:'serviciu-nou'}); renderServicesList(); update(); }
+
+// ── TESTIMONIALS ─────────────────────────────────────────────
+function renderTestiList() {
+  const el = document.getElementById('testi-list');
+  el.innerHTML = testis.map((t,i)=>`
+    <div class="card-box">
+      <div class="card-box-header"><div class="card-box-title">Recenzie ${i+1}</div><button class="btn-del" onclick="testis.splice(${i},1);renderTestiList();update()">✕</button></div>
+      <div class="field-group"><div class="field-label">Nume</div><input type="text" value="${esc(t.name)}" oninput="testis[${i}].name=this.value;update()"/></div>
+      <div class="field-group"><div class="field-label">Oraș</div><input type="text" value="${esc(t.city)}" oninput="testis[${i}].city=this.value;update()"/></div>
+      <div class="field-group"><div class="field-label">Recenzie</div><textarea oninput="testis[${i}].text=this.value;update()">${esc(t.text)}</textarea></div>
+    </div>`).join('');
+}
+function addTesti() { testis.push({name:'Nume Client',city:'Oraș',text:'Recenzie...'}); renderTestiList(); update(); }
+
+function esc(str) { return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── SHARED CSS ───────────────────────────────────────────────
+function getCSS(deep,mid,light,gold,white,earth) {
+  return `*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gd:${deep};--gm:${mid};--gl:${light};--gp:${light}22;--el:${earth};--gold:${gold};--w:${white};--td:#1a2418;--tm:#5a6b52;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Outfit',sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--w);color:var(--td);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none}
+.topbar{background:var(--gd);color:rgba(255,255,255,.75);font-size:.78rem;font-weight:300;padding:8px 0}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.topbar a{color:inherit}
+.topbar-right{display:flex;gap:1.5rem}
+header{background:var(--w);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(28,58,40,.08)}
+nav{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{font-family:var(--serif);font-size:1.7rem;font-weight:600;color:var(--gd);letter-spacing:-.02em}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;list-style:none;gap:.25rem;align-items:center}
+.nav-links a{font-size:.875rem;color:var(--td);padding:.4rem .8rem;border-radius:4px;transition:color .2s,background .2s}
+.nav-links a:hover,.nav-links a.active-link{color:var(--gm);background:var(--gp)}
+.nav-cta{background:var(--gd)!important;color:var(--w)!important;padding:.5rem 1.2rem!important;border-radius:100px!important;font-weight:500!important}
+.nav-cta:hover{background:var(--gm)!important;color:var(--w)!important}
+.container{max-width:1200px;margin:0 auto;padding:0 2rem}
+section{padding:5rem 0}
+.sl{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--gl);margin-bottom:.75rem}
+.st{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3rem);font-weight:600;color:var(--gd);line-height:1.2;margin-bottom:1rem}
+.ss{color:var(--tm);max-width:560px;line-height:1.7;font-weight:300}
+.sh{margin-bottom:3rem}
+.btn-primary{background:var(--gold);color:var(--gd);padding:.85rem 2rem;border-radius:100px;font-weight:600;font-size:.9rem;display:inline-block;transition:transform .2s,box-shadow .2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,166,84,.35)}
+.btn-green{background:var(--gd);color:var(--w);padding:.85rem 2rem;border-radius:100px;font-weight:500;font-size:.9rem;display:inline-block;transition:background .2s}
+.btn-green:hover{background:var(--gm)}
+.btn-outline-dark{border:1.5px solid var(--gd);color:var(--gd);padding:.8rem 1.8rem;border-radius:100px;font-weight:500;font-size:.9rem;display:inline-block;transition:all .2s}
+.btn-outline-dark:hover{background:var(--gd);color:var(--w)}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.service-card{background:var(--w);border-radius:20px;overflow:hidden;transition:transform .3s,box-shadow .3s;border:1px solid rgba(28,58,40,.06)}
+.service-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(28,58,40,.12)}
+.sv-img{height:200px;overflow:hidden}
+.sv-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.service-card:hover .sv-img img{transform:scale(1.05)}
+.sv-body{padding:1.5rem}
+.sv-icon{width:40px;height:40px;background:var(--gp);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:.85rem}
+.sv-body h3{font-family:var(--serif);font-size:1.2rem;color:var(--gd);margin-bottom:.5rem}
+.sv-body p{font-size:.875rem;color:var(--tm);line-height:1.65;margin-bottom:1rem}
+.sv-link{font-size:.82rem;font-weight:600;color:var(--gm);letter-spacing:.04em}
+.sv-link:hover{color:var(--gold)}
+.testi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.testi-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2rem;transition:background .3s}
+.testi-card:hover{background:rgba(255,255,255,.1)}
+.testi-stars{color:var(--gold);font-size:.9rem;margin-bottom:1rem}
+.testi-text{font-family:var(--serif);font-size:1.05rem;color:rgba(255,255,255,.85);line-height:1.7;font-style:italic;margin-bottom:1.5rem}
+.testi-author{display:flex;align-items:center;gap:.75rem}
+.testi-av{width:40px;height:40px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1rem;color:var(--w);font-weight:600}
+.testi-name{font-size:.875rem;font-weight:600;color:var(--w)}
+.testi-city{font-size:.78rem;color:rgba(255,255,255,.45)}
+footer{background:#1a2418;color:rgba(255,255,255,.6);padding:4rem 0 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4rem;margin-bottom:3rem}
+.footer-logo{font-family:var(--serif);font-size:1.5rem;font-weight:600;display:block;margin-bottom:1rem;color:#fff}
+.footer-logo span{color:var(--gold)}
+.footer-brand p{font-size:.875rem;line-height:1.7;font-weight:300;max-width:280px}
+.footer-col h4{font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:1rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.footer-col ul a{font-size:.875rem;color:rgba(255,255,255,.55);transition:color .2s}
+.footer-col ul a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;font-size:.8rem;flex-wrap:wrap;gap:.75rem}
+.footer-legal{display:flex;gap:1.5rem}
+.footer-legal a{color:rgba(255,255,255,.45)}
+.footer-legal a:hover{color:var(--gold)}
+label{display:block;font-size:.78rem;font-weight:500;color:var(--td);margin-bottom:.35rem}
+input[type=text],input[type=tel],input[type=email],select,textarea{width:100%;padding:.7rem 1rem;border:1.5px solid rgba(28,58,40,.12);border-radius:10px;font-family:var(--sans);font-size:.875rem;color:var(--td);background:var(--w);transition:border-color .2s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--gl)}
+textarea{resize:none;height:90px}
+.form-submit{width:100%;padding:.9rem;background:var(--gd);color:var(--w);border:none;border-radius:100px;font-family:var(--sans);font-size:.9rem;font-weight:600;cursor:pointer;margin-top:.5rem;transition:background .2s}
+.form-submit:hover{background:var(--gm)}
+.page-hero{background:var(--gd);padding:5rem 0 4rem;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(74,140,92,.2) 0%,transparent 60%)}
+.page-hero .container{position:relative;z-index:2}
+.page-hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,166,84,.15);border:1px solid rgba(201,166,84,.3);color:var(--gold);font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:100px;margin-bottom:1.5rem}
+.page-hero h1{font-family:var(--serif);font-size:clamp(2.4rem,4vw,3.5rem);font-weight:600;color:#fff;line-height:1.15;margin-bottom:1rem}
+.page-hero p{color:rgba(255,255,255,.65);font-size:1.05rem;font-weight:300;max-width:560px;line-height:1.75}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:1.5rem}
+.breadcrumb a{color:rgba(255,255,255,.5)}
+.breadcrumb a:hover{color:var(--gold)}
+.breadcrumb span{color:rgba(255,255,255,.3)}
+@media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr;gap:2rem}.testi-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.services-grid{grid-template-columns:1fr}.nav-links{display:none}}`;
+}
+
+// ── SHARED PARTIALS ──────────────────────────────────────────
+function getHead(title, path) {
+  const d=g('col-deep'),m=g('col-mid'),l=g('col-light'),go=g('col-gold'),w=g('col-white'),e=g('col-earth');
+  return `<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${title} – ${g('g-name')}</title>
+<meta name="description" content="${g('g-slogan')} în București. ${g('g-phone')}"/>
+<link rel="canonical" href="${g('g-url')}${path}"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>${getCSS(d,m,l,go,w,e)}</style>
+</head><body>`;
+}
+
+function getTopbar(prefix='') {
+  return `<div class="topbar"><div class="topbar-inner"><div><span>📍 ${g('g-address')}</span>&nbsp;&nbsp;<span>🕐 ${g('g-hours')}</span></div><div class="topbar-right"><a href="tel:${g('g-phone-link')}">📞 ${g('g-phone')}</a><a href="mailto:${g('g-email')}">✉ ${g('g-email')}</a></div></div></div>`;
+}
+
+function getNav(activePage, prefix='') {
+  const links = [
+    {href:`${prefix}index.html`,label:'Acasă',id:'home'},
+    {href:`${prefix}despre-noi.html`,label:'Despre noi',id:'despre'},
+    {href:`${prefix}servicii.html`,label:'Servicii',id:'servicii'},
+    {href:`${prefix}contact.html`,label:'Contact',id:'contact'},
+  ];
+  const linksHtml = links.map(l=>`<li><a href="${l.href}"${activePage===l.id?' class="active-link"':''}>${l.label}</a></li>`).join('');
+  return `<header><nav><a href="${prefix}index.html" class="logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><ul class="nav-links">${linksHtml}<li><a href="${prefix}contact.html" class="nav-cta">${g('g-nav-cta')}</a></li></ul></nav></header>`;
+}
+
+function getFooter(prefix='') {
+  const svLinks = services.map(s=>`<li><a href="${prefix}service/${s.file}.html">${s.title}</a></li>`).join('');
+  return `<footer><div class="container"><div class="footer-grid">
+    <div class="footer-brand"><a href="${prefix}index.html" class="footer-logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><p>${g('g-name')} — servicii profesionale de grădinărit și peisagistică în București. Peste ${g('ab-exp')} ani de experiență.</p></div>
+    <div class="footer-col"><h4>Servicii</h4><ul>${svLinks}</ul></div>
+    <div class="footer-col"><h4>Utile</h4><ul>
+      <li><a href="${prefix}despre-noi.html">Despre noi</a></li>
+      <li><a href="${prefix}contact.html">Contact</a></li>
+      <li><a href="${prefix}servicii.html">Toate serviciile</a></li>
+      <li><a href="http://www.anpc.gov.ro/" target="_blank">ANPC</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ${g('g-name')} – ${g('g-slogan')} București.</span>
+    <div class="footer-legal"><a href="${prefix}politica-de-confidentialitate.html">Confidențialitate</a><a href="${prefix}politica-de-cookies.html">Cookies</a></div>
+  </div></div></footer></body></html>`;
+}
+
+function getTestiSection() {
+  const cards = testis.map(t=>`<div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„${t.text}"</p><div class="testi-author"><div class="testi-av">${t.name.charAt(0)}</div><div><div class="testi-name">${t.name}</div><div class="testi-city">${t.city}</div></div></div></div>`).join('');
+  return `<section style="background:var(--gd)"><div class="container"><div class="sh"><div class="sl" style="color:var(--gold)">Recenzii clienți</div><h2 class="st" style="color:#fff">Ce spun clienții noștri</h2></div><div class="testi-grid">${cards}</div></div></section>`;
+}
+
+function getContactForm(prefix='') {
+  return `<div style="background:var(--w);border-radius:24px;padding:2.5rem;box-shadow:0 4px 40px rgba(28,58,40,.08)">
+    <h3 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:.4rem">${g('ct-form-title')}</h3>
+    <p style="font-size:.875rem;color:var(--tm);margin-bottom:1.5rem">${g('ct-form-sub')}</p>
+    <form action="${prefix}contact.html" method="post">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem">
+        <div><label>Nume</label><input type="text" placeholder="Numele tău" required/></div>
+        <div><label>Telefon</label><input type="tel" placeholder="+40 7XX XXX XXX" required/></div>
+      </div>
+      <div style="margin-bottom:.85rem"><label>Serviciu dorit</label>
+        <select>${services.map(s=>`<option>${s.title}</option>`).join('')}</select>
+      </div>
+      <div style="margin-bottom:.85rem"><label>Detalii proiect</label><textarea placeholder="Descrie pe scurt grădina ta..."></textarea></div>
+      <button type="submit" class="form-submit">Trimite solicitarea →</button>
+      <p style="font-size:.72rem;color:var(--tm);margin-top:.75rem;text-align:center">* Datele respectă politica de confidențialitate.</p>
+    </form></div>`;
+}
+
+// ── PAGE GENERATORS ──────────────────────────────────────────
+function genIndex() {
+  const svCards = services.slice(0,6).map(s=>`
+    <div class="service-card">
+      <div class="sv-img"><img src="${s.img}" alt="${s.title}" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">${s.icon}</div><h3>${s.title}</h3><p>${s.desc}</p>
+      <a href="service/${s.file}.html" class="sv-link">Află mai multe →</a></div>
+    </div>`).join('');
+
+  const testiCards = testis.map(t=>`<div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„${t.text}"</p><div class="testi-author"><div class="testi-av">${t.name.charAt(0)}</div><div><div class="testi-name">${t.name}</div><div class="testi-city">${t.city}</div></div></div></div>`).join('');
+
+  const featsHtml = features.map(f=>`<div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>${f}</div>`).join('');
+
+  return getHead(g('g-slogan'),'') + getTopbar() + getNav('home') + `
+<section style="min-height:92vh;background:var(--gd);position:relative;overflow:hidden;display:flex;align-items:center">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 70% 50%,rgba(74,140,92,.18) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 20% 80%,rgba(201,166,84,.08) 0%,transparent 50%)"></div>
+  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative;z-index:2;padding-top:3rem;padding-bottom:3rem">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,166,84,.15);border:1px solid rgba(201,166,84,.3);color:var(--gold);font-size:.75rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:.4rem 1rem;border-radius:100px;margin-bottom:1.75rem">${g('h-badge')}</div>
+      <h1 style="font-family:var(--serif);font-size:clamp(2.8rem,5vw,4.2rem);font-weight:600;color:#fff;line-height:1.12;margin-bottom:1.25rem">${g('h-t1')}<br/><em style="font-style:italic;color:var(--gold)">${g('h-t2')}</em></h1>
+      <p style="color:rgba(255,255,255,.65);font-size:1.05rem;font-weight:300;line-height:1.75;margin-bottom:2.5rem;max-width:460px">${g('h-desc')}</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="contact.html" class="btn-primary">${g('h-btn1')}</a>
+        <a href="servicii.html" style="border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);padding:.85rem 2rem;border-radius:100px;font-size:.9rem;display:inline-block">${g('h-btn2')}</a>
+      </div>
+      <div style="display:flex;gap:2.5rem;margin-top:3rem;padding-top:2.5rem;border-top:1px solid rgba(255,255,255,.1)">
+        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">${g('s-n1')}</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">${g('s-l1')}</div></div>
+        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">${g('s-n2')}</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">${g('s-l2')}</div></div>
+        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">${g('s-n3')}</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">${g('s-l3')}</div></div>
+      </div>
+    </div>
+    <div style="position:relative">
+      <div style="position:absolute;top:1.5rem;left:-1.5rem;background:var(--gold);color:var(--gd);padding:1rem 1.25rem;border-radius:16px;font-weight:700;font-size:.8rem;text-align:center;box-shadow:0 8px 24px rgba(201,166,84,.4);line-height:1.3;z-index:3">🌿 Gazon rulou<br/>montat în 1 zi</div>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:24px;overflow:hidden;aspect-ratio:4/5;position:relative">
+        <div style="position:absolute;inset:0;background:url('${g('hero-img')}') center/cover no-repeat;opacity:.55"></div>
+        <div style="height:100%;background:linear-gradient(160deg,rgba(74,140,92,.3) 0%,rgba(28,58,40,.5) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:2rem;position:relative;z-index:2">
+          <div style="background:rgba(28,58,40,.85);border-radius:14px;padding:1.25rem 1.5rem;border:1px solid rgba(201,166,84,.2)">
+            <small style="color:var(--gold);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase">Serviciu premium</small>
+            <p style="font-family:var(--serif);font-size:1.2rem;color:#fff;font-style:italic;margin-top:.25rem">${g('h-card')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--el)">
+  <div class="container">
+    <div class="sh"><div class="sl">Ce oferim</div><h2 class="st">${g('sv-title')}</h2><p class="ss">${g('sv-sub')}</p></div>
+    <div class="services-grid">${svCards}</div>
+    <div style="text-align:center;margin-top:2.5rem"><a href="servicii.html" class="btn-green">Vezi toate serviciile →</a></div>
+  </div>
+</section>
+
+<section style="background:var(--w)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center">
+      <div style="position:relative;height:480px">
+        <div style="width:75%;height:380px;border-radius:20px;overflow:hidden;position:absolute;top:0;left:0"><img src="${g('ab1-img')}" alt="Echipa ${g('g-name')}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
+        <div style="position:absolute;top:50%;left:60%;transform:translate(-50%,-50%);background:var(--gd);color:#fff;border-radius:16px;padding:1.1rem 1.4rem;text-align:center;box-shadow:0 8px 28px rgba(28,58,40,.25);z-index:5"><strong style="font-family:var(--serif);font-size:2.2rem;display:block;color:var(--gold)">${g('ab-exp')}</strong><span style="font-size:.75rem;opacity:.75">ani de experiență</span></div>
+        <div style="width:55%;height:240px;border-radius:20px;overflow:hidden;position:absolute;bottom:0;right:0;border:5px solid var(--w);box-shadow:0 12px 40px rgba(28,58,40,.12)"><img src="${g('ab2-img')}" alt="Lucrari amenajare gradina" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
+      </div>
+      <div>
+        <div class="sl">Despre ${g('g-name')}</div>
+        <h2 class="st">${g('ab-title')}</h2>
+        <p style="color:var(--tm);line-height:1.8;font-weight:300;margin-bottom:1rem">${g('ab-p1')}</p>
+        <p style="color:var(--tm);line-height:1.8;font-weight:300;margin-bottom:1.5rem">${g('ab-p2')}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:2rem">${featsHtml}</div>
+        <a href="despre-noi.html" class="btn-green">Despre noi →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--gd)">
+  <div class="container">
+    <div class="sh"><div class="sl" style="color:var(--gold)">Recenzii clienți</div><h2 class="st" style="color:#fff">Ce spun clienții noștri</h2></div>
+    <div class="testi-grid">${testiCards}</div>
+  </div>
+</section>
+
+<section style="background:var(--el)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center">
+      <div>
+        <div class="sl">Contactează-ne</div>
+        <h2 style="font-family:var(--serif);font-size:2.2rem;color:var(--gd);margin-bottom:.75rem">Cauți un specialist în amenajarea grădinii?</h2>
+        <p style="color:var(--tm);font-weight:300;line-height:1.75;margin-bottom:2rem">Dă-ne câteva detalii despre proiectul tău și te vom contacta cu o ofertă personalizată și gratuită.</p>
+        <div style="display:flex;flex-direction:column;gap:1.25rem">
+          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📍</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Adresă</strong><span style="font-size:.9rem">${g('g-address')}</span></div></div>
+          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📞</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Telefon</strong><a href="tel:${g('g-phone-link')}" style="color:var(--td);font-size:.9rem">${g('g-phone')}</a></div></div>
+          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">✉️</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Email</strong><a href="mailto:${g('g-email')}" style="color:var(--td);font-size:.9rem">${g('g-email')}</a></div></div>
+          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🕐</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Program</strong><span style="font-size:.9rem">${g('g-hours')}</span></div></div>
+        </div>
+      </div>
+      ${getContactForm('')}
+    </div>
+  </div>
+</section>
+` + getFooter('');
+}
+
+function genAbout() {
+  const featsHtml = features.map(f=>`<div style="display:flex;align-items:center;gap:.75rem;background:var(--w);border:1px solid rgba(28,58,40,.07);border-radius:12px;padding:.85rem 1rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:8px;height:8px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>${f}</div>`).join('');
+
+  return getHead('Despre noi','despre-noi.html') + getTopbar() + getNav('despre') + `
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Despre noi</span></div>
+    <div class="page-hero-badge">👥 Echipa noastră</div>
+    <h1>${g('ab-title')}</h1>
+    <p>${g('ab-p1')}</p>
+  </div>
+</section>
+
+<section style="background:var(--w)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start">
+      <div style="position:relative;height:520px">
+        <div style="width:80%;height:400px;border-radius:20px;overflow:hidden;position:absolute;top:0;left:0"><img src="${g('ab1-img')}" alt="Echipa ${g('g-name')}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
+        <div style="position:absolute;top:50%;left:62%;transform:translate(-50%,-50%);background:var(--gd);color:#fff;border-radius:16px;padding:1.2rem 1.6rem;text-align:center;box-shadow:0 8px 28px rgba(28,58,40,.3);z-index:5"><strong style="font-family:var(--serif);font-size:2.4rem;display:block;color:var(--gold)">${g('ab-exp')}</strong><span style="font-size:.78rem;opacity:.7">ani de experiență</span></div>
+        <div style="width:58%;height:260px;border-radius:20px;overflow:hidden;position:absolute;bottom:0;right:0;border:5px solid var(--w);box-shadow:0 12px 40px rgba(28,58,40,.12)"><img src="${g('ab2-img')}" alt="Lucrari amenajare gradina" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
+      </div>
+      <div>
+        <div class="sl">Povestea noastră</div>
+        <h2 class="st">Cine suntem</h2>
+        <p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">${g('ab-p1')}</p>
+        <p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">${g('ab-p2')}</p>
+        <p style="color:var(--tm);line-height:1.8;margin-bottom:2rem">${g('ab-p3')}</p>
+        <a href="contact.html" class="btn-primary" style="margin-right:1rem">Solicită ofertă</a>
+        <a href="servicii.html" class="btn-outline-dark">Serviciile noastre</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--el)">
+  <div class="container">
+    <div class="sh" style="text-align:center;max-width:600px;margin-left:auto;margin-right:auto"><div class="sl">De ce să ne alegi</div><h2 class="st">Avantajele ${g('g-name')}</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">${featsHtml}</div>
+  </div>
+</section>
+
+${getTestiSection()}
+
+<section style="background:var(--el);text-align:center">
+  <div class="container" style="max-width:600px">
+    <div class="sl">Hai să colaborăm</div>
+    <h2 class="st">Gata să îți transformi grădina?</h2>
+    <p class="ss" style="margin:0 auto 2rem">Contactează-ne astăzi pentru o consultanță gratuită la fața locului.</p>
+    <a href="contact.html" class="btn-primary" style="margin-right:1rem">${g('h-btn1')}</a>
+    <a href="tel:${g('g-phone-link')}" class="btn-outline-dark">📞 ${g('g-phone')}</a>
+  </div>
+</section>
+` + getFooter('');
+}
+
+function genServices() {
+  const svAll = services.map(s=>`
+    <div class="service-card">
+      <div class="sv-img"><img src="${s.img}" alt="${s.title}" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">${s.icon}</div><h3>${s.title}</h3><p>${s.desc}</p>
+      <a href="service/${s.file}.html" class="sv-link">Detalii complete →</a></div>
+    </div>`).join('');
+
+  return getHead(g('sv-title'),'servicii.html') + getTopbar() + getNav('servicii') + `
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Servicii</span></div>
+    <div class="page-hero-badge">🌿 Ce oferim</div>
+    <h1>${g('sv-title')}</h1>
+    <p>${g('sv-sub')}</p>
+  </div>
+</section>
+
+<section style="background:var(--el)">
+  <div class="container">
+    <div class="services-grid">${svAll}</div>
+  </div>
+</section>
+
+${getTestiSection()}
+
+<section style="background:var(--el);text-align:center">
+  <div class="container" style="max-width:580px">
+    <div class="sl">Ofertă personalizată</div>
+    <h2 class="st">Nu găsești ce cauți?</h2>
+    <p class="ss" style="margin:0 auto 2rem">Contactează-ne și vom găsi împreună soluția potrivită pentru grădina ta.</p>
+    <a href="contact.html" class="btn-primary">Contactează-ne</a>
+  </div>
+</section>
+` + getFooter('');
+}
+
+function genContact() {
+  const mapSrc = g('ct-map') || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.0!2d26.1!3d44.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1';
+
+  return getHead(g('ct-title'),'contact.html') + getTopbar() + getNav('contact') + `
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Contact</span></div>
+    <div class="page-hero-badge">📞 Suntem la dispoziție</div>
+    <h1>${g('ct-title')}</h1>
+    <p>${g('ct-sub')}</p>
+  </div>
+</section>
+
+<section style="background:var(--el)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start">
+      <div>
+        <div class="sl">Informații contact</div>
+        <h2 style="font-family:var(--serif);font-size:2rem;color:var(--gd);margin-bottom:1.5rem">Dă-ne un semn</h2>
+        <div style="display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2rem">
+          <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📍</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Adresă</strong><p style="color:var(--td);line-height:1.5">${g('g-address')}</p></div></div>
+          <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📞</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Telefon</strong><a href="tel:${g('g-phone-link')}" style="color:var(--td);font-size:1.05rem;font-weight:500">${g('g-phone')}</a></div></div>
+          <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">✉️</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Email</strong><a href="mailto:${g('g-email')}" style="color:var(--td);font-size:1.05rem;font-weight:500">${g('g-email')}</a></div></div>
+          <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🕐</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Program</strong><p style="color:var(--td)">${g('g-hours')}</p></div></div>
+        </div>
+        <div style="border-radius:16px;overflow:hidden;height:280px;border:1px solid rgba(28,58,40,.1)">
+          <iframe src="${mapSrc}" width="100%" height="280" style="border:0" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+      ${getContactForm('')}
+    </div>
+  </div>
+</section>
+` + getFooter('');
+}
+
+function genServicePage(s, prefix='../') {
+  const others = services.filter(o=>o.file!==s.file).slice(0,3).map(o=>`
+    <div class="service-card" style="flex:1;min-width:220px">
+      <div class="sv-img" style="height:150px"><img src="${prefix}${o.img.startsWith('http')?'':prefix}${o.img}" alt="${o.title}" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">${o.icon}</div><h3>${o.title}</h3><p>${o.desc.substring(0,80)}...</p>
+      <a href="${o.file}.html" class="sv-link">Detalii →</a></div>
+    </div>`).join('');
+
+  const imgSrc = s.img;
+  const fullDesc = (s.fullDesc||s.desc).replace(/\n\n/g,'</p><p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">');
+
+  return getHead(s.title,'service/'+s.file+'.html') + getTopbar('../') + getNav('servicii','../') + `
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">Acasă</a><span>/</span><a href="../servicii.html">Servicii</a><span>/</span><span>${s.title}</span></div>
+    <div class="page-hero-badge">${s.icon} Serviciu premium</div>
+    <h1>${s.title}</h1>
+    <p>${s.desc}</p>
+  </div>
+</section>
+
+<section style="background:var(--w)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:5rem;align-items:start">
+      <div>
+        <img src="${imgSrc}" alt="${s.title}" style="width:100%;border-radius:20px;margin-bottom:2rem;box-shadow:0 12px 40px rgba(28,58,40,.12)" loading="lazy"/>
+        <div style="background:var(--el);border-radius:16px;padding:1.75rem;border:1px solid rgba(28,58,40,.07)">
+          <h3 style="font-family:var(--serif);font-size:1.4rem;color:var(--gd);margin-bottom:1rem">Solicită o ofertă pentru acest serviciu</h3>
+          <p style="color:var(--tm);font-size:.9rem;margin-bottom:1.25rem">Completează formularul sau sună-ne direct. Răspundem în maxim 24 de ore.</p>
+          <a href="../contact.html" class="btn-primary" style="margin-right:.75rem">Solicită ofertă</a>
+          <a href="tel:${g('g-phone-link')}" class="btn-outline-dark">📞 Sună acum</a>
+        </div>
+      </div>
+      <div>
+        <div class="sl">Despre serviciu</div>
+        <h2 class="st">${s.title}</h2>
+        <p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">${fullDesc}</p>
+        <div style="margin-top:2rem;padding:1.5rem;background:var(--gd);border-radius:16px;color:#fff">
+          <div style="font-family:var(--serif);font-size:1.15rem;margin-bottom:.5rem">Ai întrebări?</div>
+          <p style="font-size:.875rem;opacity:.75;margin-bottom:1.25rem">Echipa noastră îți stă la dispoziție pentru orice detaliu.</p>
+          <a href="tel:${g('g-phone-link')}" style="color:var(--gold);font-weight:600;font-size:.9rem">📞 ${g('g-phone')}</a><br/>
+          <a href="mailto:${g('g-email')}" style="color:rgba(255,255,255,.65);font-size:.85rem;margin-top:.35rem;display:block">${g('g-email')}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--el)">
+  <div class="container">
+    <div class="sh"><div class="sl">Mai multe servicii</div><h2 class="st">Explorează și celelalte servicii</h2></div>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap">${others}</div>
+    <div style="text-align:center;margin-top:2.5rem"><a href="../servicii.html" class="btn-green">Toate serviciile →</a></div>
+  </div>
+</section>
+` + getFooter('../');
+}
+
+// ── RENDER PREVIEW ───────────────────────────────────────────
+function renderPreview() {
+  let html = '';
+  if(currentPage==='index') html=genIndex();
+  else if(currentPage==='despre-noi') html=genAbout();
+  else if(currentPage==='servicii') html=genServices();
+  else if(currentPage==='contact') html=genContact();
+  else if(currentPage.startsWith('sv')) {
+    const idx=parseInt(currentPage.replace('sv',''));
+    if(services[idx]) html=genServicePage(services[idx]);
+  }
+  if(html) document.getElementById('preview').srcdoc=html;
+}
+
+let updateTimer;
+function update() {
+  clearTimeout(updateTimer);
+  updateTimer=setTimeout(()=>{ renderPreview(); saveState(); }, 350);
+}
+
+// ── SAVE/RESTORE ─────────────────────────────────────────────
+function saveState() {
+  try{localStorage.setItem('ep2_sv',JSON.stringify(services));localStorage.setItem('ep2_ts',JSON.stringify(testis));localStorage.setItem('ep2_ft',JSON.stringify(features));}catch(e){}
+}
+function loadState() {
+  try{
+    const sv=localStorage.getItem('ep2_sv'); if(sv)services=JSON.parse(sv);
+    const ts=localStorage.getItem('ep2_ts'); if(ts)testis=JSON.parse(ts);
+    const ft=localStorage.getItem('ep2_ft'); if(ft)features=JSON.parse(ft);
+  }catch(e){}
+}
+
+// ── RESET ────────────────────────────────────────────────────
+function resetAll() {
+  if(!confirm('Resetezi toate modificările?')) return;
+  localStorage.removeItem('ep2_sv');localStorage.removeItem('ep2_ts');localStorage.removeItem('ep2_ft');
+  location.reload();
+}
+
+// ── EXPORT MENU ──────────────────────────────────────────────
+function showExportMenu() {
+  // rebuild service buttons dynamically
+  document.getElementById('sv-export-btns').innerHTML = services.map((s,i)=>
+    `<button class="export-item" onclick="exportFile('sv${i}')">  ${s.icon} ${s.file}.html</button>`
+  ).join('');
+  const menu = document.getElementById('export-menu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('#export-menu') && !e.target.closest('#export-btn')) {
+    document.getElementById('export-menu').style.display = 'none';
+  }
+});
+
+function downloadHTML(filename, content) {
+  const blob = new Blob([content], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function placeholderPage(title) {
+  return getHead(title,'') + getTopbar() + getNav('','') +
+    `<section class="page-hero"><div class="container"><h1>${title}</h1><p>Conținut în curs de redactare.</p></div></section>` +
+    getFooter('');
+}
+
+function exportFile(type) {
+  document.getElementById('export-menu').style.display = 'none';
+  if(type === 'index')            { downloadHTML('index.html', genIndex()); showToast('✓ index.html descărcat → pune-l în folderul rădăcină'); }
+  else if(type === 'despre-noi') { downloadHTML('despre-noi.html', genAbout()); showToast('✓ despre-noi.html descărcat'); }
+  else if(type === 'servicii')   { downloadHTML('servicii.html', genServices()); showToast('✓ servicii.html descărcat'); }
+  else if(type === 'contact')    { downloadHTML('contact.html', genContact()); showToast('✓ contact.html descărcat'); }
+  else if(type === 'confidentialitate') { downloadHTML('politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate')); showToast('✓ descărcat'); }
+  else if(type === 'cookies')    { downloadHTML('politica-de-cookies.html', placeholderPage('Politica de Cookies')); showToast('✓ descărcat'); }
+  else if(type.startsWith('sv')) {
+    const idx = parseInt(type.replace('sv',''));
+    const s = services[idx];
+    if(s) { downloadHTML(s.file+'.html', genServicePage(s,'../')); showToast(`✓ ${s.file}.html descărcat → pune-l în folderul /service/`); }
+  }
+}
+
+async function exportAllSequential() {
+  document.getElementById('export-menu').style.display = 'none';
+  showToast('⏳ Descărcare fișiere... acceptă fiecare în browser!', 6000);
+  const files = [
+    ['index.html', genIndex()],
+    ['despre-noi.html', genAbout()],
+    ['servicii.html', genServices()],
+    ['contact.html', genContact()],
+    ['politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate')],
+    ['politica-de-cookies.html', placeholderPage('Politica de Cookies')],
+    ...services.map(s => [s.file+'.html', genServicePage(s,'../')]),
+  ];
+  for(let i=0; i<files.length; i++) {
+    await new Promise(res => setTimeout(res, 600));
+    downloadHTML(files[i][0], files[i][1]);
+  }
+  setTimeout(()=> showToast('✓ Toate fișierele descărcate! Vezi instrucțiunile de mai jos.', 5000), files.length*600+200);
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+function showToast(msg,dur=4000) {
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+loadState();
+renderServicesList();
+renderTestiList();
+renderFeaturesList();
+update();
+</script>
+</body>
+</html>
