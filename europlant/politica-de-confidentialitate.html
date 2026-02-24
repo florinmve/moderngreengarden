@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Politica de Confidențialitate – EuroPlant</title>
+<title>Politica de Confidențialitate – ModernGreenGarden</title>
 <meta name="description" content="Politica de confidențialitate a EuroPlant – protejăm datele tale personale."/>
 <link rel="canonical" href="https://florinmve.github.io/moderngreengarden/europlant/politica-de-confidentialitate.html"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -87,44 +87,34 @@ textarea{resize:none;height:90px}
 .breadcrumb a{color:rgba(255,255,255,.5)}
 .breadcrumb a:hover{color:var(--gold)}
 .breadcrumb span{color:rgba(255,255,255,.3)}
-@media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr;gap:2rem}.testi-grid{grid-template-columns:1fr}}
-.hamburger{display:none;font-size:1.5rem;cursor:pointer;color:var(--gd);padding:.25rem}
-#menu-toggle{display:none}
-@media(max-width:768px){
-[style*="grid-template-columns:1fr 1fr"][style*="gap:4rem"],[style*="grid-template-columns:1fr 1fr"][style*="gap:5rem"],[style*="grid-template-columns:1.2fr 1fr"]{grid-template-columns:1fr!important;gap:2rem!important}
-[style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr 1fr!important}
-[style*="height:480px"][style*="position:relative"],[style*="height:520px"][style*="position:relative"]{height:auto!important}
-[style*="height:480px"]>[style*="position:absolute"],[style*="height:520px"]>[style*="position:absolute"]{position:relative!important;width:100%!important;top:auto!important;left:auto!important;bottom:auto!important;right:auto!important;transform:none!important}
-[style*="width:75%;height:380px"],[style*="width:80%;height:400px"]{width:100%!important;height:250px!important;margin-bottom:1rem!important}
-[style*="width:55%;height:240px"],[style*="width:58%;height:260px"]{width:100%!important;height:200px!important;border:none!important}
-[style*="position:absolute;top:50%;left:60%"],[style*="position:absolute;top:50%;left:62%"]{position:static!important;margin:1rem 0!important;display:inline-block!important;transform:none!important}
-[style*="min-height:92vh"]{min-height:auto!important}
-[style*="position:absolute;top:1.5rem;left:-1.5rem"]{display:none!important}
-section[style*="min-height:92vh"] .container>div:first-child{order:2}
-section[style*="min-height:92vh"] .container>div:last-child{order:1}
-}
-@media(max-width:600px){
-nav{position:relative}
-.hamburger{display:block}
-.nav-links{display:none!important;position:absolute;top:72px;left:0;right:0;background:var(--w);flex-direction:column;padding:1rem 2rem;box-shadow:0 4px 20px rgba(28,58,40,.1);z-index:99}
-#menu-toggle:checked~.nav-links{display:flex!important}
-.nav-links a{padding:.6rem 0;display:block}
-.services-grid{grid-template-columns:1fr}
-.topbar-inner{flex-direction:column;text-align:center}
-.topbar-right{justify-content:center}
-[style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr!important}
-[style*="grid-template-columns:1fr 1fr;gap:.85rem"]{grid-template-columns:1fr!important}
-}</style>
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.about-grid-start{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.contact-grid-start{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.service-detail-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:5rem;align-items:start}
+.features-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.features-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem}
+.stats-row{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2.5rem;border-top:1px solid rgba(255,255,255,.1)}
+.about-images{position:relative;height:480px}
+.about-images-tall{position:relative;height:520px}
+.other-services{display:flex;gap:1.5rem;flex-wrap:wrap}
+.menu-toggle{display:none}
+.menu-btn{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;padding:4px}
+.menu-btn span{display:block;height:2.5px;background:var(--gd);border-radius:2px;transition:transform .3s,opacity .3s}
+@media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr;gap:2rem}.testi-grid{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}.about-grid,.about-grid-start{grid-template-columns:1fr}.contact-grid,.contact-grid-start{grid-template-columns:1fr}.service-detail-grid{grid-template-columns:1fr}.features-grid-3{grid-template-columns:1fr 1fr}.about-images,.about-images-tall{height:auto;position:static}.about-images>div,.about-images-tall>div{position:static!important;transform:none!important;width:100%!important;height:auto!important;margin-bottom:1rem}.about-images img,.about-images-tall img{height:auto!important;aspect-ratio:16/10}section{padding:3.5rem 0}.page-hero{padding:3.5rem 0 2.5rem}}
+@media(max-width:600px){.services-grid{grid-template-columns:1fr}.menu-btn{display:flex}.nav-links{display:none;position:fixed;top:0;left:0;width:100%;height:100vh;background:var(--w);flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:200}.menu-toggle:checked~.nav-links{display:flex}.nav-links a{font-size:1.1rem;padding:.6rem 1.2rem}.features-grid-3,.features-grid-2{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.stats-row{flex-direction:column;gap:1.5rem}.container{padding:0 1rem}section{padding:2.5rem 0}.topbar-inner{font-size:.7rem;flex-direction:column;gap:.35rem;text-align:center}input[type=text],input[type=tel],input[type=email],select,textarea{font-size:1rem}.other-services{flex-direction:column}.other-services .service-card{min-width:0}.hero-grid{gap:2rem}}</style>
 <link rel="icon" href="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/favicon.ico" type="image/x-icon"/>
-<meta property="og:title" content="Politica de Confidențialitate – EuroPlant"/>
+<meta property="og:title" content="Politica de Confidențialitate – ModernGreenGarden"/>
 <meta property="og:description" content="Politica de confidențialitate a EuroPlant – protejăm datele tale personale."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://florinmve.github.io/moderngreengarden/europlant/politica-de-confidentialitate.html"/>
 <meta property="og:locale" content="ro_RO"/>
 <meta name="twitter:card" content="summary"/>
 
-</head><body><div class="topbar"><div class="topbar-inner"><div><span>📍 Str. Cap. P. Ispirescu, nr. 24, București</span>&nbsp;&nbsp;<span>🕐 Luni–Vineri: 08:00–17:00</span></div><div class="topbar-right"><a href="tel:+40773885119">📞 +40 773 885 119</a><a href="mailto:vveuroplant@gmail.com">✉ vveuroplant@gmail.com</a></div></div></div><header><nav><a href="index.html" class="logo">Modern<span>GreenGarden</span></a><input type="checkbox" id="menu-toggle"/><label for="menu-toggle" class="hamburger">&#9776;</label><ul class="nav-links"><li><a href="index.html">Acasă</a></li><li><a href="despre-noi.html">Despre noi</a></li><li><a href="servicii.html">Servicii</a></li><li><a href="contact.html">Contact</a></li><li><a href="contact.html" class="nav-cta">Solicită ofertă</a></li></ul></nav></header><section class="page-hero"><div class="container"><h1>Politica de Confidențialitate</h1><p>Conținut în curs de redactare.</p></div></section><footer><div class="container"><div class="footer-grid">
-    <div class="footer-brand"><a href="index.html" class="footer-logo">Modern<span>GreenGarden</span></a><p>EuroPlant — servicii profesionale de grădinărit și peisagistică în București. Peste 10+ ani de experiență.</p></div>
+</head><body><div class="topbar"><div class="topbar-inner"><div><span>📍 Str. Cap. P. Ispirescu, nr. 24, București</span>&nbsp;&nbsp;<span>🕐 Luni–Vineri: 08:00–17:00</span></div><div class="topbar-right"><a href="tel:+40773364853">📞 +40 773 364 853</a><a href="mailto:moderngreengarden@gmail.com">✉ moderngreengarden@gmail.com</a></div></div></div><header><nav><a href="index.html" class="logo">Modern<span>GreenGarden</span></a><input type="checkbox" id="menu-toggle" class="menu-toggle"/><label for="menu-toggle" class="menu-btn"><span></span><span></span><span></span></label><ul class="nav-links"><li><a href="index.html">Acasă</a></li><li><a href="despre-noi.html">Despre noi</a></li><li><a href="servicii.html">Servicii</a></li><li><a href="contact.html">Contact</a></li><li><a href="contact.html" class="nav-cta">Solicită ofertă</a></li></ul></nav></header><section class="page-hero"><div class="container"><h1>Politica de Confidențialitate</h1><p>Conținut în curs de redactare.</p></div></section><footer><div class="container"><div class="footer-grid">
+    <div class="footer-brand"><a href="index.html" class="footer-logo">Modern<span>GreenGarden</span></a><p>ModernGreenGarden — servicii profesionale de grădinărit și peisagistică în București. Peste 10+ ani de experiență.</p></div>
     <div class="footer-col"><h4>Servicii</h4><ul><li><a href="sisteme-irigatii.html">Sisteme de irigații automatizate</a></li><li><a href="gazon-rulou.html">Gazon rulou și plantare gazon</a></li><li><a href="amenajari-gradini.html">Amenajări grădini și spații verzi</a></li><li><a href="intretinere-gradini.html">Întreținere grădini și spații verzi</a></li><li><a href="consultanta-proiectare.html">Consultanță și proiectare</a></li><li><a href="lucrari-sezon.html">Lucrări de sezon</a></li></ul></div>
     <div class="footer-col"><h4>Utile</h4><ul>
       <li><a href="despre-noi.html">Despre noi</a></li>
@@ -134,6 +124,6 @@ nav{position:relative}
     </ul></div>
   </div>
   <div class="footer-bottom">
-    <span>© 2025 EuroPlant – Amenajări Grădini & Sisteme Irigații București.</span>
+    <span>© 2025 ModernGreenGarden – Amenajări Grădini & Sisteme Irigații București.</span>
     <div class="footer-legal"><a href="politica-de-confidentialitate.html">Confidențialitate</a><a href="politica-de-cookies.html">Cookies</a></div>
-  </div></div></footer></body></html>
+  </div></div></footer><script>document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>{document.getElementById('menu-toggle').checked=false}))</script></body></html>
