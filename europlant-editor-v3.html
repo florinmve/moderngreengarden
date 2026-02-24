@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>EuroPlant – Editor Complet</title>
+<title>ModernGreenGarden – Editor Complet</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -103,7 +103,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
 
 <div class="topbar">
   <div class="tl">
-    <div class="logo-ed">Euro<span>Plant</span> <span style="color:var(--muted);font-weight:300">Editor Pro</span></div>
+    <div class="logo-ed">Modern<span>GreenGarden</span> <span style="color:var(--muted);font-weight:300">Editor Pro</span></div>
     <div class="badge-ed">MULTI-PAGE</div>
   </div>
   <div class="tr">
@@ -145,10 +145,23 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
     <!-- GLOBAL -->
     <div class="section-panel active" id="panel-global">
       <div class="group-title">🏢 Companie</div>
-      <div class="field-group"><div class="field-label">Denumire companie</div><input type="text" id="g-name" value="EuroPlant" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Logo – partea 1</div><input type="text" id="g-logo1" value="Euro" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Logo – partea 2 (accent)</div><input type="text" id="g-logo2" value="Plant" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Denumire companie</div><input type="text" id="g-name" value="ModernGreenGarden" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Logo – partea 1</div><input type="text" id="g-logo1" value="Modern" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Logo – partea 2 (accent)</div><input type="text" id="g-logo2" value="GreenGarden" oninput="update()"/></div>
       <div class="field-group"><div class="field-label">Slogan scurt</div><input type="text" id="g-slogan" value="Amenajări Grădini & Sisteme Irigații" oninput="update()"/></div>
+      <div class="divider"></div>
+      <div class="group-title">🖼 Logo SVG (opțional)</div>
+      <p style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;line-height:1.5">Încarcă un SVG pentru a înlocui logo-ul text. Lasă gol pentru logo text.</p>
+      <div class="image-field">
+        <div class="image-preview-wrap" style="height:50px;background:var(--surface2)"><img id="prev-logo-svg" src="" alt="" style="object-fit:contain;padding:.25rem"/></div>
+        <div class="image-actions">
+          <label class="btn-img" for="up-logo-svg">📁 Încarcă SVG</label>
+          <input type="file" id="up-logo-svg" accept=".svg,image/svg+xml" onchange="handleLogoSvgUpload(this)"/>
+          <div class="btn-img" onclick="promptLogoSvgUrl()">🔗 URL</div>
+          <div class="btn-img" onclick="clearLogoSvg()" style="color:var(--danger)">✕ Șterge</div>
+        </div>
+        <input type="hidden" id="logo-svg" value=""/>
+      </div>
       <div class="divider"></div>
       <div class="group-title">📞 Contact (apare peste tot)</div>
       <div class="field-group"><div class="field-label">Adresă</div><input type="text" id="g-address" value="Str. Cap. P. Ispirescu, nr. 24, București" oninput="update()"/></div>
@@ -205,7 +218,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
     <div class="section-panel" id="panel-about">
       <div class="group-title">👥 Pagina Despre Noi</div>
       <div class="field-group"><div class="field-label">Titlu principal</div><input type="text" id="ab-title" value="O echipă de profesioniști dedicați grădinii tale" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Paragraful 1</div><textarea id="ab-p1" oninput="update()">EuroPlant este formată dintr-o echipă profesionistă, dinamică și deschisă la idei noi, temeinic pregătită în domeniul amenajării grădinilor și spațiilor verzi exterioare.</textarea></div>
+      <div class="field-group"><div class="field-label">Paragraful 1</div><textarea id="ab-p1" oninput="update()">ModernGreenGarden este formată dintr-o echipă profesionistă, dinamică și deschisă la idei noi, temeinic pregătită în domeniul amenajării grădinilor și spațiilor verzi exterioare.</textarea></div>
       <div class="field-group"><div class="field-label">Paragraful 2</div><textarea id="ab-p2" oninput="update()">Comercializăm, livrăm și plantăm la prețuri avantajoase o gamă foarte largă de arbuști, arbori și conifere. Suntem la dispoziția ta în orice moment pentru a-ți satisface cele mai diverse dorințe și nevoi legate de grădina ta.</textarea></div>
       <div class="field-group"><div class="field-label">Paragraful 3</div><textarea id="ab-p3" oninput="update()">Fiecare proiect este tratat cu maximă atenție la detalii, de la consultanța inițială și proiectarea 2D/3D, până la execuție și întreținere continuă. Calitatea și satisfacția clientului sunt prioritatea noastră.</textarea></div>
       <div class="field-group"><div class="field-label">Ani experiență (badge)</div><input type="text" id="ab-exp" value="10+" oninput="update()"/></div>
@@ -240,7 +253,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
     <div class="section-panel" id="panel-services">
       <div class="group-title">🌿 Titlu secțiune servicii</div>
       <div class="field-group"><div class="field-label">Titlu pagină servicii</div><input type="text" id="sv-title" value="Servicii profesionale de grădinărit" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Subtitlu</div><textarea id="sv-sub" oninput="update()">De la proiectare și amenajare, până la întreținere continuă — EuroPlant este partenerul tău de încredere pentru orice nevoie a grădinii tale.</textarea></div>
+      <div class="field-group"><div class="field-label">Subtitlu</div><textarea id="sv-sub" oninput="update()">De la proiectare și amenajare, până la întreținere continuă — ModernGreenGarden este partenerul tău de încredere pentru orice nevoie a grădinii tale.</textarea></div>
       <div class="divider"></div>
       <div class="group-title">📋 Carduri servicii</div>
       <div id="services-list"></div>
@@ -324,14 +337,14 @@ let services = [
   {icon:'🌳',title:'Amenajări grădini și spații verzi',desc:'Amenajăm grădini și curți cu plante ornamentale, iazuri, cascade decorative și grădini japoneze. Prestări servicii peisagistice complete.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service6-370x210.jpg',file:'amenajari-gradini',fullDesc:'Transformăm orice spațiu exterior într-o grădină de vis, personalizată după gustul și nevoile tale. De la grădini clasice cu flori și arbuști ornamentali, la grădini moderne minimaliste, grădini japoneze zen sau spații cu iazuri și cascade decorative.\n\nFiecare proiect începe cu o consultanță gratuită la fața locului, urmată de un plan 2D/3D detaliat. Folosim exclusiv plante de calitate superioară, adaptate climei din București.'},
   {icon:'✂️',title:'Întreținere grădini și spații verzi',desc:'Menținem sănătatea și aspectul estetic al grădinii tale — tundere gazon, fertilizare, aerare, erbicidare și îngrijire plante ornamentale.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service4-370x210.jpg',file:'intretinere-gradini',fullDesc:'O grădină frumoasă necesită îngrijire constantă și specializată. Oferim contracte de întreținere lunare, trimestriale sau anuale, adaptate la nevoile grădinii tale.\n\nServiciile de întreținere includ: tunderea și fertilizarea gazonului, aerarea periodică, combaterea buruienilor și dăunătorilor, îngrijirea plantelor ornamentale, tăierea și formarea arbuștilor, curățarea sezonieră și orice alte lucrări necesare pentru menținerea aspectului perfect al grădinii tale.'},
   {icon:'📐',title:'Consultanță și proiectare',desc:'Realizăm planuri 2D și 3D personalizate ale grădinii tale, adaptate nevoilor plantelor, gazonului și preferințelor estetice.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/proiectare-3d-amenajare-gradina-bucuresti-370x210.jpg',file:'consultanta-proiectare',fullDesc:'Înainte de a realiza orice lucrare, concepem un plan detaliat al grădinii tale. Consultanța inițială este gratuită și include vizita unui specialist la fața locului, analiza terenului, tipului de sol și condițiilor de lumină.\n\nPlanul 2D sau 3D al grădinii este realizat cu software profesional de design peisagistic și include: amplasarea plantelor, sistemul de irigații, iluminatul, aleile și orice alte elemente decorative. Vizualizarea 3D îți permite să vezi cum va arăta grădina ta înainte de a începe lucrările.'},
-  {icon:'🍂',title:'Lucrări de sezon',desc:'Scarificarea gazonului, acoperirea plantelor sensibile la îngheț, tăierea pomilor, plantări de primăvară și toamnă și multe altele.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/lucrari-sezoniere-intretinere-gradini-bucuresti-370x210.jpg',file:'lucrari-sezon',fullDesc:'Fiecare anotimp aduce nevoi specifice pentru grădina ta. Echipa EuroPlant intervine la momentul potrivit cu lucrările specifice fiecărui sezon.\n\nPrimăvara: curățarea generală, scarificarea gazonului, plantări, fertilizare de start. Vara: udare, tundere, combatere dăunători. Toamna: pregătire pentru iarnă, plantări de bulbi, tăieri de formare. Iarna: protejarea plantelor sensibile, tăieri de corecție la pomi fructiferi, planificare pentru sezonul următor.'},
+  {icon:'🍂',title:'Lucrări de sezon',desc:'Scarificarea gazonului, acoperirea plantelor sensibile la îngheț, tăierea pomilor, plantări de primăvară și toamnă și multe altele.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/lucrari-sezoniere-intretinere-gradini-bucuresti-370x210.jpg',file:'lucrari-sezon',fullDesc:'Fiecare anotimp aduce nevoi specifice pentru grădina ta. Echipa ModernGreenGarden intervine la momentul potrivit cu lucrările specifice fiecărui sezon.\n\nPrimăvara: curățarea generală, scarificarea gazonului, plantări, fertilizare de start. Vara: udare, tundere, combatere dăunători. Toamna: pregătire pentru iarnă, plantări de bulbi, tăieri de formare. Iarna: protejarea plantelor sensibile, tăieri de corecție la pomi fructiferi, planificare pentru sezonul următor.'},
 ];
 
 let testis = [
-  {name:'Ioana Ignat',city:'București',text:'Am apelat la alte 3 firme înainte să dau de băieții de la EuroPlant. Toți mi-au spus că suprafața e prea mică pentru montaj gazon rulou (aprox. 70 mp). Am sunat la EuroPlant și în 1 zi aveam grădina gata. Bravo pentru rapiditate și profesionalism!'},
-  {name:'Costel Dumitru',city:'București',text:'Foarte mulțumit de echipa EuroPlant — prețuri super și au realizat o grădină extraordinară. Recomand 100%!'},
-  {name:'Cristi Voicu',city:'Otopeni',text:'Vrei o grădină frumoasă amenajată după criterii științifice și estetice? Ai găsit soluția! Apreciez profesionalismul și dedicația echipei EuroPlant.'},
-  {name:'Florin Împușcatu',city:'București',text:'Recomand EuroPlant cu toată încrederea! Servicii de calitate, punctualitate și rezultate care depășesc așteptările.'},
+  {name:'Ioana Ignat',city:'București',text:'Am apelat la alte 3 firme înainte să dau de băieții de la ModernGreenGarden. Toți mi-au spus că suprafața e prea mică pentru montaj gazon rulou (aprox. 70 mp). Am sunat la ModernGreenGarden și în 1 zi aveam grădina gata. Bravo pentru rapiditate și profesionalism!'},
+  {name:'Costel Dumitru',city:'București',text:'Foarte mulțumit de echipa ModernGreenGarden — prețuri super și au realizat o grădină extraordinară. Recomand 100%!'},
+  {name:'Cristi Voicu',city:'Otopeni',text:'Vrei o grădină frumoasă amenajată după criterii științifice și estetice? Ai găsit soluția! Apreciez profesionalismul și dedicația echipei ModernGreenGarden.'},
+  {name:'Florin Împușcatu',city:'București',text:'Recomand ModernGreenGarden cu toată încrederea! Servicii de calitate, punctualitate și rezultate care depășesc așteptările.'},
 ];
 
 let features = [
@@ -386,6 +399,26 @@ function handleUpload(input, hiddenId, previewId) {
 function promptUrl(hiddenId, previewId) {
   const url = prompt('Introdu URL-ul imaginii:');
   if(url) { document.getElementById(hiddenId).value=url; document.getElementById(previewId).src=url; update(); }
+}
+
+function handleLogoSvgUpload(input) {
+  const file = input.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    document.getElementById('logo-svg').value = e.target.result;
+    document.getElementById('prev-logo-svg').src = e.target.result;
+    update();
+  };
+  r.readAsDataURL(file);
+}
+function promptLogoSvgUrl() {
+  const url = prompt('Introdu URL-ul SVG logo:');
+  if(url) { document.getElementById('logo-svg').value = url; document.getElementById('prev-logo-svg').src = url; update(); }
+}
+function clearLogoSvg() {
+  document.getElementById('logo-svg').value = '';
+  document.getElementById('prev-logo-svg').src = '';
+  update();
 }
 
 // ── FEATURES ─────────────────────────────────────────────────
@@ -544,7 +577,7 @@ textarea{resize:none;height:90px}
 .menu-btn{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;padding:4px}
 .menu-btn span{display:block;height:2.5px;background:var(--gd);border-radius:2px;transition:transform .3s,opacity .3s}
 @media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr;gap:2rem}.testi-grid{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}.about-grid,.about-grid-start{grid-template-columns:1fr}.contact-grid,.contact-grid-start{grid-template-columns:1fr}.service-detail-grid{grid-template-columns:1fr}.features-grid-3{grid-template-columns:1fr 1fr}.about-images,.about-images-tall{height:auto;position:static}.about-images>div,.about-images-tall>div{position:static!important;transform:none!important;width:100%!important;height:auto!important;margin-bottom:1rem}.about-images img,.about-images-tall img{height:auto!important;aspect-ratio:16/10}section{padding:3.5rem 0}.page-hero{padding:3.5rem 0 2.5rem}}
-@media(max-width:600px){.services-grid{grid-template-columns:1fr}.menu-btn{display:flex}.nav-links{display:none;position:fixed;top:0;left:0;width:100%;height:100vh;background:var(--w);flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:200}.menu-toggle:checked~.nav-links{display:flex}.nav-links a{font-size:1.1rem;padding:.6rem 1.2rem}.features-grid-3,.features-grid-2{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.stats-row{flex-direction:column;gap:1.5rem}.container{padding:0 1rem}section{padding:2.5rem 0}.topbar-inner{font-size:.7rem;flex-direction:column;gap:.35rem;text-align:center}input[type=text],input[type=tel],input[type=email],select,textarea{font-size:1rem}.other-services{flex-direction:column}.other-services .service-card{min-width:0}.hero-grid{gap:2rem}}`;
+@media(max-width:600px){.services-grid{grid-template-columns:1fr}.menu-btn{display:flex}.nav-links{display:none;position:fixed;top:0;left:0;width:100%;height:100vh;background:var(--w);flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:200}.menu-toggle:checked~.nav-links{display:flex}.nav-links a{font-size:1.1rem;padding:.6rem 1.2rem}.features-grid-3,.features-grid-2{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.stats-row{flex-direction:column;gap:1.5rem}.container{padding:0 1rem}section{padding:2.5rem 0}.topbar-inner{font-size:.7rem;flex-direction:column;gap:.35rem;text-align:center}input[type=text],input[type=tel],input[type=email],select,textarea{font-size:1rem}.other-services{flex-direction:column}.other-services .service-card{min-width:0}.hero-grid{gap:2rem}.menu-toggle:checked~.menu-btn span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}.menu-toggle:checked~.menu-btn span:nth-child(2){opacity:0}.menu-toggle:checked~.menu-btn span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}.menu-toggle:checked~.menu-btn{position:fixed;top:18px;right:2rem;z-index:201}.btn-primary,.btn-outline-dark,.btn-green{margin-bottom:.75rem}}`;
 }
 
 // ── SHARED PARTIALS ──────────────────────────────────────────
@@ -587,13 +620,21 @@ function getNav(activePage) {
     {href:'contact.html',label:'Contact',id:'contact'},
   ];
   const linksHtml = links.map(l=>`<li><a href="${l.href}"${activePage===l.id?' class="active-link"':''}>${l.label}</a></li>`).join('');
-  return `<header><nav><a href="index.html" class="logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><input type="checkbox" id="menu-toggle" class="menu-toggle"/><label for="menu-toggle" class="menu-btn"><span></span><span></span><span></span></label><ul class="nav-links">${linksHtml}<li><a href="contact.html" class="nav-cta">${g('g-nav-cta')}</a></li></ul></nav></header>`;
+  const logoSvg = g('logo-svg');
+  const logoHtml = logoSvg
+    ? `<img src="${logoSvg}" alt="${g('g-name')}" style="height:44px;width:auto"/>`
+    : `${g('g-logo1')}<span>${g('g-logo2')}</span>`;
+  return `<header><nav><a href="index.html" class="logo">${logoHtml}</a><input type="checkbox" id="menu-toggle" class="menu-toggle"/><label for="menu-toggle" class="menu-btn"><span></span><span></span><span></span></label><ul class="nav-links">${linksHtml}<li><a href="contact.html" class="nav-cta">${g('g-nav-cta')}</a></li></ul></nav></header>`;
 }
 
 function getFooter() {
   const svLinks = services.map(s=>`<li><a href="${s.file}.html">${s.title}</a></li>`).join('');
+  const logoSvg = g('logo-svg');
+  const footerLogoHtml = logoSvg
+    ? `<img src="${logoSvg}" alt="${g('g-name')}" style="height:36px;width:auto"/>`
+    : `${g('g-logo1')}<span>${g('g-logo2')}</span>`;
   return `<footer><div class="container"><div class="footer-grid">
-    <div class="footer-brand"><a href="index.html" class="footer-logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><p>${g('g-name')} — servicii profesionale de grădinărit și peisagistică în București. Peste ${g('ab-exp')} ani de experiență.</p></div>
+    <div class="footer-brand"><a href="index.html" class="footer-logo">${footerLogoHtml}</a><p>${g('g-name')} — servicii profesionale de grădinărit și peisagistică în București. Peste ${g('ab-exp')} ani de experiență.</p></div>
     <div class="footer-col"><h4>Servicii</h4><ul>${svLinks}</ul></div>
     <div class="footer-col"><h4>Utile</h4><ul>
       <li><a href="despre-noi.html">Despre noi</a></li>
@@ -850,7 +891,7 @@ function genContact() {
       "address":{"@type":"PostalAddress","streetAddress":g('g-address'),"addressLocality":"București","addressCountry":"RO"}}
   })}<\/script>`;
 
-  return getHead(g('ct-title'),'contact.html','Contactează EuroPlant pentru o ofertă gratuită de amenajare grădină. Telefon: '+g('g-phone')+'.',jsonLd) + getTopbar() + getNav('contact') + `
+  return getHead(g('ct-title'),'contact.html','Contactează ModernGreenGarden pentru o ofertă gratuită de amenajare grădină. Telefon: '+g('g-phone')+'.',jsonLd) + getTopbar() + getNav('contact') + `
 <section class="page-hero">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Contact</span></div>
@@ -979,20 +1020,21 @@ function update() {
 
 // ── SAVE/RESTORE ─────────────────────────────────────────────
 function saveState() {
-  try{localStorage.setItem('ep2_sv',JSON.stringify(services));localStorage.setItem('ep2_ts',JSON.stringify(testis));localStorage.setItem('ep2_ft',JSON.stringify(features));}catch(e){}
+  try{localStorage.setItem('ep2_sv',JSON.stringify(services));localStorage.setItem('ep2_ts',JSON.stringify(testis));localStorage.setItem('ep2_ft',JSON.stringify(features));localStorage.setItem('ep2_logo',g('logo-svg'));}catch(e){}
 }
 function loadState() {
   try{
     const sv=localStorage.getItem('ep2_sv'); if(sv)services=JSON.parse(sv);
     const ts=localStorage.getItem('ep2_ts'); if(ts)testis=JSON.parse(ts);
     const ft=localStorage.getItem('ep2_ft'); if(ft)features=JSON.parse(ft);
+    const logo=localStorage.getItem('ep2_logo'); if(logo){document.getElementById('logo-svg').value=logo;document.getElementById('prev-logo-svg').src=logo;}
   }catch(e){}
 }
 
 // ── RESET ────────────────────────────────────────────────────
 function resetAll() {
   if(!confirm('Resetezi toate modificările?')) return;
-  localStorage.removeItem('ep2_sv');localStorage.removeItem('ep2_ts');localStorage.removeItem('ep2_ft');
+  localStorage.removeItem('ep2_sv');localStorage.removeItem('ep2_ts');localStorage.removeItem('ep2_ft');localStorage.removeItem('ep2_logo');
   location.reload();
 }
 
@@ -1034,8 +1076,8 @@ function exportFile(type) {
   else if(type === 'despre-noi') { downloadHTML('despre-noi.html', genAbout()); showToast('✓ despre-noi.html descărcat'); }
   else if(type === 'servicii')   { downloadHTML('servicii.html', genServices()); showToast('✓ servicii.html descărcat'); }
   else if(type === 'contact')    { downloadHTML('contact.html', genContact()); showToast('✓ contact.html descărcat'); }
-  else if(type === 'confidentialitate') { downloadHTML('politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a EuroPlant – protejăm datele tale personale.')); showToast('✓ descărcat'); }
-  else if(type === 'cookies')    { downloadHTML('politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a EuroPlant – informații despre utilizarea cookie-urilor pe site.')); showToast('✓ descărcat'); }
+  else if(type === 'confidentialitate') { downloadHTML('politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a ModernGreenGarden – protejăm datele tale personale.')); showToast('✓ descărcat'); }
+  else if(type === 'cookies')    { downloadHTML('politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a ModernGreenGarden – informații despre utilizarea cookie-urilor pe site.')); showToast('✓ descărcat'); }
   else if(type.startsWith('sv')) {
     const idx = parseInt(type.replace('sv',''));
     const s = services[idx];
@@ -1051,8 +1093,8 @@ async function exportAllSequential() {
     ['despre-noi.html', genAbout()],
     ['servicii.html', genServices()],
     ['contact.html', genContact()],
-    ['politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a EuroPlant – protejăm datele tale personale.')],
-    ['politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a EuroPlant – informații despre utilizarea cookie-urilor pe site.')],
+    ['politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a ModernGreenGarden – protejăm datele tale personale.')],
+    ['politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a ModernGreenGarden – informații despre utilizarea cookie-urilor pe site.')],
     ...services.map(s => [s.file+'.html', genServicePage(s)]),
   ];
   for(let i=0; i<files.length; i++) {
@@ -1091,8 +1133,8 @@ function getAllFiles() {
     ['despre-noi.html', genAbout()],
     ['servicii.html', genServices()],
     ['contact.html', genContact()],
-    ['politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a EuroPlant – protejăm datele tale personale.')],
-    ['politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a EuroPlant – informații despre utilizarea cookie-urilor pe site.')],
+    ['politica-de-confidentialitate.html', placeholderPage('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate a ModernGreenGarden – protejăm datele tale personale.')],
+    ['politica-de-cookies.html', placeholderPage('Politica de Cookies','politica-de-cookies.html','Politica de cookies a ModernGreenGarden – informații despre utilizarea cookie-urilor pe site.')],
     ...services.map(s => [s.file+'.html', genServicePage(s)]),
     ['robots.txt', getRobotsTxt()],
     ['sitemap.xml', getSitemapXml()],
