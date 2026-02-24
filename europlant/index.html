@@ -88,7 +88,33 @@ textarea{resize:none;height:90px}
 .breadcrumb a:hover{color:var(--gold)}
 .breadcrumb span{color:rgba(255,255,255,.3)}
 @media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr;gap:2rem}.testi-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.services-grid{grid-template-columns:1fr}.nav-links{display:none}}</style>
+.hamburger{display:none;font-size:1.5rem;cursor:pointer;color:var(--gd);padding:.25rem}
+#menu-toggle{display:none}
+@media(max-width:768px){
+[style*="grid-template-columns:1fr 1fr"][style*="gap:4rem"],[style*="grid-template-columns:1fr 1fr"][style*="gap:5rem"],[style*="grid-template-columns:1.2fr 1fr"]{grid-template-columns:1fr!important;gap:2rem!important}
+[style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr 1fr!important}
+[style*="height:480px"][style*="position:relative"],[style*="height:520px"][style*="position:relative"]{height:auto!important}
+[style*="height:480px"]>[style*="position:absolute"],[style*="height:520px"]>[style*="position:absolute"]{position:relative!important;width:100%!important;top:auto!important;left:auto!important;bottom:auto!important;right:auto!important;transform:none!important}
+[style*="width:75%;height:380px"],[style*="width:80%;height:400px"]{width:100%!important;height:250px!important;margin-bottom:1rem!important}
+[style*="width:55%;height:240px"],[style*="width:58%;height:260px"]{width:100%!important;height:200px!important;border:none!important}
+[style*="position:absolute;top:50%;left:60%"],[style*="position:absolute;top:50%;left:62%"]{position:static!important;margin:1rem 0!important;display:inline-block!important;transform:none!important}
+[style*="min-height:92vh"]{min-height:auto!important}
+[style*="position:absolute;top:1.5rem;left:-1.5rem"]{display:none!important}
+section[style*="min-height:92vh"] .container>div:first-child{order:2}
+section[style*="min-height:92vh"] .container>div:last-child{order:1}
+}
+@media(max-width:600px){
+nav{position:relative}
+.hamburger{display:block}
+.nav-links{display:none!important;position:absolute;top:72px;left:0;right:0;background:var(--w);flex-direction:column;padding:1rem 2rem;box-shadow:0 4px 20px rgba(28,58,40,.1);z-index:99}
+#menu-toggle:checked~.nav-links{display:flex!important}
+.nav-links a{padding:.6rem 0;display:block}
+.services-grid{grid-template-columns:1fr}
+.topbar-inner{flex-direction:column;text-align:center}
+.topbar-right{justify-content:center}
+[style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr!important}
+[style*="grid-template-columns:1fr 1fr;gap:.85rem"]{grid-template-columns:1fr!important}
+}</style>
 <link rel="icon" href="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/favicon.ico" type="image/x-icon"/>
 <meta property="og:title" content="Amenajări Grădini & Sisteme Irigații – EuroPlant"/>
 <meta property="og:description" content="Amenajări profesionale de grădini, sisteme de irigații automatizate, gazon rulou și întreținere spații verzi în București. Solicită ofertă gratuită!"/>
@@ -97,7 +123,7 @@ textarea{resize:none;height:90px}
 <meta property="og:locale" content="ro_RO"/>
 <meta name="twitter:card" content="summary"/>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"EuroPlant","description":"Amenajări profesionale de grădini, sisteme de irigații automatizate, gazon rulou și întreținere spații verzi în București.","url":"https://florinmve.github.io/moderngreengarden/europlant/","telephone":"+40 773 885 119","email":"vveuroplant@gmail.com","address":{"@type":"PostalAddress","streetAddress":"Str. Cap. P. Ispirescu, nr. 24, București","addressLocality":"București","addressCountry":"RO"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"5","reviewCount":"4","bestRating":"5"}}</script>
-</head><body><div class="topbar"><div class="topbar-inner"><div><span>📍 Str. Cap. P. Ispirescu, nr. 24, București</span>&nbsp;&nbsp;<span>🕐 Luni–Vineri: 08:00–17:00</span></div><div class="topbar-right"><a href="tel:+40773885119">📞 +40 773 885 119</a><a href="mailto:vveuroplant@gmail.com">✉ vveuroplant@gmail.com</a></div></div></div><header><nav><a href="index.html" class="logo">Modern<span>GreenGarden</span></a><ul class="nav-links"><li><a href="index.html" class="active-link">Acasă</a></li><li><a href="despre-noi.html">Despre noi</a></li><li><a href="servicii.html">Servicii</a></li><li><a href="contact.html">Contact</a></li><li><a href="contact.html" class="nav-cta">Solicită ofertă</a></li></ul></nav></header>
+</head><body><div class="topbar"><div class="topbar-inner"><div><span>📍 Str. Cap. P. Ispirescu, nr. 24, București</span>&nbsp;&nbsp;<span>🕐 Luni–Vineri: 08:00–17:00</span></div><div class="topbar-right"><a href="tel:+40773885119">📞 +40 773 885 119</a><a href="mailto:vveuroplant@gmail.com">✉ vveuroplant@gmail.com</a></div></div></div><header><nav><a href="index.html" class="logo">Modern<span>GreenGarden</span></a><input type="checkbox" id="menu-toggle"/><label for="menu-toggle" class="hamburger">&#9776;</label><ul class="nav-links"><li><a href="index.html" class="active-link">Acasă</a></li><li><a href="despre-noi.html">Despre noi</a></li><li><a href="servicii.html">Servicii</a></li><li><a href="contact.html">Contact</a></li><li><a href="contact.html" class="nav-cta">Solicită ofertă</a></li></ul></nav></header>
 <section style="min-height:92vh;background:var(--gd);position:relative;overflow:hidden;display:flex;align-items:center">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 70% 50%,rgba(74,140,92,.18) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 20% 80%,rgba(201,166,84,.08) 0%,transparent 50%)"></div>
   <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative;z-index:2;padding-top:3rem;padding-bottom:3rem">

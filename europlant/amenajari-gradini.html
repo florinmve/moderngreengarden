@@ -88,7 +88,33 @@ textarea{resize:none;height:90px}
 .breadcrumb a:hover{color:var(--gold)}
 .breadcrumb span{color:rgba(255,255,255,.3)}
 @media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr;gap:2rem}.testi-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.services-grid{grid-template-columns:1fr}.nav-links{display:none}}</style>
+.hamburger{display:none;font-size:1.5rem;cursor:pointer;color:var(--gd);padding:.25rem}
+#menu-toggle{display:none}
+@media(max-width:768px){
+[style*="grid-template-columns:1fr 1fr"][style*="gap:4rem"],[style*="grid-template-columns:1fr 1fr"][style*="gap:5rem"],[style*="grid-template-columns:1.2fr 1fr"]{grid-template-columns:1fr!important;gap:2rem!important}
+[style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr 1fr!important}
+[style*="height:480px"][style*="position:relative"],[style*="height:520px"][style*="position:relative"]{height:auto!important}
+[style*="height:480px"]>[style*="position:absolute"],[style*="height:520px"]>[style*="position:absolute"]{position:relative!important;width:100%!important;top:auto!important;left:auto!important;bottom:auto!important;right:auto!important;transform:none!important}
+[style*="width:75%;height:380px"],[style*="width:80%;height:400px"]{width:100%!important;height:250px!important;margin-bottom:1rem!important}
+[style*="width:55%;height:240px"],[style*="width:58%;height:260px"]{width:100%!important;height:200px!important;border:none!important}
+[style*="position:absolute;top:50%;left:60%"],[style*="position:absolute;top:50%;left:62%"]{position:static!important;margin:1rem 0!important;display:inline-block!important;transform:none!important}
+[style*="min-height:92vh"]{min-height:auto!important}
+[style*="position:absolute;top:1.5rem;left:-1.5rem"]{display:none!important}
+section[style*="min-height:92vh"] .container>div:first-child{order:2}
+section[style*="min-height:92vh"] .container>div:last-child{order:1}
+}
+@media(max-width:600px){
+nav{position:relative}
+.hamburger{display:block}
+.nav-links{display:none!important;position:absolute;top:72px;left:0;right:0;background:var(--w);flex-direction:column;padding:1rem 2rem;box-shadow:0 4px 20px rgba(28,58,40,.1);z-index:99}
+#menu-toggle:checked~.nav-links{display:flex!important}
+.nav-links a{padding:.6rem 0;display:block}
+.services-grid{grid-template-columns:1fr}
+.topbar-inner{flex-direction:column;text-align:center}
+.topbar-right{justify-content:center}
+[style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr!important}
+[style*="grid-template-columns:1fr 1fr;gap:.85rem"]{grid-template-columns:1fr!important}
+}</style>
 <link rel="icon" href="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/favicon.ico" type="image/x-icon"/>
 <meta property="og:title" content="Amenajări grădini și spații verzi – EuroPlant"/>
 <meta property="og:description" content="Amenajăm grădini și curți cu plante ornamentale, iazuri, cascade decorative și grădini japoneze. Prestări servicii peisagistice complete."/>
@@ -98,7 +124,7 @@ textarea{resize:none;height:90px}
 <meta name="twitter:card" content="summary"/>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Amenajări grădini și spații verzi","description":"Amenajăm grădini și curți cu plante ornamentale, iazuri, cascade decorative și grădini japoneze. Prestări servicii peisagistice complete.","provider":{"@type":"LocalBusiness","name":"EuroPlant","telephone":"+40 773 885 119"},"areaServed":{"@type":"City","name":"București"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Acasă","item":"https://florinmve.github.io/moderngreengarden/europlant/index.html"},{"@type":"ListItem","position":2,"name":"Servicii","item":"https://florinmve.github.io/moderngreengarden/europlant/servicii.html"},{"@type":"ListItem","position":3,"name":"Amenajări grădini și spații verzi","item":"https://florinmve.github.io/moderngreengarden/europlant/amenajari-gradini.html"}]}</script>
-</head><body><div class="topbar"><div class="topbar-inner"><div><span>📍 Str. Cap. P. Ispirescu, nr. 24, București</span>&nbsp;&nbsp;<span>🕐 Luni–Vineri: 08:00–17:00</span></div><div class="topbar-right"><a href="tel:+40773885119">📞 +40 773 885 119</a><a href="mailto:vveuroplant@gmail.com">✉ vveuroplant@gmail.com</a></div></div></div><header><nav><a href="index.html" class="logo">Modern<span>GreenGarden</span></a><ul class="nav-links"><li><a href="index.html">Acasă</a></li><li><a href="despre-noi.html">Despre noi</a></li><li><a href="servicii.html" class="active-link">Servicii</a></li><li><a href="contact.html">Contact</a></li><li><a href="contact.html" class="nav-cta">Solicită ofertă</a></li></ul></nav></header>
+</head><body><div class="topbar"><div class="topbar-inner"><div><span>📍 Str. Cap. P. Ispirescu, nr. 24, București</span>&nbsp;&nbsp;<span>🕐 Luni–Vineri: 08:00–17:00</span></div><div class="topbar-right"><a href="tel:+40773885119">📞 +40 773 885 119</a><a href="mailto:vveuroplant@gmail.com">✉ vveuroplant@gmail.com</a></div></div></div><header><nav><a href="index.html" class="logo">Modern<span>GreenGarden</span></a><input type="checkbox" id="menu-toggle"/><label for="menu-toggle" class="hamburger">&#9776;</label><ul class="nav-links"><li><a href="index.html">Acasă</a></li><li><a href="despre-noi.html">Despre noi</a></li><li><a href="servicii.html" class="active-link">Servicii</a></li><li><a href="contact.html">Contact</a></li><li><a href="contact.html" class="nav-cta">Solicită ofertă</a></li></ul></nav></header>
 <section class="page-hero">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><a href="servicii.html">Servicii</a><span>/</span><span>Amenajări grădini și spații verzi</span></div>
