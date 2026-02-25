@@ -597,6 +597,7 @@ function getHead(title, pageName, metaDesc, ogExtra) {
 <meta name="description" content="${desc}"/>
 <link rel="canonical" href="${pageUrl}"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://www.europlant-amenajari-gradini.ro"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>${getCSS(d,m,l,go,w,e)}</style>
 <link rel="icon" href="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/favicon.ico" type="image/x-icon"/>
@@ -788,7 +789,14 @@ function genIndex() {
 function genAbout() {
   const featsHtml = features.map(f=>`<div style="display:flex;align-items:center;gap:.75rem;background:var(--w);border:1px solid rgba(28,58,40,.07);border-radius:12px;padding:.85rem 1rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:8px;height:8px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>${f}</div>`).join('');
 
-  return getHead('Despre noi','despre-noi.html','Echipă profesionistă cu peste 10 ani de experiență în amenajarea grădinilor și spațiilor verzi din București.') + getTopbar() + getNav('despre') + `
+  const breadcrumbLd = `<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Acasă","item":"https://florinmve.github.io/moderngreengarden/europlant/index.html"},
+      {"@type":"ListItem","position":2,"name":"Despre noi","item":"https://florinmve.github.io/moderngreengarden/europlant/despre-noi.html"}
+    ]
+  })}<\/script>`;
+
+  return getHead('Despre noi','despre-noi.html','Echipă profesionistă cu peste 10 ani de experiență în amenajarea grădinilor și spațiilor verzi din București.',breadcrumbLd) + getTopbar() + getNav('despre') + `
 <section class="page-hero">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Despre noi</span></div>
@@ -852,6 +860,11 @@ function genServices() {
     "@context":"https://schema.org","@type":"Service","serviceType":"Amenajări grădini și peisagistică",
     "provider":{"@type":"LocalBusiness","name":g('g-name'),"telephone":g('g-phone')},
     "areaServed":{"@type":"City","name":"București"}
+  })}<\/script>` + `<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Acasă","item":"https://florinmve.github.io/moderngreengarden/europlant/index.html"},
+      {"@type":"ListItem","position":2,"name":"Servicii","item":"https://florinmve.github.io/moderngreengarden/europlant/servicii.html"}
+    ]
   })}<\/script>`;
 
   return getHead(g('sv-title'),'servicii.html','Servicii complete de grădinărit: sisteme irigații, gazon rulou, amenajări grădini, întreținere, consultanță și lucrări de sezon în București.',jsonLd) + getTopbar() + getNav('servicii') + `
@@ -891,6 +904,11 @@ function genContact() {
     "url":"https://florinmve.github.io/moderngreengarden/europlant/contact.html",
     "mainEntity":{"@type":"LocalBusiness","name":g('g-name'),"telephone":g('g-phone'),"email":g('g-email'),
       "address":{"@type":"PostalAddress","streetAddress":g('g-address'),"addressLocality":"București","addressCountry":"RO"}}
+  })}<\/script>` + `<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Acasă","item":"https://florinmve.github.io/moderngreengarden/europlant/index.html"},
+      {"@type":"ListItem","position":2,"name":"Contact","item":"https://florinmve.github.io/moderngreengarden/europlant/contact.html"}
+    ]
   })}<\/script>`;
 
   return getHead(g('ct-title'),'contact.html','Contactează ModernGreenGarden pentru o ofertă gratuită de amenajare grădină. Telefon: '+g('g-phone')+'.',jsonLd) + getTopbar() + getNav('contact') + `
@@ -916,7 +934,7 @@ function genContact() {
           <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🕐</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Program</strong><p style="color:var(--td)">${g('g-hours')}</p></div></div>
         </div>
         <div style="border-radius:16px;overflow:hidden;height:280px;border:1px solid rgba(28,58,40,.1)">
-          <iframe src="${mapSrc}" width="100%" height="280" style="border:0" allowfullscreen loading="lazy"></iframe>
+          <iframe src="${mapSrc}" width="100%" height="280" style="border:0" allowfullscreen loading="lazy" title="Hartă locație ${g('g-name')}"></iframe>
         </div>
       </div>
       ${getContactForm()}
@@ -1022,7 +1040,15 @@ function update() {
 
 // ── SAVE/RESTORE ─────────────────────────────────────────────
 function saveState() {
-  try{localStorage.setItem('ep2_sv',JSON.stringify(services));localStorage.setItem('ep2_ts',JSON.stringify(testis));localStorage.setItem('ep2_ft',JSON.stringify(features));localStorage.setItem('ep2_logo',g('logo-svg'));}catch(e){}
+  try{
+    localStorage.setItem('ep2_sv',JSON.stringify(services));localStorage.setItem('ep2_ts',JSON.stringify(testis));localStorage.setItem('ep2_ft',JSON.stringify(features));localStorage.setItem('ep2_logo',g('logo-svg'));
+    const fields={};
+    document.querySelectorAll('#panel-global input[type=text],#panel-global input[type=tel],#panel-global input[type=email],#panel-global input[type=url],#panel-global textarea,#panel-home input[type=text],#panel-home textarea,#panel-about input[type=text],#panel-about textarea,#panel-services input[type=text],#panel-services textarea,#panel-contact input[type=text],#panel-contact textarea,#panel-colors input[type=color],#panel-colors input[type=text]').forEach(el=>{
+      if(el.id) fields[el.id]=el.value;
+    });
+    ['hero-img','ab1-img','ab2-img'].forEach(id=>fields[id]=g(id));
+    localStorage.setItem('ep2_fields',JSON.stringify(fields));
+  }catch(e){}
 }
 function loadState() {
   try{
@@ -1030,13 +1056,28 @@ function loadState() {
     const ts=localStorage.getItem('ep2_ts'); if(ts)testis=JSON.parse(ts);
     const ft=localStorage.getItem('ep2_ft'); if(ft)features=JSON.parse(ft);
     const logo=localStorage.getItem('ep2_logo'); if(logo){document.getElementById('logo-svg').value=logo;document.getElementById('prev-logo-svg').src=logo;}
+    const fd=localStorage.getItem('ep2_fields');
+    if(fd){
+      const fields=JSON.parse(fd);
+      Object.entries(fields).forEach(([id,val])=>{
+        const el=document.getElementById(id);
+        if(el) el.value=val;
+      });
+      ['col-deep','col-mid','col-light','col-gold','col-white','col-earth'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.value=fields[id]||el.value;
+      });
+      if(fields['hero-img']) document.getElementById('prev-hero').src=fields['hero-img'];
+      if(fields['ab1-img']) document.getElementById('prev-ab1').src=fields['ab1-img'];
+      if(fields['ab2-img']) document.getElementById('prev-ab2').src=fields['ab2-img'];
+    }
   }catch(e){}
 }
 
 // ── RESET ────────────────────────────────────────────────────
 function resetAll() {
   if(!confirm('Resetezi toate modificările?')) return;
-  localStorage.removeItem('ep2_sv');localStorage.removeItem('ep2_ts');localStorage.removeItem('ep2_ft');localStorage.removeItem('ep2_logo');
+  localStorage.removeItem('ep2_sv');localStorage.removeItem('ep2_ts');localStorage.removeItem('ep2_ft');localStorage.removeItem('ep2_logo');localStorage.removeItem('ep2_fields');
   location.reload();
 }
 
