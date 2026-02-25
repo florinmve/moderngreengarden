@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>EuroPlant – Editor Complet</title>
+<title>ModernGreenGarden – Editor Complet</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
@@ -102,7 +102,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
 
 <div class="topbar">
   <div class="tl">
-    <div class="logo-ed">Euro<span>Plant</span> <span style="color:var(--muted);font-weight:300">Editor Pro</span></div>
+    <div class="logo-ed">Modern<span>GreenGarden</span> <span style="color:var(--muted);font-weight:300">Editor Pro</span></div>
     <div class="badge-ed">MULTI-PAGE</div>
   </div>
   <div class="tr">
@@ -128,9 +128,9 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
     <!-- GLOBAL -->
     <div class="section-panel active" id="panel-global">
       <div class="group-title">🏢 Companie</div>
-      <div class="field-group"><div class="field-label">Denumire companie</div><input type="text" id="g-name" value="EuroPlant" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Logo – partea 1</div><input type="text" id="g-logo1" value="Euro" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Logo – partea 2 (accent)</div><input type="text" id="g-logo2" value="Plant" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Denumire companie</div><input type="text" id="g-name" value="ModernGreenGarden" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Logo – partea 1</div><input type="text" id="g-logo1" value="Modern" oninput="update()"/></div>
+      <div class="field-group"><div class="field-label">Logo – partea 2 (accent)</div><input type="text" id="g-logo2" value="GreenGarden" oninput="update()"/></div>
       <div class="field-group"><div class="field-label">Slogan scurt</div><input type="text" id="g-slogan" value="Amenajări Grădini & Sisteme Irigații" oninput="update()"/></div>
       <div class="divider"></div>
       <div class="group-title">📞 Contact (apare peste tot)</div>
@@ -192,7 +192,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
     <div class="section-panel" id="panel-about">
       <div class="group-title">👥 Pagina Despre Noi</div>
       <div class="field-group"><div class="field-label">Titlu principal</div><input type="text" id="ab-title" value="O echipă de profesioniști dedicați grădinii tale" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Paragraful 1</div><textarea id="ab-p1" oninput="update()">EuroPlant este formată dintr-o echipă profesionistă, dinamică și deschisă la idei noi, temeinic pregătită în domeniul amenajării grădinilor și spațiilor verzi exterioare.</textarea></div>
+      <div class="field-group"><div class="field-label">Paragraful 1</div><textarea id="ab-p1" oninput="update()">ModernGreenGarden este formată dintr-o echipă profesionistă, dinamică și deschisă la idei noi, temeinic pregătită în domeniul amenajării grădinilor și spațiilor verzi exterioare.</textarea></div>
       <div class="field-group"><div class="field-label">Paragraful 2</div><textarea id="ab-p2" oninput="update()">Comercializăm, livrăm și plantăm la prețuri avantajoase o gamă foarte largă de arbuști, arbori și conifere. Suntem la dispoziția ta în orice moment pentru a-ți satisface cele mai diverse dorințe și nevoi legate de grădina ta.</textarea></div>
       <div class="field-group"><div class="field-label">Paragraful 3</div><textarea id="ab-p3" oninput="update()">Fiecare proiect este tratat cu maximă atenție la detalii, de la consultanța inițială și proiectarea 2D/3D, până la execuție și întreținere continuă. Calitatea și satisfacția clientului sunt prioritatea noastră.</textarea></div>
       <div class="field-group"><div class="field-label">Ani experiență (badge)</div><input type="text" id="ab-exp" value="10+" oninput="update()"/></div>
@@ -227,7 +227,7 @@ input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:po
     <div class="section-panel" id="panel-services">
       <div class="group-title">🌿 Titlu secțiune servicii</div>
       <div class="field-group"><div class="field-label">Titlu pagină servicii</div><input type="text" id="sv-title" value="Servicii profesionale de grădinărit" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Subtitlu</div><textarea id="sv-sub" oninput="update()">De la proiectare și amenajare, până la întreținere continuă — EuroPlant este partenerul tău de încredere pentru orice nevoie a grădinii tale.</textarea></div>
+      <div class="field-group"><div class="field-label">Subtitlu</div><textarea id="sv-sub" oninput="update()">De la proiectare și amenajare, până la întreținere continuă — ModernGreenGarden este partenerul tău de încredere pentru orice nevoie a grădinii tale.</textarea></div>
       <div class="divider"></div>
       <div class="group-title">📋 Carduri servicii</div>
       <div id="services-list"></div>
@@ -311,14 +311,14 @@ let services = [
   {icon:'🌳',title:'Amenajări grădini și spații verzi',desc:'Amenajăm grădini și curți cu plante ornamentale, iazuri, cascade decorative și grădini japoneze. Prestări servicii peisagistice complete.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service6-370x210.jpg',file:'amenajari-gradini',fullDesc:'Transformăm orice spațiu exterior într-o grădină de vis, personalizată după gustul și nevoile tale. De la grădini clasice cu flori și arbuști ornamentali, la grădini moderne minimaliste, grădini japoneze zen sau spații cu iazuri și cascade decorative.\n\nFiecare proiect începe cu o consultanță gratuită la fața locului, urmată de un plan 2D/3D detaliat. Folosim exclusiv plante de calitate superioară, adaptate climei din București.'},
   {icon:'✂️',title:'Întreținere grădini și spații verzi',desc:'Menținem sănătatea și aspectul estetic al grădinii tale — tundere gazon, fertilizare, aerare, erbicidare și îngrijire plante ornamentale.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service4-370x210.jpg',file:'intretinere-gradini',fullDesc:'O grădină frumoasă necesită îngrijire constantă și specializată. Oferim contracte de întreținere lunare, trimestriale sau anuale, adaptate la nevoile grădinii tale.\n\nServiciile de întreținere includ: tunderea și fertilizarea gazonului, aerarea periodică, combaterea buruienilor și dăunătorilor, îngrijirea plantelor ornamentale, tăierea și formarea arbuștilor, curățarea sezonieră și orice alte lucrări necesare pentru menținerea aspectului perfect al grădinii tale.'},
   {icon:'📐',title:'Consultanță și proiectare',desc:'Realizăm planuri 2D și 3D personalizate ale grădinii tale, adaptate nevoilor plantelor, gazonului și preferințelor estetice.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/proiectare-3d-amenajare-gradina-bucuresti-370x210.jpg',file:'consultanta-proiectare',fullDesc:'Înainte de a realiza orice lucrare, concepem un plan detaliat al grădinii tale. Consultanța inițială este gratuită și include vizita unui specialist la fața locului, analiza terenului, tipului de sol și condițiilor de lumină.\n\nPlanul 2D sau 3D al grădinii este realizat cu software profesional de design peisagistic și include: amplasarea plantelor, sistemul de irigații, iluminatul, aleile și orice alte elemente decorative. Vizualizarea 3D îți permite să vezi cum va arăta grădina ta înainte de a începe lucrările.'},
-  {icon:'🍂',title:'Lucrări de sezon',desc:'Scarificarea gazonului, acoperirea plantelor sensibile la îngheț, tăierea pomilor, plantări de primăvară și toamnă și multe altele.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/lucrari-sezoniere-intretinere-gradini-bucuresti-370x210.jpg',file:'lucrari-sezon',fullDesc:'Fiecare anotimp aduce nevoi specifice pentru grădina ta. Echipa EuroPlant intervine la momentul potrivit cu lucrările specifice fiecărui sezon.\n\nPrimăvara: curățarea generală, scarificarea gazonului, plantări, fertilizare de start. Vara: udare, tundere, combatere dăunători. Toamna: pregătire pentru iarnă, plantări de bulbi, tăieri de formare. Iarna: protejarea plantelor sensibile, tăieri de corecție la pomi fructiferi, planificare pentru sezonul următor.'},
+  {icon:'🍂',title:'Lucrări de sezon',desc:'Scarificarea gazonului, acoperirea plantelor sensibile la îngheț, tăierea pomilor, plantări de primăvară și toamnă și multe altele.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/lucrari-sezoniere-intretinere-gradini-bucuresti-370x210.jpg',file:'lucrari-sezon',fullDesc:'Fiecare anotimp aduce nevoi specifice pentru grădina ta. Echipa ModernGreenGarden intervine la momentul potrivit cu lucrările specifice fiecărui sezon.\n\nPrimăvara: curățarea generală, scarificarea gazonului, plantări, fertilizare de start. Vara: udare, tundere, combatere dăunători. Toamna: pregătire pentru iarnă, plantări de bulbi, tăieri de formare. Iarna: protejarea plantelor sensibile, tăieri de corecție la pomi fructiferi, planificare pentru sezonul următor.'},
 ];
 
 let testis = [
-  {name:'Ioana Ignat',city:'București',text:'Am apelat la alte 3 firme înainte să dau de băieții de la EuroPlant. Toți mi-au spus că suprafața e prea mică pentru montaj gazon rulou (aprox. 70 mp). Am sunat la EuroPlant și în 1 zi aveam grădina gata. Bravo pentru rapiditate și profesionalism!'},
-  {name:'Costel Dumitru',city:'București',text:'Foarte mulțumit de echipa EuroPlant — prețuri super și au realizat o grădină extraordinară. Recomand 100%!'},
-  {name:'Cristi Voicu',city:'Otopeni',text:'Vrei o grădină frumoasă amenajată după criterii științifice și estetice? Ai găsit soluția! Apreciez profesionalismul și dedicația echipei EuroPlant.'},
-  {name:'Florin Împușcatu',city:'București',text:'Recomand EuroPlant cu toată încrederea! Servicii de calitate, punctualitate și rezultate care depășesc așteptările.'},
+  {name:'Ioana Ignat',city:'București',text:'Am apelat la alte 3 firme înainte să dau de băieții de la ModernGreenGarden. Toți mi-au spus că suprafața e prea mică pentru montaj gazon rulou (aprox. 70 mp). Am sunat la ModernGreenGarden și în 1 zi aveam grădina gata. Bravo pentru rapiditate și profesionalism!'},
+  {name:'Costel Dumitru',city:'București',text:'Foarte mulțumit de echipa ModernGreenGarden — prețuri super și au realizat o grădină extraordinară. Recomand 100%!'},
+  {name:'Cristi Voicu',city:'Otopeni',text:'Vrei o grădină frumoasă amenajată după criterii științifice și estetice? Ai găsit soluția! Apreciez profesionalismul și dedicația echipei ModernGreenGarden.'},
+  {name:'Florin Împușcatu',city:'București',text:'Recomand ModernGreenGarden cu toată încrederea! Servicii de calitate, punctualitate și rezultate care depășesc așteptările.'},
 ];
 
 let features = [
@@ -445,7 +445,7 @@ a{text-decoration:none}
 header{background:var(--w);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(28,58,40,.08)}
 nav{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px}
 .logo{font-family:var(--serif);font-size:1.7rem;font-weight:600;color:var(--gd);letter-spacing:-.02em}
-.logo span{color:var(--gold)}
+.logo span{color:var(--gold)}.logo img{display:block}
 .nav-links{display:flex;list-style:none;gap:.25rem;align-items:center}
 .nav-links a{font-size:.875rem;color:var(--td);padding:.4rem .8rem;border-radius:4px;transition:color .2s,background .2s}
 .nav-links a:hover,.nav-links a.active-link{color:var(--gm);background:var(--gp)}
@@ -487,7 +487,7 @@ section{padding:5rem 0}
 footer{background:#1a2418;color:rgba(255,255,255,.6);padding:4rem 0 2rem}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4rem;margin-bottom:3rem}
 .footer-logo{font-family:var(--serif);font-size:1.5rem;font-weight:600;display:block;margin-bottom:1rem;color:#fff}
-.footer-logo span{color:var(--gold)}
+.footer-logo span{color:var(--gold)}.footer-logo img{display:block}
 .footer-brand p{font-size:.875rem;line-height:1.7;font-weight:300;max-width:280px}
 .footer-col h4{font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:1rem}
 .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
@@ -1165,7 +1165,7 @@ async function exportZip() {
     const blob=await zip.generateAsync({type:'blob'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='europlant-website.zip';
+    a.download='moderngreengarden-website.zip';
     a.click();
     showToast('✓ ZIP descărcat! Dezarhivează și deschide index.html');
   } catch(e) {
