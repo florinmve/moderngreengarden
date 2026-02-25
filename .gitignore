@@ -10,5 +10,8 @@ Desktop.ini
 .vscode/
 .idea/
 
+# Site editor (local only)
+europlant-editor-v3.html
+
 # Generated archives
 *.zip
