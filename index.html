@@ -1,440 +1,15 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>ModernGreenGarden – Editor Complet</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--surface3:#30363d;
-  --border:rgba(255,255,255,0.08);--accent:#3fb950;--accent2:#2ea043;
-  --text:#e6edf3;--muted:#7d8590;--danger:#f85149;--gold:#d29922;
-  --blue:#58a6ff;--sans:'Outfit',sans-serif;--sidebar:380px;
-}
-html,body{height:100%;overflow:hidden}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);display:flex;flex-direction:column}
-
-/* TOPBAR */
-.topbar{height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;flex-shrink:0;gap:1rem}
-.tl{display:flex;align-items:center;gap:.75rem}
-.logo-ed{font-size:.95rem;font-weight:700;color:var(--text)}
-.logo-ed span{color:var(--accent)}
-.badge-ed{background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.25);color:var(--accent);font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.08em}
-.tr{display:flex;align-items:center;gap:.5rem}
-.btn{font-family:var(--sans);font-size:.78rem;font-weight:600;padding:.4rem .9rem;border-radius:7px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.35rem}
-.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
-.btn-ghost:hover{background:var(--surface2);color:var(--text)}
-.btn-export{background:var(--accent);color:#0d1f0e;font-size:.8rem;padding:.45rem 1.1rem}
-.btn-export:hover{background:var(--accent2);box-shadow:0 4px 14px rgba(63,185,80,.3)}
-.btn-preview-page{background:var(--surface2);color:var(--muted);border:1px solid var(--border);font-size:.75rem;padding:.35rem .75rem;border-radius:6px;cursor:pointer;transition:all .15s}
-.btn-preview-page.active,.btn-preview-page:hover{border-color:var(--accent);color:var(--accent)}
-
-/* MAIN */
-.main{display:flex;flex:1;overflow:hidden}
-
-/* SIDEBAR */
-.sidebar{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--border);padding:0 .5rem;scrollbar-width:none;flex-shrink:0}
-.tabs::-webkit-scrollbar{display:none}
-.tab{padding:.65rem .7rem;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;flex-shrink:0}
-.tab:hover{color:var(--text)}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.fields{flex:1;overflow-y:auto;padding:.85rem;scrollbar-width:thin;scrollbar-color:var(--surface2) transparent}
-.fields::-webkit-scrollbar{width:4px}
-.fields::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:4px}
-.section-panel{display:none}
-.section-panel.active{display:block}
-.field-group{margin-bottom:.55rem}
-.field-label{font-size:.67rem;font-weight:700;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;margin-bottom:.28rem;display:flex;align-items:center;gap:.35rem}
-input[type=text],input[type=tel],input[type=email],input[type=url],textarea,select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:.8rem;padding:.45rem .7rem;border-radius:7px;outline:none;transition:border-color .15s;resize:vertical}
-input:focus,textarea:focus,select:focus{border-color:var(--accent)}
-textarea{min-height:62px}
-select{cursor:pointer}
-select option{background:var(--surface2)}
-.divider{height:1px;background:var(--border);margin:.85rem 0}
-.group-title{font-size:.72rem;font-weight:700;color:var(--text);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
-.group-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.image-field{display:flex;flex-direction:column;gap:.35rem}
-.image-preview-wrap{width:100%;height:85px;border-radius:7px;overflow:hidden;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
-.image-preview-wrap img{width:100%;height:100%;object-fit:cover}
-.image-actions{display:flex;gap:.35rem}
-.btn-img{flex:1;font-family:var(--sans);font-size:.68rem;font-weight:600;padding:.35rem .4rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;text-align:center}
-.btn-img:hover{background:var(--surface3);color:var(--text);border-color:var(--accent)}
-input[type=file]{display:none}
-.color-field{display:flex;align-items:center;gap:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:.3rem .7rem}
-input[type=color]{width:26px;height:26px;border:none;border-radius:5px;cursor:pointer;background:none;padding:0;flex-shrink:0}
-.color-hex{font-size:.78rem;color:var(--text);flex:1;background:transparent;border:none;outline:none;font-family:monospace}
-.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
-.card-box{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.75rem;margin-bottom:.65rem}
-.card-box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem}
-.card-box-title{font-size:.72rem;font-weight:700;color:var(--text)}
-.btn-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:.75rem;opacity:.7}
-.btn-del:hover{opacity:1}
-.btn-add{width:100%;font-family:var(--sans);font-size:.75rem;font-weight:600;padding:.4rem;border-radius:7px;border:1px dashed var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;margin-top:.35rem}
-.btn-add:hover{border-color:var(--accent);color:var(--accent)}
-.save-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.save-label{font-size:.7rem;color:var(--muted)}
-.page-selector{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;padding:0 .25rem}
-.page-selector::-webkit-scrollbar{display:none}
-
-/* PREVIEW */
-.preview-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;background:#0a0a0f}
-.preview-toolbar{height:40px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 .85rem;gap:.5rem;flex-shrink:0;overflow-x:auto}
-.preview-toolbar::-webkit-scrollbar{display:none}
-.preview-dots{display:flex;gap:4px;flex-shrink:0}
-.preview-dots span{width:9px;height:9px;border-radius:50%}
-.dot-r{background:#f85149}.dot-y{background:#d29922}.dot-g{background:#3fb950}
-.preview-url{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:.18rem .55rem;font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:80px}
-.device-btns{display:flex;gap:.25rem;margin-left:auto;flex-shrink:0}
-.device-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:.68rem;padding:.18rem .45rem;border-radius:4px;cursor:pointer;transition:all .15s}
-.device-btn.active,.device-btn:hover{border-color:var(--accent);color:var(--accent)}
-.preview-frame-wrap{flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:1.25rem;background:#0a0a0f}
-.preview-frame-wrap iframe{border:none;border-radius:10px;box-shadow:0 20px 80px rgba(0,0,0,.7);transition:width .3s;background:#fff;min-height:900px}
-.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:var(--surface);border:1px solid var(--accent);color:var(--accent);padding:.6rem 1rem;border-radius:9px;font-size:.8rem;font-weight:600;transform:translateY(60px);opacity:0;transition:all .3s;z-index:9999;pointer-events:none}
-.toast.show{transform:translateY(0);opacity:1}
-</style>
-</head>
-<body>
-
-<div class="topbar">
-  <div class="tl">
-    <div class="logo-ed">Modern<span>GreenGarden</span> <span style="color:var(--muted);font-weight:300">Editor Pro</span></div>
-    <div class="badge-ed">MULTI-PAGE</div>
-  </div>
-  <div class="tr">
-    <div class="save-dot"></div><span class="save-label">Auto-salvat</span>
-    <button class="btn btn-ghost" onclick="resetAll()">↺ Reset</button>
-    <button class="btn btn-export" onclick="exportZip()">⬇ Exportă ZIP (toate paginile)</button>
-  </div>
-</div>
-
-<div class="main">
-<div class="sidebar">
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('global')">🌐 Global</div>
-    <div class="tab" onclick="switchTab('home')">🏠 Home</div>
-    <div class="tab" onclick="switchTab('about')">👥 Despre</div>
-    <div class="tab" onclick="switchTab('services')">🌿 Servicii</div>
-    <div class="tab" onclick="switchTab('testi')">⭐ Recenzii</div>
-    <div class="tab" onclick="switchTab('contact')">📞 Contact</div>
-    <div class="tab" onclick="switchTab('colors')">🎨 Culori</div>
-  </div>
-  <div class="fields">
-
-    <!-- GLOBAL -->
-    <div class="section-panel active" id="panel-global">
-      <div class="group-title">🏢 Companie</div>
-      <div class="field-group"><div class="field-label">Denumire companie</div><input type="text" id="g-name" value="ModernGreenGarden" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Logo – partea 1</div><input type="text" id="g-logo1" value="Modern" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Logo – partea 2 (accent)</div><input type="text" id="g-logo2" value="GreenGarden" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Slogan scurt</div><input type="text" id="g-slogan" value="Amenajări Grădini & Sisteme Irigații" oninput="update()"/></div>
-      <div class="divider"></div>
-      <div class="group-title">📞 Contact (apare peste tot)</div>
-      <div class="field-group"><div class="field-label">Adresă</div><input type="text" id="g-address" value="Str. Cap. P. Ispirescu, nr. 24, București" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Telefon (afisat)</div><input type="text" id="g-phone" value="+40 773 885 119" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Telefon (link tel:)</div><input type="text" id="g-phone-link" value="+40773885119" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Email</div><input type="email" id="g-email" value="vveuroplant@gmail.com" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Program</div><input type="text" id="g-hours" value="Luni–Vineri: 08:00–17:00" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">URL site</div><input type="url" id="g-url" value="https://www.europlant-amenajari-gradini.ro/" oninput="update()"/></div>
-      <div class="divider"></div>
-      <div class="group-title">🔗 Navigație</div>
-      <div class="field-group"><div class="field-label">Text buton CTA nav</div><input type="text" id="g-nav-cta" value="Solicită ofertă" oninput="update()"/></div>
-      <div class="divider"></div>
-      <div class="group-title">📊 Integrări (opțional)</div>
-      <div class="field-group"><div class="field-label">Google Analytics ID</div><input type="text" id="g-ga" value="" placeholder="G-XXXXXXXXXX" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Formspree endpoint</div><input type="text" id="g-formspree" value="" placeholder="https://formspree.io/f/xxxxxxxx" oninput="update()"/></div>
-    </div>
-
-    <!-- HOME -->
-    <div class="section-panel" id="panel-home">
-      <div class="group-title">🦸 Hero</div>
-      <div class="field-group"><div class="field-label">Badge hero</div><input type="text" id="h-badge" value="⭐ Peste 10 ani de experiență în București" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Titlu linia 1</div><input type="text" id="h-t1" value="Fă din grădina ta" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Titlu linia 2 (italic auriu)</div><input type="text" id="h-t2" value="oaza ta de relaxare" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Descriere hero</div><textarea id="h-desc" oninput="update()">Amenajare profesională a grădinilor și spațiilor verzi, sisteme de irigații automatizate, gazon rulou și întreținere continuă — totul sub un singur acoperiș.</textarea></div>
-      <div class="stat-row">
-        <div class="field-group"><div class="field-label">Buton 1</div><input type="text" id="h-btn1" value="Solicită ofertă gratuită" oninput="update()"/></div>
-        <div class="field-group"><div class="field-label">Buton 2</div><input type="text" id="h-btn2" value="Vezi serviciile" oninput="update()"/></div>
-      </div>
-      <div class="divider"></div>
-      <div class="group-title">📊 Statistici</div>
-      <div class="stat-row">
-        <div class="field-group"><div class="field-label">Nr. 1</div><input type="text" id="s-n1" value="10+" oninput="update()"/></div>
-        <div class="field-group"><div class="field-label">Label 1</div><input type="text" id="s-l1" value="ani experiență" oninput="update()"/></div>
-      </div>
-      <div class="stat-row">
-        <div class="field-group"><div class="field-label">Nr. 2</div><input type="text" id="s-n2" value="500+" oninput="update()"/></div>
-        <div class="field-group"><div class="field-label">Label 2</div><input type="text" id="s-l2" value="proiecte finalizate" oninput="update()"/></div>
-      </div>
-      <div class="stat-row">
-        <div class="field-group"><div class="field-label">Nr. 3</div><input type="text" id="s-n3" value="100%" oninput="update()"/></div>
-        <div class="field-group"><div class="field-label">Label 3</div><input type="text" id="s-l3" value="clienți mulțumiți" oninput="update()"/></div>
-      </div>
-      <div class="divider"></div>
-      <div class="group-title">🖼 Imagine Hero (card dreapta)</div>
-      <div class="image-field">
-        <div class="image-preview-wrap"><img id="prev-hero" src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/irigatii-automate-bucuresti-europlant.jpg" alt=""/></div>
-        <div class="image-actions">
-          <label class="btn-img" for="up-hero">📁 Încarcă</label>
-          <input type="file" id="up-hero" accept="image/*" onchange="handleUpload(this,'hero-img','prev-hero')"/>
-          <div class="btn-img" onclick="promptUrl('hero-img','prev-hero')">🔗 URL</div>
-        </div>
-        <input type="hidden" id="hero-img" value="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/irigatii-automate-bucuresti-europlant.jpg"/>
-      </div>
-      <div class="field-group" style="margin-top:.5rem"><div class="field-label">Text card hero</div><input type="text" id="h-card" value="Sisteme de irigații automatizate cu senzor de umiditate" oninput="update()"/></div>
-    </div>
-
-    <!-- ABOUT -->
-    <div class="section-panel" id="panel-about">
-      <div class="group-title">👥 Pagina Despre Noi</div>
-      <div class="field-group"><div class="field-label">Titlu principal</div><input type="text" id="ab-title" value="O echipă de profesioniști dedicați grădinii tale" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Paragraful 1</div><textarea id="ab-p1" oninput="update()">ModernGreenGarden este formată dintr-o echipă profesionistă, dinamică și deschisă la idei noi, temeinic pregătită în domeniul amenajării grădinilor și spațiilor verzi exterioare.</textarea></div>
-      <div class="field-group"><div class="field-label">Paragraful 2</div><textarea id="ab-p2" oninput="update()">Comercializăm, livrăm și plantăm la prețuri avantajoase o gamă foarte largă de arbuști, arbori și conifere. Suntem la dispoziția ta în orice moment pentru a-ți satisface cele mai diverse dorințe și nevoi legate de grădina ta.</textarea></div>
-      <div class="field-group"><div class="field-label">Paragraful 3</div><textarea id="ab-p3" oninput="update()">Fiecare proiect este tratat cu maximă atenție la detalii, de la consultanța inițială și proiectarea 2D/3D, până la execuție și întreținere continuă. Calitatea și satisfacția clientului sunt prioritatea noastră.</textarea></div>
-      <div class="field-group"><div class="field-label">Ani experiență (badge)</div><input type="text" id="ab-exp" value="10+" oninput="update()"/></div>
-      <div class="divider"></div>
-      <div class="group-title">✅ Avantaje</div>
-      <div id="features-list"></div>
-      <button class="btn-add" onclick="addFeature()">+ Adaugă avantaj</button>
-      <div class="divider"></div>
-      <div class="group-title">🖼 Imaginea principală</div>
-      <div class="image-field">
-        <div class="image-preview-wrap"><img id="prev-ab1" src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about1.jpg" alt=""/></div>
-        <div class="image-actions">
-          <label class="btn-img" for="up-ab1">📁 Încarcă</label>
-          <input type="file" id="up-ab1" accept="image/*" onchange="handleUpload(this,'ab1-img','prev-ab1')"/>
-          <div class="btn-img" onclick="promptUrl('ab1-img','prev-ab1')">🔗 URL</div>
-        </div>
-        <input type="hidden" id="ab1-img" value="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about1.jpg"/>
-      </div>
-      <div class="group-title" style="margin-top:.75rem">🖼 Imaginea secundară</div>
-      <div class="image-field">
-        <div class="image-preview-wrap"><img id="prev-ab2" src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about2.jpg" alt=""/></div>
-        <div class="image-actions">
-          <label class="btn-img" for="up-ab2">📁 Încarcă</label>
-          <input type="file" id="up-ab2" accept="image/*" onchange="handleUpload(this,'ab2-img','prev-ab2')"/>
-          <div class="btn-img" onclick="promptUrl('ab2-img','prev-ab2')">🔗 URL</div>
-        </div>
-        <input type="hidden" id="ab2-img" value="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about2.jpg"/>
-      </div>
-    </div>
-
-    <!-- SERVICES -->
-    <div class="section-panel" id="panel-services">
-      <div class="group-title">🌿 Titlu secțiune servicii</div>
-      <div class="field-group"><div class="field-label">Titlu pagină servicii</div><input type="text" id="sv-title" value="Servicii profesionale de grădinărit" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Subtitlu</div><textarea id="sv-sub" oninput="update()">De la proiectare și amenajare, până la întreținere continuă — ModernGreenGarden este partenerul tău de încredere pentru orice nevoie a grădinii tale.</textarea></div>
-      <div class="divider"></div>
-      <div class="group-title">📋 Carduri servicii</div>
-      <div id="services-list"></div>
-      <button class="btn-add" onclick="addService()">+ Adaugă serviciu</button>
-    </div>
-
-    <!-- TESTI -->
-    <div class="section-panel" id="panel-testi">
-      <div class="group-title">⭐ Recenzii clienți</div>
-      <div id="testi-list"></div>
-      <button class="btn-add" onclick="addTesti()">+ Adaugă recenzie</button>
-    </div>
-
-    <!-- CONTACT -->
-    <div class="section-panel" id="panel-contact">
-      <div class="group-title">📞 Pagina Contact</div>
-      <div class="field-group"><div class="field-label">Titlu pagină contact</div><input type="text" id="ct-title" value="Contactează-ne" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Subtitlu</div><textarea id="ct-sub" oninput="update()">Suntem aici pentru tine! Lasă-ne un mesaj sau sună-ne direct și îți vom răspunde în cel mai scurt timp cu o ofertă personalizată.</textarea></div>
-      <div class="field-group"><div class="field-label">Text formular</div><input type="text" id="ct-form-title" value="Solicită ofertă gratuită" oninput="update()"/></div>
-      <div class="field-group"><div class="field-label">Subtitlu formular</div><input type="text" id="ct-form-sub" value="Completează formularul și te contactăm în 24 de ore." oninput="update()"/></div>
-      <div class="divider"></div>
-      <div class="group-title">🗺 Google Maps Embed</div>
-      <div class="field-group"><div class="field-label">URL embed hartă (iframe src)</div><textarea id="ct-map" oninput="update()" style="min-height:50px">https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.0!2d26.1!3d44.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDI0JzAwLjAiTiAyNsKwMDYnMDAuMCJF!5e0!3m2!1sro!2sro!4v1620000000000!5m2!1sro!2sro</textarea></div>
-      <p style="font-size:.68rem;color:var(--muted);margin-top:.25rem;line-height:1.5">Mergi la <strong style="color:var(--blue)">maps.google.com</strong> → caută adresa → Share → Embed a map → copiază doar link-ul din src="..."</p>
-    </div>
-
-    <!-- COLORS -->
-    <div class="section-panel" id="panel-colors">
-      <div class="group-title">🎨 Paleta de culori</div>
-      <p style="font-size:.72rem;color:var(--muted);margin-bottom:.85rem;line-height:1.5">Schimbarea acestor culori actualizează întreg site-ul instant.</p>
-      <div class="field-group"><div class="field-label">Verde principal</div>
-        <div class="color-field"><input type="color" id="col-deep" value="#1c3a28" oninput="syncColor(this,'cdh');update()"/><input class="color-hex" type="text" id="cdh" value="#1c3a28" oninput="syncHex(this,'col-deep');update()" maxlength="7"/></div></div>
-      <div class="field-group"><div class="field-label">Verde mediu</div>
-        <div class="color-field"><input type="color" id="col-mid" value="#2e5c3e" oninput="syncColor(this,'cmh');update()"/><input class="color-hex" type="text" id="cmh" value="#2e5c3e" oninput="syncHex(this,'col-mid');update()" maxlength="7"/></div></div>
-      <div class="field-group"><div class="field-label">Verde deschis</div>
-        <div class="color-field"><input type="color" id="col-light" value="#4a8c5c" oninput="syncColor(this,'clh');update()"/><input class="color-hex" type="text" id="clh" value="#4a8c5c" oninput="syncHex(this,'col-light');update()" maxlength="7"/></div></div>
-      <div class="field-group"><div class="field-label">Auriu (accent)</div>
-        <div class="color-field"><input type="color" id="col-gold" value="#c9a654" oninput="syncColor(this,'cgh');update()"/><input class="color-hex" type="text" id="cgh" value="#c9a654" oninput="syncHex(this,'col-gold');update()" maxlength="7"/></div></div>
-      <div class="field-group"><div class="field-label">Fundal pagină</div>
-        <div class="color-field"><input type="color" id="col-white" value="#faf8f4" oninput="syncColor(this,'cwh');update()"/><input class="color-hex" type="text" id="cwh" value="#faf8f4" oninput="syncHex(this,'col-white');update()" maxlength="7"/></div></div>
-      <div class="field-group"><div class="field-label">Fundal secțiuni</div>
-        <div class="color-field"><input type="color" id="col-earth" value="#f5ede0" oninput="syncColor(this,'ceh');update()"/><input class="color-hex" type="text" id="ceh" value="#f5ede0" oninput="syncHex(this,'col-earth');update()" maxlength="7"/></div></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- PREVIEW -->
-<div class="preview-wrap">
-  <div class="preview-toolbar">
-    <div class="preview-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
-    <div class="page-selector">
-      <button class="btn-preview-page active" onclick="setPage('index',this)">🏠 Home</button>
-      <button class="btn-preview-page" onclick="setPage('despre-noi',this)">👥 Despre</button>
-      <button class="btn-preview-page" onclick="setPage('servicii',this)">🌿 Servicii</button>
-      <button class="btn-preview-page" onclick="setPage('contact',this)">📞 Contact</button>
-      <button class="btn-preview-page" onclick="setPage('sv0',this)">💧 Irigații</button>
-      <button class="btn-preview-page" onclick="setPage('sv1',this)">🌿 Gazon</button>
-      <button class="btn-preview-page" onclick="setPage('sv2',this)">🌳 Amenajări</button>
-    </div>
-    <div class="preview-url" id="prev-url">index.html</div>
-    <div class="device-btns">
-      <button class="device-btn active" onclick="setDevice('desktop',this)">🖥</button>
-      <button class="device-btn" onclick="setDevice('tablet',this)">📱</button>
-      <button class="device-btn" onclick="setDevice('mobile',this)">📲</button>
-    </div>
-  </div>
-  <div class="preview-frame-wrap">
-    <iframe id="preview" width="1100" height="900"></iframe>
-  </div>
-</div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ── DATA ──────────────────────────────────────────────────────
-let services = [
-  {icon:'💧',title:'Sisteme de irigații automatizate',desc:'Instalăm sisteme de irigații complet automatizate, echipate cu senzori de umiditate, pentru o udare uniformă și eficientă a grădinii tale.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/sisteme-irigatii-gradini-bucuresti-370x210.jpg',file:'sisteme-irigatii',fullDesc:'Sistemele de irigații automatizate reprezintă soluția ideală pentru menținerea sănătății și frumuseții grădinii tale, indiferent de sezon. Echipa noastră instalează sisteme complete, programabile, echipate cu senzori de umiditate care detectează când solul are nevoie de apă și opresc automat irigarea după ploaie.\n\nFiecare sistem este proiectat personalizat, în funcție de suprafața și tipul de vegetație al grădinii tale. Folosim materiale de calitate premium, cu garanție de 3 ani, de la producători recunoscuți internațional.'},
-  {icon:'🌿',title:'Gazon rulou și plantare gazon',desc:'Realizăm suprafețe gazonate prin însămânțare cu materiale profesionale sau prin montaj de gazon rulou natural, gata în aceeași zi.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2016/06/b1-370x210.jpg',file:'gazon-rulou',fullDesc:'Gazonul rulou este cea mai rapidă soluție pentru o peluzăperfectă. Spre deosebire de însămânțare, gazonul rulou este gata de utilizare imediat după montaj, oferindu-ți rezultate instant.\n\nFolosim gazon cultivat profesional, pe suport de material biodegradabil, care asigură prinderea rapidă și uniformă. Montajul se realizează în maxim o zi, indiferent de suprafață, iar echipa noastră pregătește terenul corespunzător înainte de montaj (nivelare, fertilizare de bază).'},
-  {icon:'🌳',title:'Amenajări grădini și spații verzi',desc:'Amenajăm grădini și curți cu plante ornamentale, iazuri, cascade decorative și grădini japoneze. Prestări servicii peisagistice complete.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service6-370x210.jpg',file:'amenajari-gradini',fullDesc:'Transformăm orice spațiu exterior într-o grădină de vis, personalizată după gustul și nevoile tale. De la grădini clasice cu flori și arbuști ornamentali, la grădini moderne minimaliste, grădini japoneze zen sau spații cu iazuri și cascade decorative.\n\nFiecare proiect începe cu o consultanță gratuită la fața locului, urmată de un plan 2D/3D detaliat. Folosim exclusiv plante de calitate superioară, adaptate climei din București.'},
-  {icon:'✂️',title:'Întreținere grădini și spații verzi',desc:'Menținem sănătatea și aspectul estetic al grădinii tale — tundere gazon, fertilizare, aerare, erbicidare și îngrijire plante ornamentale.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service4-370x210.jpg',file:'intretinere-gradini',fullDesc:'O grădină frumoasă necesită îngrijire constantă și specializată. Oferim contracte de întreținere lunare, trimestriale sau anuale, adaptate la nevoile grădinii tale.\n\nServiciile de întreținere includ: tunderea și fertilizarea gazonului, aerarea periodică, combaterea buruienilor și dăunătorilor, îngrijirea plantelor ornamentale, tăierea și formarea arbuștilor, curățarea sezonieră și orice alte lucrări necesare pentru menținerea aspectului perfect al grădinii tale.'},
-  {icon:'📐',title:'Consultanță și proiectare',desc:'Realizăm planuri 2D și 3D personalizate ale grădinii tale, adaptate nevoilor plantelor, gazonului și preferințelor estetice.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/proiectare-3d-amenajare-gradina-bucuresti-370x210.jpg',file:'consultanta-proiectare',fullDesc:'Înainte de a realiza orice lucrare, concepem un plan detaliat al grădinii tale. Consultanța inițială este gratuită și include vizita unui specialist la fața locului, analiza terenului, tipului de sol și condițiilor de lumină.\n\nPlanul 2D sau 3D al grădinii este realizat cu software profesional de design peisagistic și include: amplasarea plantelor, sistemul de irigații, iluminatul, aleile și orice alte elemente decorative. Vizualizarea 3D îți permite să vezi cum va arăta grădina ta înainte de a începe lucrările.'},
-  {icon:'🍂',title:'Lucrări de sezon',desc:'Scarificarea gazonului, acoperirea plantelor sensibile la îngheț, tăierea pomilor, plantări de primăvară și toamnă și multe altele.',img:'https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/lucrari-sezoniere-intretinere-gradini-bucuresti-370x210.jpg',file:'lucrari-sezon',fullDesc:'Fiecare anotimp aduce nevoi specifice pentru grădina ta. Echipa ModernGreenGarden intervine la momentul potrivit cu lucrările specifice fiecărui sezon.\n\nPrimăvara: curățarea generală, scarificarea gazonului, plantări, fertilizare de start. Vara: udare, tundere, combatere dăunători. Toamna: pregătire pentru iarnă, plantări de bulbi, tăieri de formare. Iarna: protejarea plantelor sensibile, tăieri de corecție la pomi fructiferi, planificare pentru sezonul următor.'},
-];
-
-let testis = [
-  {name:'Ioana Ignat',city:'București',text:'Am apelat la alte 3 firme înainte să dau de băieții de la ModernGreenGarden. Toți mi-au spus că suprafața e prea mică pentru montaj gazon rulou (aprox. 70 mp). Am sunat la ModernGreenGarden și în 1 zi aveam grădina gata. Bravo pentru rapiditate și profesionalism!'},
-  {name:'Costel Dumitru',city:'București',text:'Foarte mulțumit de echipa ModernGreenGarden — prețuri super și au realizat o grădină extraordinară. Recomand 100%!'},
-  {name:'Cristi Voicu',city:'Otopeni',text:'Vrei o grădină frumoasă amenajată după criterii științifice și estetice? Ai găsit soluția! Apreciez profesionalismul și dedicația echipei ModernGreenGarden.'},
-  {name:'Florin Împușcatu',city:'București',text:'Recomand ModernGreenGarden cu toată încrederea! Servicii de calitate, punctualitate și rezultate care depășesc așteptările.'},
-];
-
-let features = [
-  'Echipă certificată și calificată',
-  'Materiale de calitate profesională',
-  'Sisteme irigații cu senzori de umiditate',
-  'Gazon rulou montat în aceeași zi',
-  'Proiecte 2D și 3D personalizate',
-  'Garanție pentru lucrările efectuate',
-];
-
-let currentPage = 'index';
-
-// ── HELPERS ──────────────────────────────────────────────────
-const g = id => document.getElementById(id)?.value || '';
-const syncColor = (inp, hexId) => document.getElementById(hexId).value = inp.value;
-const syncHex = (inp, colorId) => { if(/^#[0-9A-Fa-f]{6}$/.test(inp.value)) document.getElementById(colorId).value = inp.value; };
-
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.section-panel').forEach(p=>p.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('panel-'+name).classList.add('active');
-}
-
-function setPage(name, btn) {
-  document.querySelectorAll('.btn-preview-page').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  currentPage = name;
-  const urls = {index:'index.html','despre-noi':'despre-noi.html',servicii:'servicii.html',contact:'contact.html'};
-  const svUrls = ['service/sisteme-irigatii.html','service/gazon-rulou.html','service/amenajari-gradini.html'];
-  if(name.startsWith('sv')) document.getElementById('prev-url').textContent = svUrls[parseInt(name.replace('sv',''))];
-  else document.getElementById('prev-url').textContent = urls[name]||name+'.html';
-  renderPreview();
-}
-
-function setDevice(type, btn) {
-  document.querySelectorAll('.device-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const iframe = document.getElementById('preview');
-  const w = {desktop:'1100px',tablet:'768px',mobile:'390px'};
-  iframe.style.width = w[type];
-}
-
-function handleUpload(input, hiddenId, previewId) {
-  const file = input.files[0]; if(!file) return;
-  const r = new FileReader();
-  r.onload = e => { document.getElementById(hiddenId).value=e.target.result; document.getElementById(previewId).src=e.target.result; update(); };
-  r.readAsDataURL(file);
-}
-function promptUrl(hiddenId, previewId) {
-  const url = prompt('Introdu URL-ul imaginii:');
-  if(url) { document.getElementById(hiddenId).value=url; document.getElementById(previewId).src=url; update(); }
-}
-
-// ── FEATURES ─────────────────────────────────────────────────
-function renderFeaturesList() {
-  const el = document.getElementById('features-list');
-  el.innerHTML = features.map((f,i)=>`
-    <div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem">
-      <input type="text" value="${f}" oninput="features[${i}]=this.value;update()" style="flex:1"/>
-      <button class="btn-del" onclick="features.splice(${i},1);renderFeaturesList();update()">✕</button>
-    </div>`).join('');
-}
-function addFeature() { features.push('Avantaj nou'); renderFeaturesList(); update(); }
-
-// ── SERVICES ─────────────────────────────────────────────────
-function renderServicesList() {
-  const el = document.getElementById('services-list');
-  el.innerHTML = services.map((s,i)=>`
-    <div class="card-box">
-      <div class="card-box-header"><div class="card-box-title">Serviciu ${i+1}</div><button class="btn-del" onclick="services.splice(${i},1);renderServicesList();update()">✕ Șterge</button></div>
-      <div class="field-group"><div class="field-label">Titlu</div><input type="text" value="${esc(s.title)}" oninput="services[${i}].title=this.value;update()"/></div>
-      <div class="field-group"><div class="field-label">Descriere scurtă (card)</div><textarea oninput="services[${i}].desc=this.value;update()">${esc(s.desc)}</textarea></div>
-      <div class="field-group"><div class="field-label">Descriere completă (pagina serviciului)</div><textarea style="min-height:80px" oninput="services[${i}].fullDesc=this.value;update()">${esc(s.fullDesc||'')}</textarea></div>
-      <div class="stat-row">
-        <div class="field-group"><div class="field-label">Emoji</div><input type="text" value="${s.icon}" oninput="services[${i}].icon=this.value;update()" style="text-align:center"/></div>
-        <div class="field-group"><div class="field-label">Slug URL</div><input type="text" value="${s.file}" oninput="services[${i}].file=this.value;update()"/></div>
-      </div>
-      <div class="field-group"><div class="field-label">Imagine</div>
-        <div class="image-field">
-          <div class="image-preview-wrap" style="height:65px"><img id="prev-sv-${i}" src="${s.img}" alt=""/></div>
-          <div class="image-actions">
-            <label class="btn-img" for="up-sv-${i}">📁 Încarcă</label>
-            <input type="file" id="up-sv-${i}" accept="image/*" onchange="handleSvUp(this,${i})"/>
-            <div class="btn-img" onclick="promptSvUrl(${i})">🔗 URL</div>
-          </div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-function handleSvUp(input,i) {
-  const r=new FileReader(); r.onload=e=>{services[i].img=e.target.result;document.getElementById('prev-sv-'+i).src=e.target.result;update();}; r.readAsDataURL(input.files[0]);
-}
-function promptSvUrl(i) { const u=prompt('URL imagine:'); if(u){services[i].img=u;document.getElementById('prev-sv-'+i).src=u;update();} }
-function addService() { services.push({icon:'🌱',title:'Serviciu nou',desc:'Descriere scurtă.',fullDesc:'Descriere completă.',img:'',file:'serviciu-nou'}); renderServicesList(); update(); }
-
-// ── TESTIMONIALS ─────────────────────────────────────────────
-function renderTestiList() {
-  const el = document.getElementById('testi-list');
-  el.innerHTML = testis.map((t,i)=>`
-    <div class="card-box">
-      <div class="card-box-header"><div class="card-box-title">Recenzie ${i+1}</div><button class="btn-del" onclick="testis.splice(${i},1);renderTestiList();update()">✕</button></div>
-      <div class="field-group"><div class="field-label">Nume</div><input type="text" value="${esc(t.name)}" oninput="testis[${i}].name=this.value;update()"/></div>
-      <div class="field-group"><div class="field-label">Oraș</div><input type="text" value="${esc(t.city)}" oninput="testis[${i}].city=this.value;update()"/></div>
-      <div class="field-group"><div class="field-label">Recenzie</div><textarea oninput="testis[${i}].text=this.value;update()">${esc(t.text)}</textarea></div>
-    </div>`).join('');
-}
-function addTesti() { testis.push({name:'Nume Client',city:'Oraș',text:'Recenzie...'}); renderTestiList(); update(); }
-
-function esc(str) { return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-// ── SHARED CSS ───────────────────────────────────────────────
-function getCSS(deep,mid,light,gold,white,earth) {
-  return `*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--gd:${deep};--gm:${mid};--gl:${light};--gp:${light}22;--el:${earth};--gold:${gold};--w:${white};--td:#1a2418;--tm:#5a6b52;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Outfit',sans-serif}
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Amenajări Grădini & Sisteme Irigații – ModernGreenGarden</title>
+<meta name="description" content="Amenajări profesionale de grădini, sisteme de irigații automatizate, gazon rulou și întreținere spații verzi în București. Solicită ofertă gratuită!"/>
+<link rel="canonical" href="https://moderngarden.ro/index.html"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://www.europlant-amenajari-gradini.ro"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gd:#2a4735;--gm:#2e5c3e;--gl:#4a8c5c;--gp:#4a8c5c22;--el:#f5ede0;--gold:#c9a654;--w:#faf8f4;--td:#1a2418;--tm:#5a6b52;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Outfit',sans-serif}
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--w);color:var(--td);line-height:1.6;overflow-x:hidden}
 a{text-decoration:none}
@@ -445,7 +20,8 @@ a{text-decoration:none}
 header{background:var(--w);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(28,58,40,.08)}
 nav{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px}
 .logo{font-family:var(--serif);font-size:1.7rem;font-weight:600;color:var(--gd);letter-spacing:-.02em}
-.logo span{color:var(--gold)}.logo img{display:block}
+.logo span{color:var(--gold)}
+.logo img{display:block}
 .nav-links{display:flex;list-style:none;gap:.25rem;align-items:center}
 .nav-links a{font-size:.875rem;color:var(--td);padding:.4rem .8rem;border-radius:4px;transition:color .2s,background .2s}
 .nav-links a:hover,.nav-links a.active-link{color:var(--gm);background:var(--gp)}
@@ -487,7 +63,8 @@ section{padding:5rem 0}
 footer{background:#1a2418;color:rgba(255,255,255,.6);padding:4rem 0 2rem}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4rem;margin-bottom:3rem}
 .footer-logo{font-family:var(--serif);font-size:1.5rem;font-weight:600;display:block;margin-bottom:1rem;color:#fff}
-.footer-logo span{color:var(--gold)}.footer-logo img{display:block}
+.footer-logo span{color:var(--gold)}
+.footer-logo img{display:block}
 .footer-brand p{font-size:.875rem;line-height:1.7;font-weight:300;max-width:280px}
 .footer-col h4{font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:1rem}
 .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
@@ -513,205 +90,58 @@ textarea{resize:none;height:90px}
 .breadcrumb a{color:rgba(255,255,255,.5)}
 .breadcrumb a:hover{color:var(--gold)}
 .breadcrumb span{color:rgba(255,255,255,.3)}
-@media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr;gap:2rem}.testi-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.services-grid{grid-template-columns:1fr}.nav-links{display:none}}`;
-}
-
-// ── SHARED PARTIALS ──────────────────────────────────────────
-function getHead(title, path, description, image) {
-  const d=g('col-deep'),m=g('col-mid'),l=g('col-light'),go=g('col-gold'),w=g('col-white'),e=g('col-earth');
-  const siteName=g('g-name');
-  const siteUrl=g('g-url').replace(/\/$/,'');
-  const metaDesc=description||`${g('g-slogan')} în București. ${g('g-phone')}`;
-  const ogImage=image||'';
-  const gaId=g('g-ga');
-  const gaTag=gaId?`<script async src="https://www.googletagmanager.com/gtag/js?id=${gaId}"><\/script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');<\/script>`:'';
-  return `<!DOCTYPE html>
-<html lang="ro" hreflang="ro">
-<head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>${title} – ${siteName}</title>
-<meta name="description" content="${metaDesc}"/>
-<link rel="canonical" href="${siteUrl}/${path}"/>
-<link rel="icon" href="${path.includes('/')?'../':''}favicon.svg"/>
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.about-grid-start{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.contact-grid-start{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.service-detail-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:5rem;align-items:start}
+.features-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.features-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem}
+.stats-row{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2.5rem;border-top:1px solid rgba(255,255,255,.1)}
+.about-images{position:relative;height:480px}
+.about-images-tall{position:relative;height:520px}
+.other-services{display:flex;gap:1.5rem;flex-wrap:wrap}
+.menu-toggle{display:none}
+.menu-btn{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;padding:4px}
+.menu-btn span{display:block;height:2.5px;background:var(--gd);border-radius:2px;transition:transform .3s,opacity .3s}
+@media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr;gap:2rem}.testi-grid{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}.about-grid,.about-grid-start{grid-template-columns:1fr}.contact-grid,.contact-grid-start{grid-template-columns:1fr}.service-detail-grid{grid-template-columns:1fr}.features-grid-3{grid-template-columns:1fr 1fr}.about-images,.about-images-tall{height:auto;position:static}.about-images>div,.about-images-tall>div{position:static!important;transform:none!important;width:100%!important;height:auto!important;margin-bottom:1rem}.about-images img,.about-images-tall img{height:auto!important;aspect-ratio:16/10}section{padding:3.5rem 0}.page-hero{padding:3.5rem 0 2.5rem}}
+@media(max-width:600px){.services-grid{grid-template-columns:1fr}.menu-btn{display:flex}.nav-links{display:none;position:fixed;top:0;left:0;width:100%;height:100vh;background:var(--w);flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:200}.menu-toggle:checked~.nav-links{display:flex}.nav-links a{font-size:1.1rem;padding:.6rem 1.2rem}.features-grid-3,.features-grid-2{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.stats-row{flex-direction:column;gap:1.5rem}.container{padding:0 1rem}section{padding:2.5rem 0}.topbar-inner{font-size:.7rem;flex-direction:column;gap:.35rem;text-align:center}input[type=text],input[type=tel],input[type=email],select,textarea{font-size:1rem}.other-services{flex-direction:column}.other-services .service-card{min-width:0}.hero-grid{gap:2rem}.menu-toggle:checked~.menu-btn span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}.menu-toggle:checked~.menu-btn span:nth-child(2){opacity:0}.menu-toggle:checked~.menu-btn span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}.menu-toggle:checked~.menu-btn{position:fixed;top:18px;right:2rem;z-index:201}.btn-primary,.btn-outline-dark,.btn-green{margin-bottom:.75rem}}</style>
+<link rel="icon" href="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/favicon.ico" type="image/x-icon"/>
+<meta property="og:title" content="Amenajări Grădini & Sisteme Irigații – ModernGreenGarden"/>
+<meta property="og:description" content="Amenajări profesionale de grădini, sisteme de irigații automatizate, gazon rulou și întreținere spații verzi în București. Solicită ofertă gratuită!"/>
 <meta property="og:type" content="website"/>
-<meta property="og:title" content="${title} – ${siteName}"/>
-<meta property="og:description" content="${metaDesc}"/>
-<meta property="og:url" content="${siteUrl}/${path}"/>
+<meta property="og:url" content="https://moderngarden.ro/index.html"/>
 <meta property="og:locale" content="ro_RO"/>
-<meta property="og:site_name" content="${siteName}"/>
-${ogImage?`<meta property="og:image" content="${ogImage}"/>`:``}
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="${title} – ${siteName}"/>
-<meta name="twitter:description" content="${metaDesc}"/>
-${ogImage?`<meta name="twitter:image" content="${ogImage}"/>`:``}
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<style>${getCSS(d,m,l,go,w,e)}</style>
-${gaTag}
-</head><body>`;
-}
-
-function getTopbar(prefix='') {
-  return `<div class="topbar"><div class="topbar-inner"><div><span>📍 ${g('g-address')}</span>&nbsp;&nbsp;<span>🕐 ${g('g-hours')}</span></div><div class="topbar-right"><a href="tel:${g('g-phone-link')}">📞 ${g('g-phone')}</a><a href="mailto:${g('g-email')}">✉ ${g('g-email')}</a></div></div></div>`;
-}
-
-function getNav(activePage, prefix='') {
-  const links = [
-    {href:`${prefix}index.html`,label:'Acasă',id:'home'},
-    {href:`${prefix}despre-noi.html`,label:'Despre noi',id:'despre'},
-    {href:`${prefix}servicii.html`,label:'Servicii',id:'servicii'},
-    {href:`${prefix}contact.html`,label:'Contact',id:'contact'},
-  ];
-  const linksHtml = links.map(l=>`<li><a href="${l.href}"${activePage===l.id?' class="active-link"':''}>${l.label}</a></li>`).join('');
-  return `<header><nav><a href="${prefix}index.html" class="logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><ul class="nav-links">${linksHtml}<li><a href="${prefix}contact.html" class="nav-cta">${g('g-nav-cta')}</a></li></ul></nav></header>`;
-}
-
-function getFooter(prefix='') {
-  const svLinks = services.map(s=>`<li><a href="${prefix}service/${s.file}.html">${s.title}</a></li>`).join('');
-  return `<footer><div class="container"><div class="footer-grid">
-    <div class="footer-brand"><a href="${prefix}index.html" class="footer-logo">${g('g-logo1')}<span>${g('g-logo2')}</span></a><p>${g('g-name')} — servicii profesionale de grădinărit și peisagistică în București. Peste ${g('ab-exp')} ani de experiență.</p></div>
-    <div class="footer-col"><h4>Servicii</h4><ul>${svLinks}</ul></div>
-    <div class="footer-col"><h4>Utile</h4><ul>
-      <li><a href="${prefix}despre-noi.html">Despre noi</a></li>
-      <li><a href="${prefix}contact.html">Contact</a></li>
-      <li><a href="${prefix}servicii.html">Toate serviciile</a></li>
-      <li><a href="http://www.anpc.gov.ro/" target="_blank" rel="noopener noreferrer">ANPC</a></li>
-    </ul></div>
-  </div>
-  <div class="footer-bottom">
-    <span>© ${new Date().getFullYear()} ${g('g-name')} – ${g('g-slogan')} București.</span>
-    <div class="footer-legal"><a href="${prefix}politica-de-confidentialitate.html">Confidențialitate</a><a href="${prefix}politica-de-cookies.html">Cookies</a></div>
-  </div></div></footer>${getLocalBusinessJsonLd()}</body></html>`;
-}
-
-function getTestiSection() {
-  const cards = testis.map(t=>`<div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„${t.text}"</p><div class="testi-author"><div class="testi-av">${t.name.charAt(0)}</div><div><div class="testi-name">${t.name}</div><div class="testi-city">${t.city}</div></div></div></div>`).join('');
-  return `<section style="background:var(--gd)"><div class="container"><div class="sh"><div class="sl" style="color:var(--gold)">Recenzii clienți</div><h2 class="st" style="color:#fff">Ce spun clienții noștri</h2></div><div class="testi-grid">${cards}</div></div></section>`;
-}
-
-function getContactForm(prefix='') {
-  const formspree=g('g-formspree');
-  const formAction=formspree||`mailto:${g('g-email')}`;
-  const formMethod=formspree?'POST':'post';
-  return `<div style="background:var(--w);border-radius:24px;padding:2.5rem;box-shadow:0 4px 40px rgba(28,58,40,.08)">
-    <h3 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:.4rem">${g('ct-form-title')}</h3>
-    <p style="font-size:.875rem;color:var(--tm);margin-bottom:1.5rem">${g('ct-form-sub')}</p>
-    <form action="${formAction}" method="${formMethod}"${formspree?'':' enctype="text/plain"'}>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem">
-        <div><label>Nume</label><input type="text" name="name" placeholder="Numele tău" required/></div>
-        <div><label>Telefon</label><input type="tel" name="phone" placeholder="+40 7XX XXX XXX" required/></div>
-      </div>
-      <div style="margin-bottom:.85rem"><label>Serviciu dorit</label>
-        <select name="service">${services.map(s=>`<option>${s.title}</option>`).join('')}</select>
-      </div>
-      <div style="margin-bottom:.85rem"><label>Detalii proiect</label><textarea name="message" placeholder="Descrie pe scurt grădina ta..."></textarea></div>
-      <button type="submit" class="form-submit">Trimite solicitarea →</button>
-      <p style="font-size:.72rem;color:var(--tm);margin-top:.75rem;text-align:center">* Datele respectă politica de confidențialitate.</p>
-    </form></div>`;
-}
-
-// ── JSON-LD STRUCTURED DATA ──────────────────────────────────
-function getLocalBusinessJsonLd() {
-  const siteUrl=g('g-url').replace(/\/$/,'');
-  return `<script type="application/ld+json">${JSON.stringify({
-    "@context":"https://schema.org",
-    "@type":"LocalBusiness",
-    "name":g('g-name'),
-    "description":g('g-slogan'),
-    "url":siteUrl,
-    "telephone":g('g-phone-link'),
-    "email":g('g-email'),
-    "address":{"@type":"PostalAddress","streetAddress":g('g-address'),"addressLocality":"București","addressCountry":"RO"},
-    "openingHours":g('g-hours'),
-    "image":g('hero-img'),
-    "priceRange":"$$"
-  })}<\/script>`;
-}
-
-function getServiceJsonLd(s) {
-  const siteUrl=g('g-url').replace(/\/$/,'');
-  return `<script type="application/ld+json">${JSON.stringify({
-    "@context":"https://schema.org",
-    "@type":"Service",
-    "name":s.title,
-    "description":s.desc,
-    "url":`${siteUrl}/service/${s.file}.html`,
-    "provider":{"@type":"LocalBusiness","name":g('g-name'),"telephone":g('g-phone-link')},
-    "areaServed":{"@type":"City","name":"București"},
-    "image":s.img
-  })}<\/script>`;
-}
-
-function getReviewsJsonLd() {
-  const reviews = testis.map(t=>({
-    "@type":"Review",
-    "author":{"@type":"Person","name":t.name},
-    "reviewBody":t.text,
-    "reviewRating":{"@type":"Rating","ratingValue":"5","bestRating":"5"}
-  }));
-  return `<script type="application/ld+json">${JSON.stringify({
-    "@context":"https://schema.org",
-    "@type":"LocalBusiness",
-    "name":g('g-name'),
-    "aggregateRating":{"@type":"AggregateRating","ratingValue":"5","reviewCount":String(testis.length),"bestRating":"5"},
-    "review":reviews
-  })}<\/script>`;
-}
-
-function getBreadcrumbJsonLd(items) {
-  const siteUrl=g('g-url').replace(/\/$/,'');
-  return `<script type="application/ld+json">${JSON.stringify({
-    "@context":"https://schema.org",
-    "@type":"BreadcrumbList",
-    "itemListElement":items.map((item,i)=>({
-      "@type":"ListItem",
-      "position":i+1,
-      "name":item.name,
-      "item":item.url?`${siteUrl}/${item.url}`:undefined
-    }))
-  })}<\/script>`;
-}
-
-// ── PAGE GENERATORS ──────────────────────────────────────────
-function genIndex() {
-  const svCards = services.slice(0,6).map(s=>`
-    <div class="service-card">
-      <div class="sv-img"><img src="${s.img}" alt="${s.title}" loading="lazy"/></div>
-      <div class="sv-body"><div class="sv-icon">${s.icon}</div><h3>${s.title}</h3><p>${s.desc}</p>
-      <a href="service/${s.file}.html" class="sv-link">Află mai multe →</a></div>
-    </div>`).join('');
-
-  const testiCards = testis.map(t=>`<div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„${t.text}"</p><div class="testi-author"><div class="testi-av">${t.name.charAt(0)}</div><div><div class="testi-name">${t.name}</div><div class="testi-city">${t.city}</div></div></div></div>`).join('');
-
-  const featsHtml = features.map(f=>`<div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>${f}</div>`).join('');
-
-  return getHead(g('g-slogan'),'index.html',g('h-desc'),g('hero-img')) + getTopbar() + getNav('home') + `<main>
-<section style="min-height:92vh;background:var(--gd);position:relative;overflow:hidden;display:flex;align-items:center" aria-label="Hero – ${g('g-name')}">`
+<meta name="twitter:card" content="summary"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"ModernGreenGarden","description":"Amenajări profesionale de grădini, sisteme de irigații automatizate, gazon rulou și întreținere spații verzi în București.","url":"https://moderngarden.ro/","telephone":"+40 773 364 853","email":"moderngreengarden@gmail.com","address":{"@type":"PostalAddress","streetAddress":"Str. Cap. P. Ispirescu, nr. 24, București","addressLocality":"București","addressCountry":"RO"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"5","reviewCount":"${testis.length}","bestRating":"5"}}</script>
+</head><body><div class="topbar"><div class="topbar-inner"><div><span>📍 Str. Cap. P. Ispirescu, nr. 24, București</span>&nbsp;&nbsp;<span>🕐 Luni–Vineri: 08:00–17:00</span></div><div class="topbar-right"><a href="tel:+40773364853">📞 +40 773 364 853</a><a href="mailto:moderngreengarden@gmail.com">✉ moderngreengarden@gmail.com</a></div></div></div><header><nav><a href="index.html" class="logo"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAzMC4yLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA5LjAzIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCA2NjEuNyA5Ny44IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA2NjEuNyA5Ny44OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7ZmlsbDojQzlBNjQ3O30NCgkuc3Qxe2ZpbGw6IzFDM0EyODt9DQo8L3N0eWxlPg0KPGc+DQoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTk2LjgsMzQuM2MwLDEyLTguOCwyNi42LTguOCw0MC4xYzAsMTAuNiw1LjYsMTYuNywxMi41LDE2LjdjMy44LDAsNS45LTEuOCw1LjktNC4yYzAtMS45LTEuNC0zLjEtMi44LTMuMQ0KCQljLTEsMC0yLjIsMC43LTIuMiwxLjhjLTAuNi0wLjQtMS4xLTEtMS4xLTIuMmMwLTIuMywyLTUsNS41LTVjMy45LDAsNy42LDMuMSw3LjYsOC4xYzAsNS4zLTQuMiwxMS40LTEzLjIsMTEuNA0KCQljLTExLjUsMC0xOS0xMC0xOS0yMi4zYzAtMTMuOCw5LjEtMzEuMSw5LjEtNDEuMmMwLTMuMy0xLjktNi44LTUuOS02LjhjLTQuOCwwLTkuNCw0LjctOS40LDE1Ljh2MzAuM2MwLDIuMiwwLjMsMy43LDAuOSw0LjVoLTguNA0KCQljMC43LTAuOSwwLjktMi4yLDAuOS00LjV2LTM3YzAtOS00LjQtMTcuMy0xMS4yLTIyLjh2NTkuOWMwLDIuMiwwLjMsMy43LDAuOSw0LjVINTBjMC43LTAuOSwwLjktMi4yLDAuOS00LjV2LTI0DQoJCUM0Ny40LDU4LjUsMzgsNjQuMiwyNy43LDY0LjJDMTIuNSw2NC4yLDAsNTEuNSwwLDM1LjdDMCwxNy43LDE2LjMsMCwzNy44LDBDNTYsMCw3MC41LDEyLjgsNzQuMSwyOC45YzIuNS01LjIsNi41LTcuNywxMS40LTcuNw0KCQlDOTAuMSwyMS4zLDk2LjgsMjUuMSw5Ni44LDM0LjN6IE02LjksMzYuMUM2LjksNDguNywxNi4xLDU4LDI3LjYsNThjOS43LDAsMTcuOS02LjYsMTcuOS0xNS42YzAtNy4yLTUuMy0xMi0xMC4xLTEyDQoJCWMtMy4zLDAtNiwyLjItNiw0LjljMCwxLjksMS40LDMuMSwyLjgsMy4xYzEsMCwyLjItMC43LDIuMi0xLjhjMC41LDAuMywxLjEsMS4zLDEuMSwyLjVjMCwyLTEuOCw0LjctNS41LDQuNw0KCQljLTMuOSwwLTcuNi0zLjEtNy42LTguMWMwLTYuNCw2LjItMTEuOSwxMy42LTExLjljNS4zLDAsMTEuOSwyLjksMTQuOCwxMC44VjEyLjJjMC0wLjktMC4xLTEuOC0wLjItMi41Yy00LTEuOC04LjUtMi44LTEzLjItMi44DQoJCUMyMC4yLDYuOSw2LjksMjAuOCw2LjksMzYuMXoiLz4NCgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTE3LjgsMjYuMmM5LjksMCwxNy45LDguMSwxNy45LDE4YzAsMTAtOCwxOC0xNy45LDE4Yy05LjgsMC0xNy44LTgtMTcuOC0xOEMxMDAsMzQuMywxMDgsMjYuMiwxMTcuOCwyNi4yeg0KCQkgTTEwNS4zLDc0LjdjLTEsMC0yLjgsMC4zLTMuNiwwLjlsLTAuMSwwLjFsMS40LTcuOWMwLjMsMC4zLDEuMSwwLjYsMi45LDAuNmgyMy4yYzEuOCwwLDIuNi0wLjMsMi45LTAuNmwyLDcuOQ0KCQljLTAuOS0wLjgtMi43LTEtMy43LTFIMTA1LjN6IE0xMTcuOCw1NS41YzYuMSwwLDExLTUsMTEtMTEuNGMwLTYuMy00LjktMTEuNC0xMS0xMS40cy0xMC45LDUuMS0xMC45LDExLjQNCgkJQzEwNi45LDUwLjYsMTExLjcsNTUuNSwxMTcuOCw1NS41eiIvPg0KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNDQuNCwyNi4xYzEzLjQsMCwyNC40LDExLDI0LjQsMjQuNVMxNTcuOSw3NSwxNDQuNCw3NWgtNi4xYzAuNy0wLjksMC45LTIuMiwwLjktNC41VjMwLjINCgkJYzAtMS42LTAuMy0zLjQtMC45LTQuMUgxNDQuNHogTTE0NS43LDY4LjRjOS4yLTAuNywxNi41LTguNCwxNi41LTE3LjhzLTcuMy0xNy4xLTE2LjUtMTcuN1Y2OC40eiIvPg0KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xOTMuMyw2Ny4zbC0xLjQsNy45Yy0wLjMtMC4zLTEuNC0wLjYtMy4xLTAuNmgtMTcuN2MwLjctMC45LDAuOS0yLjIsMC45LTQuNVYzMC42YzAtMS42LTAuMy0zLjQtMC45LTQuMWgxNw0KCQljMS44LDAsMi42LTAuMywyLjktMC42bDEuNCw3LjlsLTAuMS0wLjFjLTAuOS0wLjctMi42LTAuOS0zLjYtMC45aC0xMC4ydjIwLjJoNi45YzEuNSwwLDMuNS0wLjMsNC0wLjl2OC4yYy0wLjYtMC44LTIuNi0wLjktNC0wLjkNCgkJaC02Ljl2OS4yaDExLjFDMTkwLjcsNjguNCwxOTIuMyw2OC4xLDE5My4zLDY3LjNMMTkzLjMsNjcuM3oiLz4NCgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTk2LDI2LjFoOC40YzEwLjUsMCwxOCw3LjYsMTgsMTdjMCw2LjctNCwxMy4xLTEwLjgsMTZjMC41LDcuNCw2LjIsOS41LDkuMSw5LjVjMC43LDAsMS44LTAuMiwyLjItMC45djYuOQ0KCQljLTAuOSwwLjYtMi4yLDAuOS0zLjMsMC45Yy01LjcsMC0xNC45LTUuNy0xNC41LTE3LjljMC4xLTEuNSwwLjItMy4xLDAuNi00LjFjNS4zLDAuNCwxMC00LjcsMTAtMTAuMmMwLTQuNC0zLjQtMTAuNS0xMC41LTEwLjUNCgkJaC0xLjl2MzcuNWMwLDIuMiwwLjMsMy43LDAuOSw0LjVIMTk2YzAuNy0wLjksMC45LTIuMiwwLjktNC41VjMwLjZDMTk3LDI4LjMsMTk2LjcsMjcsMTk2LDI2LjF6Ii8+DQoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTIyNi4xLDI2LjRoOC40Yy0wLjYsMC44LTAuOSwyLjItMC45LDQuNVYzM2wxNCwxOC42VjMwLjljMC0yLjItMC4zLTMuNi0wLjktNC41aDguNA0KCQljLTAuNiwwLjgtMC45LDIuMi0wLjksNC41djM5LjNjMCwyLjIsMC4zLDMuNywwLjksNC41aC04LjRjMC43LTAuOSwwLjktMi4yLDAuOS00LjV2LThsLTE0LTE4LjV2MjYuNWMwLDIuMiwwLjMsMy43LDAuOSw0LjVoLTguNA0KCQljMC44LTAuOSwwLjktMi4yLDAuOS00LjVWMzAuOUMyMjcsMjguNywyMjYuOCwyNy4zLDIyNi4xLDI2LjR6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTI3My40LDM5LjdjMCwxMy41LDkuNCwyNS44LDIzLjIsMjUuOGM4LjQsMCwyMS40LTQuNywyMS40LTIwLjZ2LTFjMC0yLjItMC4zLTMuNi0wLjktNC41aDguNA0KCQljLTAuNiwwLjgtMC45LDIuMi0wLjksNC41djI4LjljMCwxNy0xMi4zLDI0LTIxLjEsMjRjLTguNiwwLTE3LjQtNi43LTE3LjQtMTYuM2MwLTMuNywxLjMtNi44LDMuNC05DQoJCWMtMTMuNy0zLjEtMjMuOC0xNS4yLTIzLjgtMzEuNGMwLTE5LjksMTUuNS0zNi45LDM2LjItMzYuOWMxNy4yLDAsMjMuNiwxMS44LDIzLjYsMTguMmMwLDQuOS0zLjgsOS4yLTguMSw5LjINCgkJYy0zLjQsMC01LjQtMi43LTUuNC01YzAtMS4yLDAuNS0xLjgsMS4xLTIuMmMwLDEuMSwxLjIsMS44LDIuMiwxLjhjMS40LDAsMi44LTEuNSwyLjgtMy40YzAtMy42LTQuMy0xMS4zLTE2LTExLjMNCgkJQzI4Ni42LDEwLjQsMjczLjQsMjMuNywyNzMuNCwzOS43eiBNMzE4LDYyLjFjLTMuNCw0LjctOC42LDcuOC0xNC4xLDkuMmMxLDEuMywxLjYsMywxLjYsNC43YzAsMy41LTIuMyw1LjQtNC41LDUuNA0KCQljLTEuMSwwLTIuMy0wLjUtMi44LTEuMWMxLjEsMCwxLjgtMS4yLDEuOC0yLjJjMC0xLjQtMS4yLTIuOC0zLjItMi44Yy0yLjgsMC00LjMsMi43LTQuMyw1LjRjMCw1LjEsNS4zLDkuMywxMSw5LjMNCgkJYzUuOSwwLDE0LjUtNC40LDE0LjUtMTcuMVY2Mi4xeiIvPg0KCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMjguNSwyNi4xaDguNGMxMC41LDAsMTgsNy42LDE4LDE3YzAsNi43LTQsMTMuMS0xMC44LDE2YzAuNSw3LjQsNi4yLDkuNSw5LjEsOS41YzAuNywwLDEuOC0wLjIsMi4yLTAuOXY2LjkNCgkJYy0wLjksMC42LTIuMiwwLjktMy4zLDAuOWMtNS43LDAtMTQuOS01LjctMTQuNS0xNy45YzAuMS0xLjUsMC4yLTMuMSwwLjYtNC4xYzUuMywwLjQsMTAtNC43LDEwLTEwLjJjMC00LjQtMy40LTEwLjUtMTAuNS0xMC41DQoJCUgzMzZ2MzcuNWMwLDIuMiwwLjMsMy43LDAuOSw0LjVoLTguNGMwLjctMC45LDAuOS0yLjIsMC45LTQuNVYzMC42QzMyOS41LDI4LjMsMzI5LjIsMjcsMzI4LjUsMjYuMXoiLz4NCgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMzgwLjgsNjcuM2wtMS40LDcuOWMtMC4zLTAuMy0xLjQtMC42LTMuMS0wLjZoLTE3LjdjMC43LTAuOSwwLjktMi4yLDAuOS00LjVWMzAuNmMwLTEuNi0wLjMtMy40LTAuOS00LjFoMTcNCgkJYzEuOCwwLDIuNi0wLjMsMi45LTAuNmwxLjQsNy45bC0wLjEtMC4xYy0wLjktMC43LTIuNi0wLjktMy42LTAuOUgzNjZ2MjAuMmg2LjljMS41LDAsMy41LTAuMyw0LTAuOXY4LjJjLTAuNi0wLjgtMi42LTAuOS00LTAuOQ0KCQlIMzY2djkuMmgxMS4xQzM3OC4yLDY4LjQsMzc5LjgsNjguMSwzODAuOCw2Ny4zTDM4MC44LDY3LjN6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTQwNS43LDY3LjNsLTEuNCw3LjljLTAuMy0wLjMtMS40LTAuNi0zLjEtMC42aC0xNy43YzAuNy0wLjksMC45LTIuMiwwLjktNC41VjMwLjZjMC0xLjYtMC4zLTMuNC0wLjktNC4xaDE3DQoJCWMxLjgsMCwyLjYtMC4zLDIuOS0wLjZsMS40LDcuOWwtMC4xLTAuMWMtMC45LTAuNy0yLjYtMC45LTMuNi0wLjloLTEwLjJ2MjAuMmg2LjljMS41LDAsMy41LTAuMyw0LTAuOXY4LjJjLTAuNi0wLjgtMi42LTAuOS00LTAuOQ0KCQloLTYuOXY5LjJINDAyQzQwMyw2OC40LDQwNC43LDY4LjEsNDA1LjcsNjcuM0w0MDUuNyw2Ny4zeiIvPg0KCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik00MDguNCwyNi40aDguNGMtMC42LDAuOC0wLjksMi4yLTAuOSw0LjVWMzNsMTQsMTguNlYzMC45YzAtMi4yLTAuMy0zLjYtMC45LTQuNWg4LjQNCgkJYy0wLjYsMC44LTAuOSwyLjItMC45LDQuNXYzOS4zYzAsMi4yLDAuMywzLjcsMC45LDQuNWgtOC40YzAuNy0wLjksMC45LTIuMiwwLjktNC41di04bC0xNC0xOC41djI2LjVjMCwyLjIsMC4zLDMuNywwLjksNC41aC04LjQNCgkJYzAuOC0wLjksMC45LTIuMiwwLjktNC41VjMwLjlDNDA5LjMsMjguNyw0MDkuMiwyNy4zLDQwOC40LDI2LjR6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTQ1NS43LDM5LjdjMCwxMy41LDkuNCwyNS44LDIzLjIsMjUuOGM4LjQsMCwyMS40LTQuNywyMS40LTIwLjZ2LTFjMC0yLjItMC4zLTMuNi0wLjktNC41aDguNA0KCQljLTAuNiwwLjgtMC45LDIuMi0wLjksNC41djI4LjljMCwxNy0xMi4zLDI0LTIxLjEsMjRjLTguNiwwLTE3LjQtNi43LTE3LjQtMTYuM2MwLTMuNywxLjMtNi44LDMuNC05DQoJCWMtMTMuNy0zLjEtMjMuOC0xNS4yLTIzLjgtMzEuNGMwLTE5LjksMTUuNS0zNi45LDM2LjItMzYuOWMxNy4yLDAsMjMuNiwxMS44LDIzLjYsMTguMmMwLDQuOS0zLjgsOS4yLTguMSw5LjINCgkJYy0zLjQsMC01LjQtMi43LTUuNC01YzAtMS4yLDAuNS0xLjgsMS4xLTIuMmMwLDEuMSwxLjIsMS44LDIuMiwxLjhjMS40LDAsMi44LTEuNSwyLjgtMy40YzAtMy42LTQuMy0xMS4zLTE2LTExLjMNCgkJQzQ2OC45LDEwLjQsNDU1LjcsMjMuNyw0NTUuNywzOS43eiBNNTAwLjMsNjIuMWMtMy40LDQuNy04LjYsNy44LTE0LjEsOS4yYzEsMS4zLDEuNiwzLDEuNiw0LjdjMCwzLjUtMi4zLDUuNC00LjUsNS40DQoJCWMtMS4xLDAtMi4zLTAuNS0yLjgtMS4xYzEuMSwwLDEuOC0xLjIsMS44LTIuMmMwLTEuNC0xLjItMi44LTMuMi0yLjhjLTIuOCwwLTQuMywyLjctNC4zLDUuNGMwLDUuMSw1LjMsOS4zLDExLDkuMw0KCQljNS45LDAsMTQuNS00LjQsMTQuNS0xNy4xVjYyLjF6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTUxOC40LDc0LjdoLTljMC45LTAuOCwxLjgtMi4zLDIuNC00LjVsMTAuMy0zOS4zYzAuNi0yLjMsMC41LTMuNi0wLjEtNC40di0wLjFoOWwtMC4xLDAuMQ0KCQljLTAuNSwwLjgtMC43LDIuMSwwLDQuNGwxMC4zLDM5LjNjMC41LDIuMiwxLjYsMy43LDIuNCw0LjVoLTljMC42LTAuOCwwLjgtMi4xLDAuMS00LjVsLTEuMi00LjJoLTE0LjFsLTEuMiw0LjINCgkJQzUxNy43LDcyLjYsNTE3LjgsNzMuOSw1MTguNCw3NC43eiBNNTIxLjMsNTkuOUg1MzJsLTUuMS0yNC4xTDUyMS4zLDU5Ljl6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTU0NS4xLDI2LjFoOC40YzEwLjUsMCwxOCw3LjYsMTgsMTdjMCw2LjctNCwxMy4xLTEwLjgsMTZjMC41LDcuNCw2LjIsOS41LDkuMSw5LjVjMC43LDAsMS44LTAuMiwyLjItMC45djYuOQ0KCQljLTAuOSwwLjYtMi4yLDAuOS0zLjMsMC45Yy01LjcsMC0xNC45LTUuNy0xNC41LTE3LjljMC4xLTEuNSwwLjItMy4xLDAuNi00LjFjNS4zLDAuNCwxMC00LjcsMTAtMTAuMmMwLTQuNC0zLjQtMTAuNS0xMC41LTEwLjUNCgkJaC0xLjl2MzcuNWMwLDIuMiwwLjMsMy43LDAuOSw0LjVoLTguNGMwLjctMC45LDAuOS0yLjIsMC45LTQuNVYzMC42QzU0Ni4xLDI4LjMsNTQ1LjgsMjcsNTQ1LjEsMjYuMXoiLz4NCgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNTgxLjMsMjYuMWMxMy40LDAsMjQuNCwxMSwyNC40LDI0LjVTNTk0LjcsNzUsNTgxLjMsNzVoLTYuMWMwLjctMC45LDAuOS0yLjIsMC45LTQuNVYzMC4yDQoJCWMwLTEuNi0wLjMtMy40LTAuOS00LjFINTgxLjN6IE01ODIuNiw2OC40YzkuMi0wLjcsMTYuNS04LjQsMTYuNS0xNy44cy03LjMtMTcuMS0xNi41LTE3LjdWNjguNHoiLz4NCgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNjMwLjIsNjcuM2wtMS40LDcuOWMtMC4zLTAuMy0xLjQtMC42LTMuMS0wLjZINjA4YzAuNy0wLjksMC45LTIuMiwwLjktNC41VjMwLjZjMC0xLjYtMC4zLTMuNC0wLjktNC4xaDE3DQoJCWMxLjgsMCwyLjYtMC4zLDIuOS0wLjZsMS40LDcuOWwtMC4xLTAuMWMtMC45LTAuNy0yLjYtMC45LTMuNi0wLjloLTEwLjJ2MjAuMmg2LjljMS41LDAsMy41LTAuMyw0LTAuOXY4LjJjLTAuNi0wLjgtMi42LTAuOS00LTAuOQ0KCQloLTYuOXY5LjJoMTEuMUM2MjcuNiw2OC40LDYyOS4yLDY4LjEsNjMwLjIsNjcuM0w2MzAuMiw2Ny4zeiIvPg0KCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik02MzIuOSwyNi40aDguNGMtMC42LDAuOC0wLjksMi4yLTAuOSw0LjVWMzNsMTQsMTguNlYzMC45YzAtMi4yLTAuMy0zLjYtMC45LTQuNWg4LjQNCgkJYy0wLjYsMC44LTAuOSwyLjItMC45LDQuNXYzOS4zYzAsMi4yLDAuMywzLjcsMC45LDQuNWgtOC40YzAuNy0wLjksMC45LTIuMiwwLjktNC41di04bC0xNC0xOC41djI2LjVjMCwyLjIsMC4zLDMuNywwLjksNC41aC04LjQNCgkJYzAuOC0wLjksMC45LTIuMiwwLjktNC41VjMwLjlDNjMzLjgsMjguNyw2MzMuNywyNy4zLDYzMi45LDI2LjR6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==" alt="ModernGreenGarden" style="height:44px;width:auto"/></a><input type="checkbox" id="menu-toggle" class="menu-toggle"/><label for="menu-toggle" class="menu-btn"><span></span><span></span><span></span></label><ul class="nav-links"><li><a href="index.html" class="active-link">Acasă</a></li><li><a href="despre-noi.html">Despre noi</a></li><li><a href="servicii.html">Servicii</a></li><li><a href="contact.html">Contact</a></li><li><a href="contact.html" class="nav-cta">Solicită ofertă</a></li></ul></nav></header>
+<section style="min-height:92vh;background:var(--gd);position:relative;overflow:hidden;display:flex;align-items:center">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 70% 50%,rgba(74,140,92,.18) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 20% 80%,rgba(201,166,84,.08) 0%,transparent 50%)"></div>
-  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative;z-index:2;padding-top:3rem;padding-bottom:3rem">
+  <div class="container hero-grid" style="position:relative;z-index:2;padding-top:3rem;padding-bottom:3rem">
     <div>
-      <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,166,84,.15);border:1px solid rgba(201,166,84,.3);color:var(--gold);font-size:.75rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:.4rem 1rem;border-radius:100px;margin-bottom:1.75rem">${g('h-badge')}</div>
-      <h1 style="font-family:var(--serif);font-size:clamp(2.8rem,5vw,4.2rem);font-weight:600;color:#fff;line-height:1.12;margin-bottom:1.25rem">${g('h-t1')}<br/><em style="font-style:italic;color:var(--gold)">${g('h-t2')}</em></h1>
-      <p style="color:rgba(255,255,255,.65);font-size:1.05rem;font-weight:300;line-height:1.75;margin-bottom:2.5rem;max-width:460px">${g('h-desc')}</p>
+      <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,166,84,.15);border:1px solid rgba(201,166,84,.3);color:var(--gold);font-size:.75rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:.4rem 1rem;border-radius:100px;margin-bottom:1.75rem">⭐ Peste 10 ani de experiență în București</div>
+      <h1 style="font-family:var(--serif);font-size:clamp(2.8rem,5vw,4.2rem);font-weight:600;color:#fff;line-height:1.12;margin-bottom:1.25rem">Fă din grădina ta<br/><em style="font-style:italic;color:var(--gold)">oaza ta de relaxare</em></h1>
+      <p style="color:rgba(255,255,255,.65);font-size:1.05rem;font-weight:300;line-height:1.75;margin-bottom:2.5rem;max-width:460px">Amenajare profesională a grădinilor și spațiilor verzi, sisteme de irigații automatizate, gazon rulou și întreținere continuă — totul sub un singur acoperiș.</p>
       <div style="display:flex;gap:1rem;flex-wrap:wrap">
-        <a href="contact.html" class="btn-primary">${g('h-btn1')}</a>
-        <a href="servicii.html" style="border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);padding:.85rem 2rem;border-radius:100px;font-size:.9rem;display:inline-block">${g('h-btn2')}</a>
+        <a href="contact.html" class="btn-primary">Solicită ofertă gratuită</a>
+        <a href="servicii.html" style="border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);padding:.85rem 2rem;border-radius:100px;font-size:.9rem;display:inline-block">Vezi serviciile</a>
       </div>
-      <div style="display:flex;gap:2.5rem;margin-top:3rem;padding-top:2.5rem;border-top:1px solid rgba(255,255,255,.1)">
-        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">${g('s-n1')}</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">${g('s-l1')}</div></div>
-        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">${g('s-n2')}</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">${g('s-l2')}</div></div>
-        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">${g('s-n3')}</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">${g('s-l3')}</div></div>
+      <div class="stats-row">
+        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">10+</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">ani experiență</div></div>
+        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">500+</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">proiecte finalizate</div></div>
+        <div><div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:#fff">100%</div><div style="font-size:.78rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem">clienți mulțumiți</div></div>
       </div>
     </div>
     <div style="position:relative">
       <div style="position:absolute;top:1.5rem;left:-1.5rem;background:var(--gold);color:var(--gd);padding:1rem 1.25rem;border-radius:16px;font-weight:700;font-size:.8rem;text-align:center;box-shadow:0 8px 24px rgba(201,166,84,.4);line-height:1.3;z-index:3">🌿 Gazon rulou<br/>montat în 1 zi</div>
       <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:24px;overflow:hidden;aspect-ratio:4/5;position:relative">
-        <div style="position:absolute;inset:0;background:url('${g('hero-img')}') center/cover no-repeat;opacity:.55"></div>
+        <div style="position:absolute;inset:0;background:url('https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/irigatii-automate-bucuresti-europlant.jpg') center/cover no-repeat;opacity:.55"></div>
         <div style="height:100%;background:linear-gradient(160deg,rgba(74,140,92,.3) 0%,rgba(28,58,40,.5) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:2rem;position:relative;z-index:2">
           <div style="background:rgba(28,58,40,.85);border-radius:14px;padding:1.25rem 1.5rem;border:1px solid rgba(201,166,84,.2)">
             <small style="color:var(--gold);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase">Serviciu premium</small>
-            <p style="font-family:var(--serif);font-size:1.2rem;color:#fff;font-style:italic;margin-top:.25rem">${g('h-card')}</p>
+            <p style="font-family:var(--serif);font-size:1.2rem;color:#fff;font-style:italic;margin-top:.25rem">Sisteme de irigații automatizate cu senzor de umiditate</p>
           </div>
         </div>
       </div>
@@ -721,26 +151,56 @@ function genIndex() {
 
 <section style="background:var(--el)">
   <div class="container">
-    <div class="sh"><div class="sl">Ce oferim</div><h2 class="st">${g('sv-title')}</h2><p class="ss">${g('sv-sub')}</p></div>
-    <div class="services-grid">${svCards}</div>
+    <div class="sh"><div class="sl">Ce oferim</div><h2 class="st">Servicii profesionale de grădinărit</h2><p class="ss">De la proiectare și amenajare, până la întreținere continuă — ModernGreenGarden este partenerul tău de încredere pentru orice nevoie a grădinii tale.</p></div>
+    <div class="services-grid">
+    <div class="service-card">
+      <div class="sv-img"><img src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/sisteme-irigatii-gradini-bucuresti-370x210.jpg" alt="Sisteme de irigații automatizate" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">💧</div><h3>Sisteme de irigații automatizate</h3><p>Instalăm sisteme de irigații complet automatizate, echipate cu senzori de umiditate, pentru o udare uniformă și eficientă a grădinii tale.</p>
+      <a href="sisteme-irigatii.html" class="sv-link">Află mai multe →</a></div>
+    </div>
+    <div class="service-card">
+      <div class="sv-img"><img src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2016/06/b1-370x210.jpg" alt="Gazon rulou și plantare gazon" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">🌿</div><h3>Gazon rulou și plantare gazon</h3><p>Realizăm suprafețe gazonate prin însămânțare cu materiale profesionale sau prin montaj de gazon rulou natural, gata în aceeași zi.</p>
+      <a href="gazon-rulou.html" class="sv-link">Află mai multe →</a></div>
+    </div>
+    <div class="service-card">
+      <div class="sv-img"><img src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service6-370x210.jpg" alt="Amenajări grădini și spații verzi" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">🌳</div><h3>Amenajări grădini și spații verzi</h3><p>Amenajăm grădini și curți cu plante ornamentale, iazuri, cascade decorative și grădini japoneze. Prestări servicii peisagistice complete.</p>
+      <a href="amenajari-gradini.html" class="sv-link">Află mai multe →</a></div>
+    </div>
+    <div class="service-card">
+      <div class="sv-img"><img src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2017/06/service4-370x210.jpg" alt="Întreținere grădini și spații verzi" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">✂️</div><h3>Întreținere grădini și spații verzi</h3><p>Menținem sănătatea și aspectul estetic al grădinii tale — tundere gazon, fertilizare, aerare, erbicidare și îngrijire plante ornamentale.</p>
+      <a href="intretinere-gradini.html" class="sv-link">Află mai multe →</a></div>
+    </div>
+    <div class="service-card">
+      <div class="sv-img"><img src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/proiectare-3d-amenajare-gradina-bucuresti-370x210.jpg" alt="Consultanță și proiectare" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">📐</div><h3>Consultanță și proiectare</h3><p>Realizăm planuri 2D și 3D personalizate ale grădinii tale, adaptate nevoilor plantelor, gazonului și preferințelor estetice.</p>
+      <a href="consultanta-proiectare.html" class="sv-link">Află mai multe →</a></div>
+    </div>
+    <div class="service-card">
+      <div class="sv-img"><img src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2021/05/lucrari-sezoniere-intretinere-gradini-bucuresti-370x210.jpg" alt="Lucrări de sezon" loading="lazy"/></div>
+      <div class="sv-body"><div class="sv-icon">🍂</div><h3>Lucrări de sezon</h3><p>Scarificarea gazonului, acoperirea plantelor sensibile la îngheț, tăierea pomilor, plantări de primăvară și toamnă și multe altele.</p>
+      <a href="lucrari-sezon.html" class="sv-link">Află mai multe →</a></div>
+    </div></div>
     <div style="text-align:center;margin-top:2.5rem"><a href="servicii.html" class="btn-green">Vezi toate serviciile →</a></div>
   </div>
 </section>
 
 <section style="background:var(--w)">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center">
-      <div style="position:relative;height:480px">
-        <div style="width:75%;height:380px;border-radius:20px;overflow:hidden;position:absolute;top:0;left:0"><img src="${g('ab1-img')}" alt="Echipa ${g('g-name')}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
-        <div style="position:absolute;top:50%;left:60%;transform:translate(-50%,-50%);background:var(--gd);color:#fff;border-radius:16px;padding:1.1rem 1.4rem;text-align:center;box-shadow:0 8px 28px rgba(28,58,40,.25);z-index:5"><strong style="font-family:var(--serif);font-size:2.2rem;display:block;color:var(--gold)">${g('ab-exp')}</strong><span style="font-size:.75rem;opacity:.75">ani de experiență</span></div>
-        <div style="width:55%;height:240px;border-radius:20px;overflow:hidden;position:absolute;bottom:0;right:0;border:5px solid var(--w);box-shadow:0 12px 40px rgba(28,58,40,.12)"><img src="${g('ab2-img')}" alt="Lucrari amenajare gradina" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
+    <div class="about-grid">
+      <div class="about-images">
+        <div style="width:75%;height:380px;border-radius:20px;overflow:hidden;position:absolute;top:0;left:0"><img src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about1.jpg" alt="Echipa ModernGreenGarden" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
+        <div style="position:absolute;top:50%;left:60%;transform:translate(-50%,-50%);background:var(--gd);color:#fff;border-radius:16px;padding:1.1rem 1.4rem;text-align:center;box-shadow:0 8px 28px rgba(28,58,40,.25);z-index:5"><strong style="font-family:var(--serif);font-size:2.2rem;display:block;color:var(--gold)">10+</strong><span style="font-size:.75rem;opacity:.75">ani de experiență</span></div>
+        <div style="width:55%;height:240px;border-radius:20px;overflow:hidden;position:absolute;bottom:0;right:0;border:5px solid var(--w);box-shadow:0 12px 40px rgba(28,58,40,.12)"><img src="https://www.europlant-amenajari-gradini.ro/wp-content/uploads/2020/02/about2.jpg" alt="Lucrari amenajare gradina" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
       </div>
       <div>
-        <div class="sl">Despre ${g('g-name')}</div>
-        <h2 class="st">${g('ab-title')}</h2>
-        <p style="color:var(--tm);line-height:1.8;font-weight:300;margin-bottom:1rem">${g('ab-p1')}</p>
-        <p style="color:var(--tm);line-height:1.8;font-weight:300;margin-bottom:1.5rem">${g('ab-p2')}</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:2rem">${featsHtml}</div>
+        <div class="sl">Despre ModernGreenGarden</div>
+        <h2 class="st">O echipă de profesioniști dedicați grădinii tale</h2>
+        <p style="color:var(--tm);line-height:1.8;font-weight:300;margin-bottom:1rem">ModernGreenGarden este formată dintr-o echipă profesionistă, dinamică și deschisă la idei noi, temeinic pregătită în domeniul amenajării grădinilor și spațiilor verzi exterioare.</p>
+        <p style="color:var(--tm);line-height:1.8;font-weight:300;margin-bottom:1.5rem">Comercializăm, livrăm și plantăm la prețuri avantajoase o gamă foarte largă de arbuști, arbori și conifere. Suntem la dispoziția ta în orice moment pentru a-ți satisface cele mai diverse dorințe și nevoi legate de grădina ta.</p>
+        <div class="features-grid-2" style="margin-bottom:2rem"><div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>Echipă certificată și calificată</div><div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>Materiale de calitate profesională</div><div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>Sisteme irigații cu senzori de umiditate</div><div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>Gazon rulou montat în aceeași zi</div><div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>Proiecte 2D și 3D personalizate</div><div style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>Garanție pentru lucrările efectuate</div></div>
         <a href="despre-noi.html" class="btn-green">Despre noi →</a>
       </div>
     </div>
@@ -750,443 +210,53 @@ function genIndex() {
 <section style="background:var(--gd)">
   <div class="container">
     <div class="sh"><div class="sl" style="color:var(--gold)">Recenzii clienți</div><h2 class="st" style="color:#fff">Ce spun clienții noștri</h2></div>
-    <div class="testi-grid">${testiCards}</div>
+    <div class="testi-grid"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„Am apelat la alte 3 firme înainte să dau de băieții de la ModernGreenGarden. Toți mi-au spus că suprafața e prea mică pentru montaj gazon rulou (aprox. 70 mp). Am sunat la ModernGreenGarden și în 1 zi aveam grădina gata. Bravo pentru rapiditate și profesionalism!"</p><div class="testi-author"><div class="testi-av">I</div><div><div class="testi-name">Ioana Ignat</div><div class="testi-city">București</div></div></div></div><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„Foarte mulțumit de echipa ModernGreenGarden — prețuri super și au realizat o grădină extraordinară. Recomand 100%!"</p><div class="testi-author"><div class="testi-av">C</div><div><div class="testi-name">Costel Dumitru</div><div class="testi-city">București</div></div></div></div><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„Vrei o grădină frumoasă amenajată după criterii științifice și estetice? Ai găsit soluția! Apreciez profesionalismul și dedicația echipei ModernGreenGarden."</p><div class="testi-author"><div class="testi-av">C</div><div><div class="testi-name">Cristi Voicu</div><div class="testi-city">Otopeni</div></div></div></div><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">„Recomand ModernGreenGarden cu toată încrederea! Servicii de calitate, punctualitate și rezultate care depășesc așteptările."</p><div class="testi-author"><div class="testi-av">F</div><div><div class="testi-name">Florin Împușcatu</div><div class="testi-city">București</div></div></div></div></div>
   </div>
 </section>
 
 <section style="background:var(--el)">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center">
+    <div class="contact-grid">
       <div>
         <div class="sl">Contactează-ne</div>
         <h2 style="font-family:var(--serif);font-size:2.2rem;color:var(--gd);margin-bottom:.75rem">Cauți un specialist în amenajarea grădinii?</h2>
         <p style="color:var(--tm);font-weight:300;line-height:1.75;margin-bottom:2rem">Dă-ne câteva detalii despre proiectul tău și te vom contacta cu o ofertă personalizată și gratuită.</p>
         <div style="display:flex;flex-direction:column;gap:1.25rem">
-          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📍</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Adresă</strong><span style="font-size:.9rem">${g('g-address')}</span></div></div>
-          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📞</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Telefon</strong><a href="tel:${g('g-phone-link')}" style="color:var(--td);font-size:.9rem">${g('g-phone')}</a></div></div>
-          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">✉️</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Email</strong><a href="mailto:${g('g-email')}" style="color:var(--td);font-size:.9rem">${g('g-email')}</a></div></div>
-          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🕐</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Program</strong><span style="font-size:.9rem">${g('g-hours')}</span></div></div>
+          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📍</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Adresă</strong><span style="font-size:.9rem">Str. Cap. P. Ispirescu, nr. 24, București</span></div></div>
+          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📞</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Telefon</strong><a href="tel:+40773364853" style="color:var(--td);font-size:.9rem">+40 773 364 853</a></div></div>
+          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">✉️</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Email</strong><a href="mailto:moderngreengarden@gmail.com" style="color:var(--td);font-size:.9rem">moderngreengarden@gmail.com</a></div></div>
+          <div style="display:flex;gap:1rem"><div style="width:44px;height:44px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🕐</div><div><strong style="display:block;font-size:.78rem;font-weight:500;color:var(--gm);letter-spacing:.08em;text-transform:uppercase">Program</strong><span style="font-size:.9rem">Luni–Vineri: 08:00–17:00</span></div></div>
         </div>
       </div>
-      ${getContactForm('')}
+      <div style="background:var(--w);border-radius:24px;padding:2.5rem;box-shadow:0 4px 40px rgba(28,58,40,.08)">
+    <h3 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:.4rem">Solicită ofertă gratuită</h3>
+    <p style="font-size:.875rem;color:var(--tm);margin-bottom:1.5rem">Completează formularul și te contactăm în 24 de ore.</p>
+    <form action="contact.html" method="post">
+      <div class="form-row">
+        <div><label>Nume</label><input type="text" placeholder="Numele tău" required/></div>
+        <div><label>Telefon</label><input type="tel" placeholder="+40 7XX XXX XXX" required/></div>
+      </div>
+      <div style="margin-bottom:.85rem"><label>Serviciu dorit</label>
+        <select><option>Sisteme de irigații automatizate</option><option>Gazon rulou și plantare gazon</option><option>Amenajări grădini și spații verzi</option><option>Întreținere grădini și spații verzi</option><option>Consultanță și proiectare</option><option>Lucrări de sezon</option></select>
+      </div>
+      <div style="margin-bottom:.85rem"><label>Detalii proiect</label><textarea placeholder="Descrie pe scurt grădina ta..."></textarea></div>
+      <button type="submit" class="form-submit">Trimite solicitarea →</button>
+      <p style="font-size:.72rem;color:var(--tm);margin-top:.75rem;text-align:center">* Datele respectă politica de confidențialitate.</p>
+    </form></div>
     </div>
   </div>
 </section>
-</main>
-${getReviewsJsonLd()}
-` + getFooter('');
-}
-
-function genAbout() {
-  const featsHtml = features.map(f=>`<div style="display:flex;align-items:center;gap:.75rem;background:var(--w);border:1px solid rgba(28,58,40,.07);border-radius:12px;padding:.85rem 1rem;font-size:.875rem;font-weight:500;color:var(--td)"><span style="width:8px;height:8px;border-radius:50%;background:var(--gl);flex-shrink:0;display:inline-block"></span>${f}</div>`).join('');
-
-  return getHead('Despre noi','despre-noi.html',g('ab-p1'),g('ab1-img')) + getTopbar() + getNav('despre') + `<main>
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Despre noi</span></div>
-    <div class="page-hero-badge">👥 Echipa noastră</div>
-    <h1>${g('ab-title')}</h1>
-    <p>${g('ab-p1')}</p>
+<footer><div class="container"><div class="footer-grid">
+    <div class="footer-brand"><a href="index.html" class="footer-logo"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAzMC4yLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA5LjAzIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCA2NjEuNyA5Ny44IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA2NjEuNyA5Ny44OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7ZmlsbDojQzlBNjQ3O30NCgkuc3Qxe2ZpbGw6IzFDM0EyODt9DQo8L3N0eWxlPg0KPGc+DQoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTk2LjgsMzQuM2MwLDEyLTguOCwyNi42LTguOCw0MC4xYzAsMTAuNiw1LjYsMTYuNywxMi41LDE2LjdjMy44LDAsNS45LTEuOCw1LjktNC4yYzAtMS45LTEuNC0zLjEtMi44LTMuMQ0KCQljLTEsMC0yLjIsMC43LTIuMiwxLjhjLTAuNi0wLjQtMS4xLTEtMS4xLTIuMmMwLTIuMywyLTUsNS41LTVjMy45LDAsNy42LDMuMSw3LjYsOC4xYzAsNS4zLTQuMiwxMS40LTEzLjIsMTEuNA0KCQljLTExLjUsMC0xOS0xMC0xOS0yMi4zYzAtMTMuOCw5LjEtMzEuMSw5LjEtNDEuMmMwLTMuMy0xLjktNi44LTUuOS02LjhjLTQuOCwwLTkuNCw0LjctOS40LDE1Ljh2MzAuM2MwLDIuMiwwLjMsMy43LDAuOSw0LjVoLTguNA0KCQljMC43LTAuOSwwLjktMi4yLDAuOS00LjV2LTM3YzAtOS00LjQtMTcuMy0xMS4yLTIyLjh2NTkuOWMwLDIuMiwwLjMsMy43LDAuOSw0LjVINTBjMC43LTAuOSwwLjktMi4yLDAuOS00LjV2LTI0DQoJCUM0Ny40LDU4LjUsMzgsNjQuMiwyNy43LDY0LjJDMTIuNSw2NC4yLDAsNTEuNSwwLDM1LjdDMCwxNy43LDE2LjMsMCwzNy44LDBDNTYsMCw3MC41LDEyLjgsNzQuMSwyOC45YzIuNS01LjIsNi41LTcuNywxMS40LTcuNw0KCQlDOTAuMSwyMS4zLDk2LjgsMjUuMSw5Ni44LDM0LjN6IE02LjksMzYuMUM2LjksNDguNywxNi4xLDU4LDI3LjYsNThjOS43LDAsMTcuOS02LjYsMTcuOS0xNS42YzAtNy4yLTUuMy0xMi0xMC4xLTEyDQoJCWMtMy4zLDAtNiwyLjItNiw0LjljMCwxLjksMS40LDMuMSwyLjgsMy4xYzEsMCwyLjItMC43LDIuMi0xLjhjMC41LDAuMywxLjEsMS4zLDEuMSwyLjVjMCwyLTEuOCw0LjctNS41LDQuNw0KCQljLTMuOSwwLTcuNi0zLjEtNy42LTguMWMwLTYuNCw2LjItMTEuOSwxMy42LTExLjljNS4zLDAsMTEuOSwyLjksMTQuOCwxMC44VjEyLjJjMC0wLjktMC4xLTEuOC0wLjItMi41Yy00LTEuOC04LjUtMi44LTEzLjItMi44DQoJCUMyMC4yLDYuOSw2LjksMjAuOCw2LjksMzYuMXoiLz4NCgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTE3LjgsMjYuMmM5LjksMCwxNy45LDguMSwxNy45LDE4YzAsMTAtOCwxOC0xNy45LDE4Yy05LjgsMC0xNy44LTgtMTcuOC0xOEMxMDAsMzQuMywxMDgsMjYuMiwxMTcuOCwyNi4yeg0KCQkgTTEwNS4zLDc0LjdjLTEsMC0yLjgsMC4zLTMuNiwwLjlsLTAuMSwwLjFsMS40LTcuOWMwLjMsMC4zLDEuMSwwLjYsMi45LDAuNmgyMy4yYzEuOCwwLDIuNi0wLjMsMi45LTAuNmwyLDcuOQ0KCQljLTAuOS0wLjgtMi43LTEtMy43LTFIMTA1LjN6IE0xMTcuOCw1NS41YzYuMSwwLDExLTUsMTEtMTEuNGMwLTYuMy00LjktMTEuNC0xMS0xMS40cy0xMC45LDUuMS0xMC45LDExLjQNCgkJQzEwNi45LDUwLjYsMTExLjcsNTUuNSwxMTcuOCw1NS41eiIvPg0KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNDQuNCwyNi4xYzEzLjQsMCwyNC40LDExLDI0LjQsMjQuNVMxNTcuOSw3NSwxNDQuNCw3NWgtNi4xYzAuNy0wLjksMC45LTIuMiwwLjktNC41VjMwLjINCgkJYzAtMS42LTAuMy0zLjQtMC45LTQuMUgxNDQuNHogTTE0NS43LDY4LjRjOS4yLTAuNywxNi41LTguNCwxNi41LTE3LjhzLTcuMy0xNy4xLTE2LjUtMTcuN1Y2OC40eiIvPg0KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xOTMuMyw2Ny4zbC0xLjQsNy45Yy0wLjMtMC4zLTEuNC0wLjYtMy4xLTAuNmgtMTcuN2MwLjctMC45LDAuOS0yLjIsMC45LTQuNVYzMC42YzAtMS42LTAuMy0zLjQtMC45LTQuMWgxNw0KCQljMS44LDAsMi42LTAuMywyLjktMC42bDEuNCw3LjlsLTAuMS0wLjFjLTAuOS0wLjctMi42LTAuOS0zLjYtMC45aC0xMC4ydjIwLjJoNi45YzEuNSwwLDMuNS0wLjMsNC0wLjl2OC4yYy0wLjYtMC44LTIuNi0wLjktNC0wLjkNCgkJaC02Ljl2OS4yaDExLjFDMTkwLjcsNjguNCwxOTIuMyw2OC4xLDE5My4zLDY3LjNMMTkzLjMsNjcuM3oiLz4NCgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTk2LDI2LjFoOC40YzEwLjUsMCwxOCw3LjYsMTgsMTdjMCw2LjctNCwxMy4xLTEwLjgsMTZjMC41LDcuNCw2LjIsOS41LDkuMSw5LjVjMC43LDAsMS44LTAuMiwyLjItMC45djYuOQ0KCQljLTAuOSwwLjYtMi4yLDAuOS0zLjMsMC45Yy01LjcsMC0xNC45LTUuNy0xNC41LTE3LjljMC4xLTEuNSwwLjItMy4xLDAuNi00LjFjNS4zLDAuNCwxMC00LjcsMTAtMTAuMmMwLTQuNC0zLjQtMTAuNS0xMC41LTEwLjUNCgkJaC0xLjl2MzcuNWMwLDIuMiwwLjMsMy43LDAuOSw0LjVIMTk2YzAuNy0wLjksMC45LTIuMiwwLjktNC41VjMwLjZDMTk3LDI4LjMsMTk2LjcsMjcsMTk2LDI2LjF6Ii8+DQoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTIyNi4xLDI2LjRoOC40Yy0wLjYsMC44LTAuOSwyLjItMC45LDQuNVYzM2wxNCwxOC42VjMwLjljMC0yLjItMC4zLTMuNi0wLjktNC41aDguNA0KCQljLTAuNiwwLjgtMC45LDIuMi0wLjksNC41djM5LjNjMCwyLjIsMC4zLDMuNywwLjksNC41aC04LjRjMC43LTAuOSwwLjktMi4yLDAuOS00LjV2LThsLTE0LTE4LjV2MjYuNWMwLDIuMiwwLjMsMy43LDAuOSw0LjVoLTguNA0KCQljMC44LTAuOSwwLjktMi4yLDAuOS00LjVWMzAuOUMyMjcsMjguNywyMjYuOCwyNy4zLDIyNi4xLDI2LjR6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTI3My40LDM5LjdjMCwxMy41LDkuNCwyNS44LDIzLjIsMjUuOGM4LjQsMCwyMS40LTQuNywyMS40LTIwLjZ2LTFjMC0yLjItMC4zLTMuNi0wLjktNC41aDguNA0KCQljLTAuNiwwLjgtMC45LDIuMi0wLjksNC41djI4LjljMCwxNy0xMi4zLDI0LTIxLjEsMjRjLTguNiwwLTE3LjQtNi43LTE3LjQtMTYuM2MwLTMuNywxLjMtNi44LDMuNC05DQoJCWMtMTMuNy0zLjEtMjMuOC0xNS4yLTIzLjgtMzEuNGMwLTE5LjksMTUuNS0zNi45LDM2LjItMzYuOWMxNy4yLDAsMjMuNiwxMS44LDIzLjYsMTguMmMwLDQuOS0zLjgsOS4yLTguMSw5LjINCgkJYy0zLjQsMC01LjQtMi43LTUuNC01YzAtMS4yLDAuNS0xLjgsMS4xLTIuMmMwLDEuMSwxLjIsMS44LDIuMiwxLjhjMS40LDAsMi44LTEuNSwyLjgtMy40YzAtMy42LTQuMy0xMS4zLTE2LTExLjMNCgkJQzI4Ni42LDEwLjQsMjczLjQsMjMuNywyNzMuNCwzOS43eiBNMzE4LDYyLjFjLTMuNCw0LjctOC42LDcuOC0xNC4xLDkuMmMxLDEuMywxLjYsMywxLjYsNC43YzAsMy41LTIuMyw1LjQtNC41LDUuNA0KCQljLTEuMSwwLTIuMy0wLjUtMi44LTEuMWMxLjEsMCwxLjgtMS4yLDEuOC0yLjJjMC0xLjQtMS4yLTIuOC0zLjItMi44Yy0yLjgsMC00LjMsMi43LTQuMyw1LjRjMCw1LjEsNS4zLDkuMywxMSw5LjMNCgkJYzUuOSwwLDE0LjUtNC40LDE0LjUtMTcuMVY2Mi4xeiIvPg0KCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMjguNSwyNi4xaDguNGMxMC41LDAsMTgsNy42LDE4LDE3YzAsNi43LTQsMTMuMS0xMC44LDE2YzAuNSw3LjQsNi4yLDkuNSw5LjEsOS41YzAuNywwLDEuOC0wLjIsMi4yLTAuOXY2LjkNCgkJYy0wLjksMC42LTIuMiwwLjktMy4zLDAuOWMtNS43LDAtMTQuOS01LjctMTQuNS0xNy45YzAuMS0xLjUsMC4yLTMuMSwwLjYtNC4xYzUuMywwLjQsMTAtNC43LDEwLTEwLjJjMC00LjQtMy40LTEwLjUtMTAuNS0xMC41DQoJCUgzMzZ2MzcuNWMwLDIuMiwwLjMsMy43LDAuOSw0LjVoLTguNGMwLjctMC45LDAuOS0yLjIsMC45LTQuNVYzMC42QzMyOS41LDI4LjMsMzI5LjIsMjcsMzI4LjUsMjYuMXoiLz4NCgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMzgwLjgsNjcuM2wtMS40LDcuOWMtMC4zLTAuMy0xLjQtMC42LTMuMS0wLjZoLTE3LjdjMC43LTAuOSwwLjktMi4yLDAuOS00LjVWMzAuNmMwLTEuNi0wLjMtMy40LTAuOS00LjFoMTcNCgkJYzEuOCwwLDIuNi0wLjMsMi45LTAuNmwxLjQsNy45bC0wLjEtMC4xYy0wLjktMC43LTIuNi0wLjktMy42LTAuOUgzNjZ2MjAuMmg2LjljMS41LDAsMy41LTAuMyw0LTAuOXY4LjJjLTAuNi0wLjgtMi42LTAuOS00LTAuOQ0KCQlIMzY2djkuMmgxMS4xQzM3OC4yLDY4LjQsMzc5LjgsNjguMSwzODAuOCw2Ny4zTDM4MC44LDY3LjN6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTQwNS43LDY3LjNsLTEuNCw3LjljLTAuMy0wLjMtMS40LTAuNi0zLjEtMC42aC0xNy43YzAuNy0wLjksMC45LTIuMiwwLjktNC41VjMwLjZjMC0xLjYtMC4zLTMuNC0wLjktNC4xaDE3DQoJCWMxLjgsMCwyLjYtMC4zLDIuOS0wLjZsMS40LDcuOWwtMC4xLTAuMWMtMC45LTAuNy0yLjYtMC45LTMuNi0wLjloLTEwLjJ2MjAuMmg2LjljMS41LDAsMy41LTAuMyw0LTAuOXY4LjJjLTAuNi0wLjgtMi42LTAuOS00LTAuOQ0KCQloLTYuOXY5LjJINDAyQzQwMyw2OC40LDQwNC43LDY4LjEsNDA1LjcsNjcuM0w0MDUuNyw2Ny4zeiIvPg0KCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik00MDguNCwyNi40aDguNGMtMC42LDAuOC0wLjksMi4yLTAuOSw0LjVWMzNsMTQsMTguNlYzMC45YzAtMi4yLTAuMy0zLjYtMC45LTQuNWg4LjQNCgkJYy0wLjYsMC44LTAuOSwyLjItMC45LDQuNXYzOS4zYzAsMi4yLDAuMywzLjcsMC45LDQuNWgtOC40YzAuNy0wLjksMC45LTIuMiwwLjktNC41di04bC0xNC0xOC41djI2LjVjMCwyLjIsMC4zLDMuNywwLjksNC41aC04LjQNCgkJYzAuOC0wLjksMC45LTIuMiwwLjktNC41VjMwLjlDNDA5LjMsMjguNyw0MDkuMiwyNy4zLDQwOC40LDI2LjR6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTQ1NS43LDM5LjdjMCwxMy41LDkuNCwyNS44LDIzLjIsMjUuOGM4LjQsMCwyMS40LTQuNywyMS40LTIwLjZ2LTFjMC0yLjItMC4zLTMuNi0wLjktNC41aDguNA0KCQljLTAuNiwwLjgtMC45LDIuMi0wLjksNC41djI4LjljMCwxNy0xMi4zLDI0LTIxLjEsMjRjLTguNiwwLTE3LjQtNi43LTE3LjQtMTYuM2MwLTMuNywxLjMtNi44LDMuNC05DQoJCWMtMTMuNy0zLjEtMjMuOC0xNS4yLTIzLjgtMzEuNGMwLTE5LjksMTUuNS0zNi45LDM2LjItMzYuOWMxNy4yLDAsMjMuNiwxMS44LDIzLjYsMTguMmMwLDQuOS0zLjgsOS4yLTguMSw5LjINCgkJYy0zLjQsMC01LjQtMi43LTUuNC01YzAtMS4yLDAuNS0xLjgsMS4xLTIuMmMwLDEuMSwxLjIsMS44LDIuMiwxLjhjMS40LDAsMi44LTEuNSwyLjgtMy40YzAtMy42LTQuMy0xMS4zLTE2LTExLjMNCgkJQzQ2OC45LDEwLjQsNDU1LjcsMjMuNyw0NTUuNywzOS43eiBNNTAwLjMsNjIuMWMtMy40LDQuNy04LjYsNy44LTE0LjEsOS4yYzEsMS4zLDEuNiwzLDEuNiw0LjdjMCwzLjUtMi4zLDUuNC00LjUsNS40DQoJCWMtMS4xLDAtMi4zLTAuNS0yLjgtMS4xYzEuMSwwLDEuOC0xLjIsMS44LTIuMmMwLTEuNC0xLjItMi44LTMuMi0yLjhjLTIuOCwwLTQuMywyLjctNC4zLDUuNGMwLDUuMSw1LjMsOS4zLDExLDkuMw0KCQljNS45LDAsMTQuNS00LjQsMTQuNS0xNy4xVjYyLjF6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTUxOC40LDc0LjdoLTljMC45LTAuOCwxLjgtMi4zLDIuNC00LjVsMTAuMy0zOS4zYzAuNi0yLjMsMC41LTMuNi0wLjEtNC40di0wLjFoOWwtMC4xLDAuMQ0KCQljLTAuNSwwLjgtMC43LDIuMSwwLDQuNGwxMC4zLDM5LjNjMC41LDIuMiwxLjYsMy43LDIuNCw0LjVoLTljMC42LTAuOCwwLjgtMi4xLDAuMS00LjVsLTEuMi00LjJoLTE0LjFsLTEuMiw0LjINCgkJQzUxNy43LDcyLjYsNTE3LjgsNzMuOSw1MTguNCw3NC43eiBNNTIxLjMsNTkuOUg1MzJsLTUuMS0yNC4xTDUyMS4zLDU5Ljl6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTU0NS4xLDI2LjFoOC40YzEwLjUsMCwxOCw3LjYsMTgsMTdjMCw2LjctNCwxMy4xLTEwLjgsMTZjMC41LDcuNCw2LjIsOS41LDkuMSw5LjVjMC43LDAsMS44LTAuMiwyLjItMC45djYuOQ0KCQljLTAuOSwwLjYtMi4yLDAuOS0zLjMsMC45Yy01LjcsMC0xNC45LTUuNy0xNC41LTE3LjljMC4xLTEuNSwwLjItMy4xLDAuNi00LjFjNS4zLDAuNCwxMC00LjcsMTAtMTAuMmMwLTQuNC0zLjQtMTAuNS0xMC41LTEwLjUNCgkJaC0xLjl2MzcuNWMwLDIuMiwwLjMsMy43LDAuOSw0LjVoLTguNGMwLjctMC45LDAuOS0yLjIsMC45LTQuNVYzMC42QzU0Ni4xLDI4LjMsNTQ1LjgsMjcsNTQ1LjEsMjYuMXoiLz4NCgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNTgxLjMsMjYuMWMxMy40LDAsMjQuNCwxMSwyNC40LDI0LjVTNTk0LjcsNzUsNTgxLjMsNzVoLTYuMWMwLjctMC45LDAuOS0yLjIsMC45LTQuNVYzMC4yDQoJCWMwLTEuNi0wLjMtMy40LTAuOS00LjFINTgxLjN6IE01ODIuNiw2OC40YzkuMi0wLjcsMTYuNS04LjQsMTYuNS0xNy44cy03LjMtMTcuMS0xNi41LTE3LjdWNjguNHoiLz4NCgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNjMwLjIsNjcuM2wtMS40LDcuOWMtMC4zLTAuMy0xLjQtMC42LTMuMS0wLjZINjA4YzAuNy0wLjksMC45LTIuMiwwLjktNC41VjMwLjZjMC0xLjYtMC4zLTMuNC0wLjktNC4xaDE3DQoJCWMxLjgsMCwyLjYtMC4zLDIuOS0wLjZsMS40LDcuOWwtMC4xLTAuMWMtMC45LTAuNy0yLjYtMC45LTMuNi0wLjloLTEwLjJ2MjAuMmg2LjljMS41LDAsMy41LTAuMyw0LTAuOXY4LjJjLTAuNi0wLjgtMi42LTAuOS00LTAuOQ0KCQloLTYuOXY5LjJoMTEuMUM2MjcuNiw2OC40LDYyOS4yLDY4LjEsNjMwLjIsNjcuM0w2MzAuMiw2Ny4zeiIvPg0KCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik02MzIuOSwyNi40aDguNGMtMC42LDAuOC0wLjksMi4yLTAuOSw0LjVWMzNsMTQsMTguNlYzMC45YzAtMi4yLTAuMy0zLjYtMC45LTQuNWg4LjQNCgkJYy0wLjYsMC44LTAuOSwyLjItMC45LDQuNXYzOS4zYzAsMi4yLDAuMywzLjcsMC45LDQuNWgtOC40YzAuNy0wLjksMC45LTIuMiwwLjktNC41di04bC0xNC0xOC41djI2LjVjMCwyLjIsMC4zLDMuNywwLjksNC41aC04LjQNCgkJYzAuOC0wLjksMC45LTIuMiwwLjktNC41VjMwLjlDNjMzLjgsMjguNyw2MzMuNywyNy4zLDYzMi45LDI2LjR6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==" alt="ModernGreenGarden" style="height:36px;width:auto"/></a><p>ModernGreenGarden — servicii profesionale de grădinărit și peisagistică în București. Peste 10+ ani de experiență.</p></div>
+    <div class="footer-col"><h4>Servicii</h4><ul><li><a href="sisteme-irigatii.html">Sisteme de irigații automatizate</a></li><li><a href="gazon-rulou.html">Gazon rulou și plantare gazon</a></li><li><a href="amenajari-gradini.html">Amenajări grădini și spații verzi</a></li><li><a href="intretinere-gradini.html">Întreținere grădini și spații verzi</a></li><li><a href="consultanta-proiectare.html">Consultanță și proiectare</a></li><li><a href="lucrari-sezon.html">Lucrări de sezon</a></li></ul></div>
+    <div class="footer-col"><h4>Utile</h4><ul>
+      <li><a href="despre-noi.html">Despre noi</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="servicii.html">Toate serviciile</a></li>
+      <li><a href="http://www.anpc.gov.ro/" target="_blank">ANPC</a></li>
+    </ul></div>
   </div>
-</section>
-
-<section style="background:var(--w)">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start">
-      <div style="position:relative;height:520px">
-        <div style="width:80%;height:400px;border-radius:20px;overflow:hidden;position:absolute;top:0;left:0"><img src="${g('ab1-img')}" alt="Echipa ${g('g-name')}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
-        <div style="position:absolute;top:50%;left:62%;transform:translate(-50%,-50%);background:var(--gd);color:#fff;border-radius:16px;padding:1.2rem 1.6rem;text-align:center;box-shadow:0 8px 28px rgba(28,58,40,.3);z-index:5"><strong style="font-family:var(--serif);font-size:2.4rem;display:block;color:var(--gold)">${g('ab-exp')}</strong><span style="font-size:.78rem;opacity:.7">ani de experiență</span></div>
-        <div style="width:58%;height:260px;border-radius:20px;overflow:hidden;position:absolute;bottom:0;right:0;border:5px solid var(--w);box-shadow:0 12px 40px rgba(28,58,40,.12)"><img src="${g('ab2-img')}" alt="Lucrari amenajare gradina" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div>
-      </div>
-      <div>
-        <div class="sl">Povestea noastră</div>
-        <h2 class="st">Cine suntem</h2>
-        <p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">${g('ab-p1')}</p>
-        <p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">${g('ab-p2')}</p>
-        <p style="color:var(--tm);line-height:1.8;margin-bottom:2rem">${g('ab-p3')}</p>
-        <a href="contact.html" class="btn-primary" style="margin-right:1rem">Solicită ofertă</a>
-        <a href="servicii.html" class="btn-outline-dark">Serviciile noastre</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section style="background:var(--el)">
-  <div class="container">
-    <div class="sh" style="text-align:center;max-width:600px;margin-left:auto;margin-right:auto"><div class="sl">De ce să ne alegi</div><h2 class="st">Avantajele ${g('g-name')}</h2></div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">${featsHtml}</div>
-  </div>
-</section>
-
-${getTestiSection()}
-
-<section style="background:var(--el);text-align:center">
-  <div class="container" style="max-width:600px">
-    <div class="sl">Hai să colaborăm</div>
-    <h2 class="st">Gata să îți transformi grădina?</h2>
-    <p class="ss" style="margin:0 auto 2rem">Contactează-ne astăzi pentru o consultanță gratuită la fața locului.</p>
-    <a href="contact.html" class="btn-primary" style="margin-right:1rem">${g('h-btn1')}</a>
-    <a href="tel:${g('g-phone-link')}" class="btn-outline-dark">📞 ${g('g-phone')}</a>
-  </div>
-</section>
-</main>
-${getBreadcrumbJsonLd([{name:'Acasă',url:'index.html'},{name:'Despre noi'}])}
-` + getFooter('');
-}
-
-function genServices() {
-  const svAll = services.map(s=>`
-    <div class="service-card">
-      <div class="sv-img"><img src="${s.img}" alt="${s.title}" loading="lazy"/></div>
-      <div class="sv-body"><div class="sv-icon">${s.icon}</div><h3>${s.title}</h3><p>${s.desc}</p>
-      <a href="service/${s.file}.html" class="sv-link">Detalii complete →</a></div>
-    </div>`).join('');
-
-  return getHead(g('sv-title'),'servicii.html',g('sv-sub')) + getTopbar() + getNav('servicii') + `<main>
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Servicii</span></div>
-    <div class="page-hero-badge">🌿 Ce oferim</div>
-    <h1>${g('sv-title')}</h1>
-    <p>${g('sv-sub')}</p>
-  </div>
-</section>
-
-<section style="background:var(--el)">
-  <div class="container">
-    <div class="services-grid">${svAll}</div>
-  </div>
-</section>
-
-${getTestiSection()}
-
-<section style="background:var(--el);text-align:center">
-  <div class="container" style="max-width:580px">
-    <div class="sl">Ofertă personalizată</div>
-    <h2 class="st">Nu găsești ce cauți?</h2>
-    <p class="ss" style="margin:0 auto 2rem">Contactează-ne și vom găsi împreună soluția potrivită pentru grădina ta.</p>
-    <a href="contact.html" class="btn-primary">Contactează-ne</a>
-  </div>
-</section>
-</main>
-${getBreadcrumbJsonLd([{name:'Acasă',url:'index.html'},{name:'Servicii'}])}
-` + getFooter('');
-}
-
-function genContact() {
-  const mapSrc = g('ct-map') || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.0!2d26.1!3d44.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1';
-
-  return getHead(g('ct-title'),'contact.html',g('ct-sub')) + getTopbar() + getNav('contact') + `<main>
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Contact</span></div>
-    <div class="page-hero-badge">📞 Suntem la dispoziție</div>
-    <h1>${g('ct-title')}</h1>
-    <p>${g('ct-sub')}</p>
-  </div>
-</section>
-
-<section style="background:var(--el)">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start">
-      <div>
-        <div class="sl">Informații contact</div>
-        <h2 style="font-family:var(--serif);font-size:2rem;color:var(--gd);margin-bottom:1.5rem">Dă-ne un semn</h2>
-        <div style="display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2rem">
-          <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📍</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Adresă</strong><p style="color:var(--td);line-height:1.5">${g('g-address')}</p></div></div>
-          <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📞</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Telefon</strong><a href="tel:${g('g-phone-link')}" style="color:var(--td);font-size:1.05rem;font-weight:500">${g('g-phone')}</a></div></div>
-          <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">✉️</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Email</strong><a href="mailto:${g('g-email')}" style="color:var(--td);font-size:1.05rem;font-weight:500">${g('g-email')}</a></div></div>
-          <div style="display:flex;gap:1rem;align-items:flex-start"><div style="width:50px;height:50px;background:var(--gp);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🕐</div><div><strong style="display:block;font-size:.78rem;font-weight:600;color:var(--gm);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem">Program</strong><p style="color:var(--td)">${g('g-hours')}</p></div></div>
-        </div>
-        <div style="border-radius:16px;overflow:hidden;height:280px;border:1px solid rgba(28,58,40,.1)">
-          <iframe src="${mapSrc}" width="100%" height="280" style="border:0" allowfullscreen loading="lazy"></iframe>
-        </div>
-      </div>
-      ${getContactForm('')}
-    </div>
-  </div>
-</section>
-</main>
-${getBreadcrumbJsonLd([{name:'Acasă',url:'index.html'},{name:'Contact'}])}
-` + getFooter('');
-}
-
-function genServicePage(s, prefix='../') {
-  const others = services.filter(o=>o.file!==s.file).slice(0,3).map(o=>`
-    <div class="service-card" style="flex:1;min-width:220px">
-      <div class="sv-img" style="height:150px"><img src="${prefix}${o.img.startsWith('http')?'':prefix}${o.img}" alt="${o.title}" loading="lazy"/></div>
-      <div class="sv-body"><div class="sv-icon">${o.icon}</div><h3>${o.title}</h3><p>${o.desc.substring(0,80)}...</p>
-      <a href="${o.file}.html" class="sv-link">Detalii →</a></div>
-    </div>`).join('');
-
-  const imgSrc = s.img;
-  const fullDesc = (s.fullDesc||s.desc).replace(/\n\n/g,'</p><p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">');
-
-  return getHead(s.title,'service/'+s.file+'.html',s.desc,s.img) + getTopbar('../') + getNav('servicii','../') + `<main>
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="../index.html">Acasă</a><span>/</span><a href="../servicii.html">Servicii</a><span>/</span><span>${s.title}</span></div>
-    <div class="page-hero-badge">${s.icon} Serviciu premium</div>
-    <h1>${s.title}</h1>
-    <p>${s.desc}</p>
-  </div>
-</section>
-
-<section style="background:var(--w)">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:5rem;align-items:start">
-      <div>
-        <img src="${imgSrc}" alt="${s.title}" style="width:100%;border-radius:20px;margin-bottom:2rem;box-shadow:0 12px 40px rgba(28,58,40,.12)" loading="lazy"/>
-        <div style="background:var(--el);border-radius:16px;padding:1.75rem;border:1px solid rgba(28,58,40,.07)">
-          <h3 style="font-family:var(--serif);font-size:1.4rem;color:var(--gd);margin-bottom:1rem">Solicită o ofertă pentru acest serviciu</h3>
-          <p style="color:var(--tm);font-size:.9rem;margin-bottom:1.25rem">Completează formularul sau sună-ne direct. Răspundem în maxim 24 de ore.</p>
-          <a href="../contact.html" class="btn-primary" style="margin-right:.75rem">Solicită ofertă</a>
-          <a href="tel:${g('g-phone-link')}" class="btn-outline-dark">📞 Sună acum</a>
-        </div>
-      </div>
-      <div>
-        <div class="sl">Despre serviciu</div>
-        <h2 class="st">${s.title}</h2>
-        <p style="color:var(--tm);line-height:1.8;margin-bottom:1rem">${fullDesc}</p>
-        <div style="margin-top:2rem;padding:1.5rem;background:var(--gd);border-radius:16px;color:#fff">
-          <div style="font-family:var(--serif);font-size:1.15rem;margin-bottom:.5rem">Ai întrebări?</div>
-          <p style="font-size:.875rem;opacity:.75;margin-bottom:1.25rem">Echipa noastră îți stă la dispoziție pentru orice detaliu.</p>
-          <a href="tel:${g('g-phone-link')}" style="color:var(--gold);font-weight:600;font-size:.9rem">📞 ${g('g-phone')}</a><br/>
-          <a href="mailto:${g('g-email')}" style="color:rgba(255,255,255,.65);font-size:.85rem;margin-top:.35rem;display:block">${g('g-email')}</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section style="background:var(--el)">
-  <div class="container">
-    <div class="sh"><div class="sl">Mai multe servicii</div><h2 class="st">Explorează și celelalte servicii</h2></div>
-    <div style="display:flex;gap:1.5rem;flex-wrap:wrap">${others}</div>
-    <div style="text-align:center;margin-top:2.5rem"><a href="../servicii.html" class="btn-green">Toate serviciile →</a></div>
-  </div>
-</section>
-</main>
-${getServiceJsonLd(s)}
-${getBreadcrumbJsonLd([{name:'Acasă',url:'index.html'},{name:'Servicii',url:'servicii.html'},{name:s.title}])}
-` + getFooter('../');
-}
-
-// ── PRIVACY & COOKIES PAGES ─────────────────────────────────
-function genPrivacyPage() {
-  const name=g('g-name'), email=g('g-email'), addr=g('g-address');
-  return getHead('Politica de Confidențialitate','politica-de-confidentialitate.html','Politica de confidențialitate și protecția datelor personale conform GDPR.') + getTopbar() + getNav('','') + `<main>
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Politica de Confidențialitate</span></div>
-    <h1>Politica de Confidențialitate</h1>
-    <p>Informații privind prelucrarea datelor personale conform Regulamentului (UE) 2016/679 (GDPR).</p>
-  </div>
-</section>
-<section style="background:var(--w)">
-  <div class="container" style="max-width:800px">
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">1. Operator de date</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">${name}, cu sediul în ${addr}, email: ${email}, este operatorul datelor dumneavoastră personale colectate prin intermediul acestui site.</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">2. Date colectate</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Colectăm următoarele categorii de date personale:<br/>
-    — <strong>Date de identificare:</strong> nume, prenume<br/>
-    — <strong>Date de contact:</strong> număr de telefon, adresă de email<br/>
-    — <strong>Date privind proiectul:</strong> detalii despre serviciul solicitat<br/>
-    — <strong>Date tehnice:</strong> adresa IP, tip browser, date de navigare (prin cookies)</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">3. Scopul prelucrării</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Datele dumneavoastră sunt prelucrate pentru:<br/>
-    — Răspunsul la solicitările trimise prin formularul de contact<br/>
-    — Transmiterea de oferte personalizate pentru serviciile noastre<br/>
-    — Îmbunătățirea experienței pe site (date anonimizate)<br/>
-    — Respectarea obligațiilor legale</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">4. Temeiul legal</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Prelucrarea datelor se bazează pe: consimțământul dumneavoastră (art. 6 alin. 1 lit. a GDPR), executarea unui contract sau a unor măsuri precontractuale (art. 6 alin. 1 lit. b), și interesul nostru legitim (art. 6 alin. 1 lit. f).</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">5. Durata stocării</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Datele personale sunt stocate pe durata necesară îndeplinirii scopurilor pentru care au fost colectate, dar nu mai mult de 3 ani de la ultima interacțiune cu dumneavoastră, cu excepția cazurilor în care legislația impune o perioadă mai lungă.</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">6. Drepturile dumneavoastră</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Conform GDPR, aveți următoarele drepturi:<br/>
-    — <strong>Dreptul de acces</strong> la datele personale<br/>
-    — <strong>Dreptul la rectificare</strong> a datelor inexacte<br/>
-    — <strong>Dreptul la ștergere</strong> („dreptul de a fi uitat")<br/>
-    — <strong>Dreptul la restricționarea prelucrării</strong><br/>
-    — <strong>Dreptul la portabilitatea datelor</strong><br/>
-    — <strong>Dreptul la opoziție</strong><br/>
-    — <strong>Dreptul de a depune plângere</strong> la ANSPDCP (Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal)</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">7. Contact</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Pentru exercitarea drepturilor sau orice întrebare privind prelucrarea datelor, ne puteți contacta la: <strong>${email}</strong>.</p>
-
-    <p style="color:var(--tm);line-height:1.8;font-size:.85rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(28,58,40,.1)">Ultima actualizare: ${new Date().toLocaleDateString('ro-RO',{year:'numeric',month:'long',day:'numeric'})}</p>
-  </div>
-</section>
-</main>
-${getBreadcrumbJsonLd([{name:'Acasă',url:'index.html'},{name:'Politica de Confidențialitate'}])}
-` + getFooter('');
-}
-
-function genCookiesPage() {
-  const name=g('g-name'), email=g('g-email');
-  return getHead('Politica de Cookies','politica-de-cookies.html','Informații despre cookie-urile utilizate pe site-ul nostru.') + getTopbar() + getNav('','') + `<main>
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb"><a href="index.html">Acasă</a><span>/</span><span>Politica de Cookies</span></div>
-    <h1>Politica de Cookies</h1>
-    <p>Informații despre cookie-urile utilizate pe site-ul ${name}.</p>
-  </div>
-</section>
-<section style="background:var(--w)">
-  <div class="container" style="max-width:800px">
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">1. Ce sunt cookie-urile?</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Cookie-urile sunt fișiere text de mici dimensiuni stocate pe dispozitivul dumneavoastră atunci când vizitați un site web. Acestea permit site-ului să vă recunoască dispozitivul și să rețină anumite informații despre vizita dumneavoastră.</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">2. Cookie-uri utilizate</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:.75rem">Site-ul nostru utilizează următoarele tipuri de cookies:</p>
-    <div style="margin-bottom:1.5rem;overflow-x:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:.875rem">
-        <thead><tr style="background:var(--el)">
-          <th style="padding:.75rem;text-align:left;border:1px solid rgba(28,58,40,.1);font-weight:600;color:var(--gd)">Tip</th>
-          <th style="padding:.75rem;text-align:left;border:1px solid rgba(28,58,40,.1);font-weight:600;color:var(--gd)">Scop</th>
-          <th style="padding:.75rem;text-align:left;border:1px solid rgba(28,58,40,.1);font-weight:600;color:var(--gd)">Durată</th>
-        </tr></thead>
-        <tbody>
-          <tr><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Esențiale</td><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Funcționarea corectă a site-ului</td><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Sesiune</td></tr>
-          <tr><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Analitice (Google Analytics)</td><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Statistici anonimizate despre trafic și comportament</td><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Până la 2 ani</td></tr>
-          <tr><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Google Maps</td><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Afișarea hărții pe pagina de contact</td><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Sesiune</td></tr>
-          <tr><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Google Fonts</td><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Încărcarea fonturilor pentru design</td><td style="padding:.75rem;border:1px solid rgba(28,58,40,.1);color:var(--tm)">Sesiune</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">3. Gestionarea cookie-urilor</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Puteți controla și/sau șterge cookie-urile după preferințe. Puteți șterge toate cookie-urile care sunt deja pe dispozitivul dumneavoastră și puteți seta majoritatea browserelor să blocheze plasarea acestora. Setările se găsesc de obicei în meniul „Opțiuni" sau „Preferințe" al browserului.</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">4. Cookie-uri terțe</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Unele cookie-uri sunt plasate de servicii terțe care apar pe paginile noastre. Nu controlăm aceste cookie-uri — vă recomandăm să consultați politicile de confidențialitate ale serviciilor respective (Google Analytics, Google Maps, Google Fonts).</p>
-
-    <h2 style="font-family:var(--serif);font-size:1.5rem;color:var(--gd);margin-bottom:1rem">5. Contact</h2>
-    <p style="color:var(--tm);line-height:1.8;margin-bottom:1.5rem">Pentru orice întrebare legată de utilizarea cookie-urilor, ne puteți contacta la: <strong>${email}</strong>.</p>
-
-    <p style="color:var(--tm);line-height:1.8;font-size:.85rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(28,58,40,.1)">Ultima actualizare: ${new Date().toLocaleDateString('ro-RO',{year:'numeric',month:'long',day:'numeric'})}</p>
-  </div>
-</section>
-</main>
-${getBreadcrumbJsonLd([{name:'Acasă',url:'index.html'},{name:'Politica de Cookies'}])}
-` + getFooter('');
-}
-
-// ── RENDER PREVIEW ───────────────────────────────────────────
-function renderPreview() {
-  let html = '';
-  if(currentPage==='index') html=genIndex();
-  else if(currentPage==='despre-noi') html=genAbout();
-  else if(currentPage==='servicii') html=genServices();
-  else if(currentPage==='contact') html=genContact();
-  else if(currentPage.startsWith('sv')) {
-    const idx=parseInt(currentPage.replace('sv',''));
-    if(services[idx]) html=genServicePage(services[idx]);
-  }
-  if(html) document.getElementById('preview').srcdoc=html;
-}
-
-let updateTimer;
-function update() {
-  clearTimeout(updateTimer);
-  updateTimer=setTimeout(()=>{ renderPreview(); saveState(); }, 350);
-}
-
-// ── SAVE/RESTORE ─────────────────────────────────────────────
-function saveState() {
-  try{localStorage.setItem('ep2_sv',JSON.stringify(services));localStorage.setItem('ep2_ts',JSON.stringify(testis));localStorage.setItem('ep2_ft',JSON.stringify(features));}catch(e){}
-}
-function loadState() {
-  try{
-    const sv=localStorage.getItem('ep2_sv'); if(sv)services=JSON.parse(sv);
-    const ts=localStorage.getItem('ep2_ts'); if(ts)testis=JSON.parse(ts);
-    const ft=localStorage.getItem('ep2_ft'); if(ft)features=JSON.parse(ft);
-  }catch(e){}
-}
-
-// ── RESET ────────────────────────────────────────────────────
-function resetAll() {
-  if(!confirm('Resetezi toate modificările?')) return;
-  localStorage.removeItem('ep2_sv');localStorage.removeItem('ep2_ts');localStorage.removeItem('ep2_ft');
-  location.reload();
-}
-
-// ── EXPORT ZIP ───────────────────────────────────────────────
-async function exportZip() {
-  const btn=document.querySelector('.btn-export');
-  btn.textContent='⏳ Se generează...';btn.disabled=true;
-  try {
-    const zip=new JSZip();
-    const svcFolder=zip.folder('service');
-
-    zip.file('index.html',genIndex());
-    zip.file('despre-noi.html',genAbout());
-    zip.file('servicii.html',genServices());
-    zip.file('contact.html',genContact());
-
-    // Privacy & Cookies pages with real GDPR content
-    zip.file('politica-de-confidentialitate.html',genPrivacyPage());
-    zip.file('politica-de-cookies.html',genCookiesPage());
-
-    services.forEach(s=>{
-      svcFolder.file(s.file+'.html',genServicePage(s,'../'));
-    });
-
-    // robots.txt
-    const siteUrl=g('g-url').replace(/\/$/,'');
-    zip.file('robots.txt',`User-agent: *\nAllow: /\nSitemap: ${siteUrl}/sitemap.xml\n`);
-
-    // sitemap.xml
-    const today=new Date().toISOString().split('T')[0];
-    const sitemapUrls=[
-      {loc:'index.html',priority:'1.0',changefreq:'weekly'},
-      {loc:'despre-noi.html',priority:'0.8',changefreq:'monthly'},
-      {loc:'servicii.html',priority:'0.9',changefreq:'weekly'},
-      {loc:'contact.html',priority:'0.8',changefreq:'monthly'},
-      {loc:'politica-de-confidentialitate.html',priority:'0.3',changefreq:'yearly'},
-      {loc:'politica-de-cookies.html',priority:'0.3',changefreq:'yearly'},
-      ...services.map(s=>({loc:`service/${s.file}.html`,priority:'0.7',changefreq:'monthly'}))
-    ];
-    const sitemapXml=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls.map(u=>`  <url>\n    <loc>${siteUrl}/${u.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`).join('\n')}\n</urlset>`;
-    zip.file('sitemap.xml',sitemapXml);
-
-    // favicon.svg
-    const brandColor=g('col-deep');
-    const initial=(g('g-name')||'E').charAt(0).toUpperCase();
-    zip.file('favicon.svg',`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="${brandColor}"/><text x="32" y="44" font-family="Georgia,serif" font-size="36" font-weight="bold" fill="#fff" text-anchor="middle">${initial}</text></svg>`);
-
-    const blob=await zip.generateAsync({type:'blob'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='moderngreengarden-website.zip';
-    a.click();
-    showToast('✓ ZIP descărcat! Dezarhivează și deschide index.html');
-  } catch(e) {
-    showToast('Eroare la export: '+e.message);
-    console.error(e);
-  }
-  btn.textContent='⬇ Exportă ZIP (toate paginile)';btn.disabled=false;
-}
-
-// ── TOAST ────────────────────────────────────────────────────
-function showToast(msg,dur=4000) {
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),dur);
-}
-
-// ── INIT ─────────────────────────────────────────────────────
-loadState();
-renderServicesList();
-renderTestiList();
-renderFeaturesList();
-update();
-</script>
-</body>
-</html>
+  <div class="footer-bottom">
+    <span>© 2025 ModernGreenGarden – Amenajări Grădini & Sisteme Irigații București.</span>
+    <div class="footer-legal"><a href="politica-de-confidentialitate.html">Confidențialitate</a><a href="politica-de-cookies.html">Cookies</a></div>
+  </div></div></footer><script>document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>{document.getElementById('menu-toggle').checked=false}))</script></body></html>
