@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export PATH=\"/c/Program Files/GitHub CLI:$PATH\")",
+      "Bash(gh api:*)",
+      "Bash(1:*)",
+      "Bash(test:*)",
+      "Bash(for f in amenajari-gradini.html consultanta-proiectare.html gazon-rulou.html intretinere-gradini.html lucrari-sezon.html sisteme-irigatii.html)",
+      "Bash(do sed -i 's|\\\\.\\\\./||g' \"$f\")",
+      "Bash(done)",
+      "Bash(grep:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:florinmve.github.io)",
+      "Bash(cd:*)",
+      "Bash(gh repo:*)",
+      "Bash(dig:*)",
+      "Bash(nslookup:*)",
+      "WebFetch(domain:moderngarden.ro)",
+      "Bash(cd D:\\\\Claude code\\\\ModernGreenGarden:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}
