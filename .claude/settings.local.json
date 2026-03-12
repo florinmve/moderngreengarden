@@ -19,7 +19,12 @@
       "Bash(nslookup:*)",
       "WebFetch(domain:moderngarden.ro)",
       "Bash(cd D:\\\\Claude code\\\\ModernGreenGarden:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(do sed:*)",
+      "WebFetch(domain:www.seoptimer.com)",
+      "WebFetch(domain:search.google.com)",
+      "Bash(cd '/d/Claude code/ModernGreenGarden' && REQUIRED_FILES=\"index.html contact.html despre-noi.html servicii.html sisteme-irigatii.html gazon-rulou.html amenajari-gradini.html intretinere-gradini.html consultanta-proiectare.html lucrari-sezon.html politica-de-confidentialitate.html politica-de-cookies.html 404.html\" && echo \"=== Files MISSING <title> tag ===\" && for file in $REQUIRED_FILES; do grep -q \"<title>\" \"$file\" || echo \"$file\"; done)",
+      "Bash(cd '/d/Claude code/ModernGreenGarden' && REQUIRED_FILES=\"index.html contact.html despre-noi.html servicii.html sisteme-irigatii.html gazon-rulou.html amenajari-gradini.html intretinere-gradini.html consultanta-proiectare.html lucrari-sezon.html politica-de-confidentialitate.html politica-de-cookies.html 404.html\" && echo \"=== Files MISSING meta description ===\" && for file in $REQUIRED_FILES; do grep -q '<meta name=\"description\"' \"$file\" || echo \"$file\"; done)"
     ]
   }
 }
